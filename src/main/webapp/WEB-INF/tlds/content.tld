@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+  <tlib-version>1.0</tlib-version>
+  <short-name>content</short-name>
+  <uri>/WEB-INF/tlds/content</uri>
+  <!-- A validator verifies that the tags are used correctly at JSP
+         translation time. Validator entries look like this: 
+      <validator>
+          <validator-class>com.mycompany.TagLibValidator</validator-class>
+          <init-param>
+             <param-name>parameter</param-name>
+             <param-value>value</param-value>
+	  </init-param>
+      </validator>
+   -->
+  <!-- A tag library can register Servlet Context event listeners in
+        case it needs to react to such events. Listener entries look
+        like this: 
+     <listener>
+         <listener-class>com.mycompany.TagLibListener</listener-class> 
+     </listener>
+   -->
+  <tag>
+    <name>display</name>
+    <tag-class>net.frcdb.tag.content.ContentDisplayTagHandler</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>cid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>The content ID, to be retreived from the database.</description>
+    </attribute>
+    <attribute>
+      <name>content</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>net.frcdb.content.Content</type>
+      <description>
+			An instance of Content. One of 'cid' or 'var' is required.
+		</description>
+    </attribute>
+    <attribute>
+      <name>size</name>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+      <description>
+		  For images and videos, the form factor of the content, any of
+		  small/thumbnail, medium, and large. Default is thumbnail.
+	  </description>
+    </attribute>
+  </tag>
+  <tag-file>
+    <name>uploader</name>
+    <path>/WEB-INF/tags/content_uploader.tag</path>
+  </tag-file>
+  <tag-file>
+    <name>show</name>
+    <path>/WEB-INF/tags/content_show.tag</path>
+  </tag-file>
+</taglib>

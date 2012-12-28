@@ -1,0 +1,86 @@
+/* 
+    Document   : default
+    Created on : Jul 11, 2009, 2:43:30 AM
+    Author     : tim
+    Description:
+        CSS for the default layout.
+*/
+
+root { 
+	display: block;
+}
+
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+#top {
+	height: 100px;
+
+	background-image: url('../gfx/border-south.png');
+	background-repeat: repeat-x;
+}
+
+#side {
+	width: 100%;
+}
+
+#content {
+	width: 100%;
+	color: white;
+}
+
+td {
+	color: white;
+}
+
+.error {
+	width: 75%;
+	margin: 0px auto;
+
+	background-color: #fe7878;
+	color: black;
+
+	border: 1px solid #d40101; /* #b40202 */
+	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.title {
+	font-family: Impact, Charcoal, sans-serif;
+	font-size: 36px;
+}
+
+h2, h3, h4 {
+	border-bottom: 1px solid #bbbbbb;
+	width: 100%;
+	margin-bottom: 3px;
+}
+
+.jsdialog {
+	background-repeat: repeat-x;
+	background-color: #111111;
+}
+
+.jsdialog-left {
+	position: relative;
+	width: 10px;
+	left: 0px;
+	top: 0px;
+	height: 10px;
+	background-image: url('../gfx/grad-left.png');
+}
+
+.jsdialog-content {
+	position: relative;
+	top: 0px;
+	left: 10px;
+	right: 10px;
+
+	background-image: url('../gfx/grad-top.png');
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+

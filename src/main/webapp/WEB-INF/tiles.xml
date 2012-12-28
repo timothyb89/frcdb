@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	
+	<definition name="layout-default" template="/layout/shades-of-gray/template.jsp">
+		<put-attribute name="title" value="Untitled"/>
+		<put-attribute name="body" value="/layout/default/default-body.jsp"/>
+		<put-attribute name="top-menu" value="/layout/top-menu.jsp"/>
+		<put-attribute name="menu" value="/layout/menu.jsp"/>
+		<put-attribute name="menu-bottom-left" value="/layout/menu-bottom-left.jsp"/>
+		<put-attribute name="menu-bottom-center" value="/layout/menu-bottom-center.jsp"/>
+		<put-attribute name="menu-bottom-right" value="/layout/menu-bottom-right.jsp"/>
+	</definition>
+
+</tiles-definitions>

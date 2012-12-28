@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DialogForm Test</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="jquery.ui.all.min.js"></script>
+		<link rel="stylesheet" 
+			  type="text/css" 
+			  href="themes/ui-darkness/jquery-ui-1.8.7.custom.css">
+		<script type="text/javascript" src="jquery.dialogform.js"></script>
+	</head>
+	<body>
+		<h2>Dialog Form Test</h2>
+		
+		<button id="testButton">Push Me</button>
+		
+		<script type="text/javascript">
+			var template = {
+				"Name": {
+					name: "text",
+					type: "text"
+				},
+				"Number": {
+					name: "number",
+					type: "number"
+				}
+			};
+		
+			$(document).ready(function() {
+				$("#testButton").button();
+				$("#testButton").click(function() {
+					$.dialogform({
+						title: "Test Form",
+						fields: $.extend(true, {
+							"Name": {
+								value: 'John Smith'
+							}
+						}, template)
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

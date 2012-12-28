@@ -1,0 +1,367 @@
+package net.frcdb.util;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+import net.frcdb.api.event.Event;
+import net.frcdb.api.game.event.Game;
+import net.frcdb.api.game.event.GameType;
+import net.frcdb.api.game.event.element.GameOPRProvider;
+import net.frcdb.api.game.match.Match;
+import net.frcdb.api.game.standing.Standing;
+import net.frcdb.api.game.team.TeamEntry;
+import net.frcdb.api.game.team.element.*;
+import net.frcdb.api.team.Team;
+import net.frcdb.db.Database;
+
+/**
+ *
+ * @author tim
+ */
+public class JSONUtil {
+	
+	public static void exportTeam(OutputStream out, Team team) 
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		g.setPrettyPrinter(new DefaultPrettyPrinter());
+		
+		exportTeam(g, team);
+		
+		g.close();
+	}
+	
+	public static void exportTeam(JsonGenerator g, Team team) 
+			throws IOException {
+		g.writeStartObject();
+		g.writeNumberField("number", team.getNumber());
+		g.writeStringField("name", team.getName());
+		g.writeStringField("nickname", team.getNickname());
+		g.writeStringField("location", team.getLocation());
+		g.writeStringField("city", team.getCity());
+		g.writeStringField("state", team.getState());
+		g.writeStringField("country", team.getCountry());
+		g.writeNumberField("rookieSeason", team.getRookieSeason());
+		g.writeStringField("website", team.getWebsite());
+		g.writeStringField("motto", team.getMotto());
+		
+		// bad place for a db query, oh well
+		Database db = Database.getInstance();
+		
+		Map<GameType, List<Game>> games = db.getParticipatedGames(team);
+		g.writeArrayFieldStart("entries");
+		for (GameType type : games.keySet()) {
+			g.writeStartObject();
+			
+			g.writeStringField("gameName", type.getName());
+			g.writeNumberField("gameYear", type.getYear());
+			
+			g.writeArrayFieldStart("entries");
+			for (Game game : games.get(type)) {
+				g.writeStartObject();
+				g.writeStringField("eventName", game.getEvent().getShortName());
+				g.writeStringField("eventFullName", game.getEvent().getName());
+				g.writeEndObject();
+			}
+			g.writeEndArray();
+			
+			g.writeEndObject();
+		}
+		g.writeEndArray();
+		
+		g.writeEndObject();
+	}
+	
+	public static void exportEvent(OutputStream out, Event event) 
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		g.setPrettyPrinter(new DefaultPrettyPrinter());
+		
+		exportEvent(g, event);
+		
+		g.close();
+	}
+	
+	public static void exportEvent(JsonGenerator g, Event event)
+			throws IOException {
+		g.writeStartObject();
+		g.writeStringField("name", event.getName());
+		g.writeStringField("shortName", event.getShortName());
+		g.writeStringField("venue", event.getVenue());
+		g.writeStringField("city", event.getCity());
+		g.writeStringField("state", event.getState());
+		g.writeStringField("country", event.getCountry());
+		g.writeStringField("identifier", event.getIdentifier());
+		
+		if (event.getAliases() != null) {
+			g.writeArrayFieldStart("aliases");
+			for (String s : event.getAliases()) {
+				g.writeString(s);
+			}
+			g.writeEndArray(); // end aliases array
+		}
+		
+		g.writeEndObject();
+	}
+	
+	public static void exportGame(OutputStream out, Game game) 
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		g.setPrettyPrinter(new DefaultPrettyPrinter());
+		
+		exportGame(g, game);
+		
+		g.close();
+	}
+	
+	public static void exportGame(JsonGenerator g, Game game) 
+			throws IOException {
+		g.writeStartObject();
+		g.writeNumberField("gameYear", game.getGameYear());
+		g.writeStringField("gameName", game.getGameName());
+		g.writeStringField("eventShortName", game.getEvent().getShortName());
+		g.writeNumberField("startDate", game.getStartDate().getTime());
+		g.writeNumberField("endDate", game.getEndDate().getTime());
+		
+		if (game instanceof GameOPRProvider) {
+			GameOPRProvider goprp = (GameOPRProvider) game;
+			g.writeNumberField("averageOPR", goprp.getAverageOPR());
+			g.writeNumberField("averageDPR", goprp.getAverageDPR());
+			g.writeNumberField("totalOPR", goprp.getTotalOPR());
+			g.writeNumberField("totalDPR", goprp.getTotalDPR());
+			g.writeNumberField("highestOPR", goprp.getHighestOPR());
+			if (goprp.getHighestOPRTeam() != null) {
+				g.writeNumberField(
+						"highestOPRTeam",
+						goprp.getHighestOPRTeam().getTeam().getNumber());
+			}
+			g.writeNumberField("lowestOPR", goprp.getLowestOPR());
+			if (goprp.getLowestOPRTeam() != null) {
+				g.writeNumberField(
+						"lowestOPRTeam",
+						goprp.getLowestOPRTeam().getTeam().getNumber());
+			}
+		}
+		
+		g.writeArrayFieldStart("teams");
+		for (TeamEntry e : game.getTeams()) {
+			g.writeStartObject();
+			g.writeNumberField("number", e.getTeam().getNumber());
+			g.writeNumberField("rank", e.getRank());
+			g.writeNumberField("matchesPlayed", e.getMatchesPlayed());
+			g.writeNumberField("gameYear", e.getGame().get().getGameYear());
+			g.writeNumberField("wins", e.getWins());
+			g.writeNumberField("losses", e.getLosses());
+			g.writeNumberField("ties", e.getTies());
+			
+			if (e.getFinalMatchLevel() != null) {
+				g.writeStringField("finalMatchLevel", e.getFinalMatchLevel().getText().toLowerCase());
+			}
+		
+			if (e instanceof Seeding2007Provider) {
+				Seeding2007Provider seed = (Seeding2007Provider) e;
+				g.writeNumberField("qualificationScore", seed.getQualificationScore());
+				g.writeNumberField("rankingScore", seed.getRankingScore());
+			}
+			
+			if (e instanceof MatchPointsProvider) {
+				MatchPointsProvider mpp = (MatchPointsProvider) e;
+				g.writeNumberField("matchPoints", mpp.getMatchPoints());
+			}
+			
+			if (e instanceof Seeding2010Provider) {
+				Seeding2010Provider seed = (Seeding2010Provider) e;
+				
+				g.writeNumberField("seedingScore", seed.getSeedingScore());
+				g.writeNumberField("coopertitionBonus", seed.getCoopertitionBonus());
+			}
+			
+			if (e instanceof HangingProvider) {
+				HangingProvider hang = (HangingProvider) e;
+				g.writeNumberField("hangingPoints", hang.getHangingPoints());
+			}
+			
+			if (e instanceof OPRProvider) {
+				OPRProvider opr = (OPRProvider) e;
+				
+				g.writeNumberField("opr", opr.getOPR());
+				g.writeNumberField("dpr", opr.getDPR());
+			}
+			
+			g.writeEndObject();
+		}
+		g.writeEndArray(); // end teams array
+		
+		g.writeArrayFieldStart("matches");
+		for (Match m : game.getMatches()) {
+			g.writeStartObject();
+			g.writeStringField("type", m.getType().getText().toLowerCase());
+			g.writeNumberField("number", m.getNumber());
+			g.writeStringField("time", m.getTime());
+			
+			g.writeNumberField("redScore", m.getRedScore());
+			g.writeArrayFieldStart("redTeams");
+			for (Team t : m.getRedTeams()) {
+				g.writeNumber(t.getNumber());
+			}
+			g.writeEndArray();
+			
+			g.writeNumberField("blueScore", m.getBlueScore());
+			g.writeArrayFieldStart("blueTeams");
+			for (Team t : m.getBlueTeams()) {
+				g.writeNumber(t.getNumber());
+			}
+			g.writeEndArray();
+			
+			g.writeStringField("winner", m.getWinningAlliance().toString().toLowerCase());
+			
+			g.writeEndObject();
+		}
+		g.writeEndArray(); // end matches array
+		
+		g.writeArrayFieldStart("standings");
+		for (Standing s : game.getStandings()) {
+			g.writeStartObject();
+			
+			g.writeNumberField("rank", s.getRank());
+			g.writeNumberField("team", s.getTeam().getTeam().getNumber());
+			g.writeNumberField("matchesPlayed", s.getMatchesPlayed());
+			
+			if (s instanceof Seeding2007Provider) {
+				Seeding2007Provider seed = (Seeding2007Provider) s;
+				g.writeNumberField("qualificationScore", seed.getQualificationScore());
+				g.writeNumberField("rankingScore", seed.getRankingScore());
+			}
+			
+			if (s instanceof MatchPointsProvider) {
+				MatchPointsProvider mpp = (MatchPointsProvider) s;
+				g.writeNumberField("matchPoints", mpp.getMatchPoints());
+			}
+			
+			if (s instanceof Seeding2010Provider) {
+				Seeding2010Provider seed = (Seeding2010Provider) s;
+				g.writeNumberField("seedingScore", seed.getSeedingScore());
+				g.writeNumberField("coopertitionBonus", seed.getCoopertitionBonus());
+			}
+			
+			if (s instanceof HangingProvider) {
+				HangingProvider hang = (HangingProvider) s;
+				g.writeNumberField("hangingPoints", hang.getHangingPoints());
+			}
+			
+			g.writeEndObject();
+		}
+		g.writeEndArray(); // end standings array
+		
+		g.writeEndObject();
+	}
+	
+	public static void exportMatches(JsonGenerator g, Game game) throws IOException {
+		g.writeStartArray();
+		
+		for (Match m : game.getMatches()) {
+			g.writeStartObject();
+			g.writeStringField("type", m.getType().getText().toLowerCase());
+			g.writeNumberField("number", m.getNumber());
+			g.writeStringField("time", m.getTime());
+			
+			g.writeNumberField("redScore", m.getRedScore());
+			g.writeArrayFieldStart("redTeams");
+			for (Team t : m.getRedTeams()) {
+				g.writeNumber(t.getNumber());
+			}
+			g.writeEndArray();
+			
+			g.writeNumberField("blueScore", m.getBlueScore());
+			g.writeArrayFieldStart("blueTeams");
+			for (Team t : m.getBlueTeams()) {
+				g.writeNumber(t.getNumber());
+			}
+			g.writeEndArray();
+			
+			g.writeStringField("winner", m.getWinningAlliance().toString().toLowerCase());
+			
+			g.writeEndObject();
+		}
+		
+		g.writeEndArray();
+	}
+	
+	public static void exportMatches(OutputStream out, Game game)
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		g.setPrettyPrinter(new DefaultPrettyPrinter());
+		
+		exportMatches(g, game);
+		
+		g.close();
+	}
+	
+	public static void exportTeamResults(JsonGenerator g, List<Team> teams)
+			throws IOException {
+		g.writeStartArray();
+		
+		for (Team t : teams) {
+			g.writeStartObject();
+			
+			g.writeNumberField("number", t.getNumber());
+			g.writeStringField("nickname", t.getNickname());
+			
+			g.writeEndObject();
+		}
+		
+		g.writeEndArray();
+	}
+	
+	public static void exportTeamResults(OutputStream out, List<Team> teams)
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		g.setPrettyPrinter(new DefaultPrettyPrinter());
+		
+		exportTeamResults(g, teams);
+		
+		g.close();
+	}
+	
+	public static void exportStats(OutputStream out, Database db) 
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		
+		exportStats(g, db);
+		
+		g.close();
+	}
+	
+	public static void exportStats(JsonGenerator g, Database db)
+			throws IOException {
+		g.writeStartObject();
+		g.writeNumberField("teams", db.getTeams().size());
+		g.writeNumberField("events", db.getEvents().size());
+		// TODO: more here?
+		
+		g.writeEndObject();
+	}
+	
+	public static void jsonError(OutputStream out, String message) 
+			throws IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
+		
+		g.writeStartObject();
+		g.writeStringField("error", message);
+		g.writeEndObject();
+		
+		g.close();
+	}
+	
+}
