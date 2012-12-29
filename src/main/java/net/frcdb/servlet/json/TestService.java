@@ -18,11 +18,11 @@ public class TestService {
 	@POST
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TestBean getTestBean(
+	public JsonResponse<TestBean> getTestBean(
 			@FormParam("name") String name,
 			@FormParam("number") int number) {
 		TestBean bean = new TestBean(name, number);
-		return bean;
+		return JsonResponse.success(bean);
 	}
 	
 	public class TestBean {

@@ -1,106 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" 
-		 xmlns="http://java.sun.com/xml/ns/javaee"
-		 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	<servlet>
-		<servlet-name>IndexServlet</servlet-name>
-		<servlet-class>net.frcdb.servlet.IndexServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>IndexServlet</servlet-name>
-		<url-pattern>/index</url-pattern>
-	</servlet-mapping>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <!-- servlet definitions -->
+    <servlet>
+        <servlet-name>IndexServlet</servlet-name>
+        <servlet-class>net.frcdb.servlet.IndexServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IndexServlet</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index</welcome-file>
 	</welcome-file-list>
 
-	<!-- objectify -->
-	<filter>
-		<filter-name>ObjectifyFilter</filter-name>
-		<filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>ObjectifyFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>net.frcdb.servlet.admin.AdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
 
-	<!-- jersey and jax-rs servlets -->
 	<servlet>
-		<servlet-name>jersey-serlvet</servlet-name>
-		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>net.frcdb.servlet.json</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+        <servlet-name>TeamServlet</servlet-name>
+        <servlet-class>net.frcdb.servlet.TeamServlet</servlet-class>
+    </servlet>
 	<servlet-mapping>
-		<servlet-name>jersey-serlvet</servlet-name>
-		<url-pattern>/json/*</url-pattern>
+		<servlet-name>TeamServlet</servlet-name>
+		<url-pattern>/team/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- Tiles config -->
 	<servlet>
-		<servlet-name>tiles</servlet-name>
-		<servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
-		<init-param>
-			<param-name>
+		<servlet-name>EventServlet</servlet-name>
+		<servlet-class>net.frcdb.servlet.EventServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventServlet</servlet-name>
+		<url-pattern>/event/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SearchServlet</servlet-name>
+		<servlet-class>net.frcdb.servlet.SearchServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SearchServlet</servlet-name>
+		<url-pattern>/search/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>AboutServlet</servlet-name>
+		<servlet-class>net.frcdb.servlet.AboutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AboutServlet</servlet-name>
+		<url-pattern>/about</url-pattern>
+	</servlet-mapping>
+
+    <!-- objectify -->
+    <filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- jersey and jax-rs servlets -->
+    <servlet>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>net.frcdb.servlet.json</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jersey-serlvet</servlet-name>
+        <url-pattern>/json/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Tiles config -->
+    <servlet>
+        <servlet-name>tiles</servlet-name>
+        <servlet-class>org.apache.tiles.web.startup.TilesServlet</servlet-class>
+        <init-param>
+            <param-name>
 				org.apache.tiles.definition.DefinitionsFactory.DEFINITIONS_CONFIG
 			</param-name>
-			<param-value>
+            <param-value>
 				/WEB-INF/tiles.xml,/org/apache/tiles/classpath-defs.xml
 			</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	<listener>
-		<listener-class>org.apache.tiles.web.startup.TilesListener</listener-class>
-	</listener>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <listener>
+        <listener-class>org.apache.tiles.web.startup.TilesListener</listener-class>
+    </listener>
 
-	<!-- taglibs -->
-	<jsp-config>
-		<taglib>
-			<taglib-uri>http://timothyb89.org/tlds/dialog</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/dialog.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://timothyb89.org/tlds/js</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/js.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://frcdb.net/taglibs/permission</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/permission.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://frcdb.net/taglibs/content</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/content.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://frcdb.net/taglibs/utils</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/utils.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://cewolf.sf.net/tlds/cewolf</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/cewolf.tld</taglib-location>
-		</taglib>
-		<taglib>
-			<taglib-uri>http://jtidy.sf.net</taglib-uri>
-			<taglib-location>/WEB-INF/tlds/jtidy-taglib-12.tld</taglib-location>
-		</taglib>
-		<jsp-property-group>
-			<url-pattern>*.jsp</url-pattern>
-			<scripting-invalid>false</scripting-invalid>
-		</jsp-property-group>
-		<jsp-property-group>
-			<url-pattern>*.tag</url-pattern>
-			<scripting-invalid>false</scripting-invalid>
-		</jsp-property-group>
-	</jsp-config>
-	
+    <!-- taglibs -->
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://timothyb89.org/tlds/dialog</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/dialog.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://timothyb89.org/tlds/js</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/js.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://frcdb.net/taglibs/content</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/content.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://frcdb.net/taglibs/utils</taglib-uri>
+            <taglib-location>/WEB-INF/tlds/utils.tld</taglib-location>
+        </taglib>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <scripting-invalid>false</scripting-invalid>
+        </jsp-property-group>
+        <jsp-property-group>
+            <url-pattern>*.tag</url-pattern>
+            <scripting-invalid>false</scripting-invalid>
+        </jsp-property-group>
+    </jsp-config>
 </web-app>

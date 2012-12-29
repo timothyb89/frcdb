@@ -63,8 +63,8 @@
 				Welcome, ${user.nickname}
 				<utils:logout text="Logout?"/>
 				<c:if test="${admin}">
-					<br>
-					You are an admin!
+					<br>You are an admin!
+					<br>View the <a href="/admin">admin panel</a>.
 				</c:if>
 			</c:otherwise>
 		</c:choose>

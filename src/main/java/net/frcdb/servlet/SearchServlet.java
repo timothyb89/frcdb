@@ -67,7 +67,8 @@ public class SearchServlet extends HttpServlet {
 
 				String r = allocateSearch(q, type, request);
 				if (r != null) {
-					response.sendRedirect("http://frcdb.net" + r);
+					//response.sendRedirect("http://frcdb.net" + r);
+					response.sendRedirect(r);
 					return;
 				}
 			}

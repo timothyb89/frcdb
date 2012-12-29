@@ -26,6 +26,8 @@ public class UserUtil {
 			if (service.isUserAdmin()) {
 				request.setAttribute("admin", true);
 			}
+		} else {
+			request.setAttribute("admin", false);
 		}
 	}
 	
@@ -51,7 +53,11 @@ public class UserUtil {
 	}
 	
 	public static boolean isUserAdmin() {
-		return UserServiceFactory.getUserService().isUserAdmin();
+		UserService service = UserServiceFactory.getUserService();
+		
+		// why this doesn't just return false when no user is logged in is
+		// beyond me...
+		return service.isUserLoggedIn() && service.isUserAdmin();
 	}
 	
 }

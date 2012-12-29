@@ -39,8 +39,6 @@ public class ModerationServlet extends HttpServlet {
 
 		String path = request.getPathInfo();
 		
-		System.out.println("path: " + path);
-		
 		if (path == null || path.length() <= 1) {
 			// show full moderation queue
 			// TODO: pagination?
