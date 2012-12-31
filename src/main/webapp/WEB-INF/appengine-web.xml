@@ -12,4 +12,8 @@ xsi:schemaLocation="http://appengine.google.com/ns/1.0 http://googleappengine.go
 
 	<threadsafe>true</threadsafe>
 
+	<admin-console>
+		<page name="Appstats" url="/appstats" />
+	</admin-console>
+
 </appengine-web-app>

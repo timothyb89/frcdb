@@ -15,6 +15,7 @@
 		<h3>Available Actions</h3>
 		<button id="teamCreate">Create Team</button>
 		<button id="teamModify">Modify Team</button>
+		<button id="teamsImport">Import Team Data</button>
 		
 		<script type="text/javascript">
 			var teamTemplate = {
@@ -36,6 +37,10 @@
 				"City":       { name: "city", type: "text" },
 				"State":      { name: "State", type: "text" },
 				"Country":    { name: "country", type: "text" }
+			};
+		
+			var teamImportTemplate = {
+				"Teams JSON": { name: "file", type: "file" }
 			};
 			
 			$("#teamCreate").button().click(function() {
@@ -59,6 +64,19 @@
 					}
 				}, teamTemplate);
 				
+			});
+		
+			$("#teamsImport").button().click(function() {
+				$.dialogform({
+					title: "Import Teams",
+					fields: teamImportTemplate,
+					url: "/json/admin/team/import",
+					contentType: "multipart/form-data",
+					success: function(response) {
+						console.log(response);
+						alert(response.message);
+					}
+				});
 			});
 		</script>
 		

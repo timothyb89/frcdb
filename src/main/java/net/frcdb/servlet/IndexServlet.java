@@ -32,10 +32,14 @@ public class IndexServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Database db = Database.getInstance();
 		
+		// TODO: the counts are still very expensive!
+		// should just make a Stats object and keep numbers there; update at
+		// store-time
+		
 		IndexData data = new IndexData();
-		data.setTeamCount(db.getTeams().size()); // should have getTeamCount()
-		data.setEventCount(db.getEvents().size());
-		data.setGameCount(db.getGames().size());
+		data.setTeamCount(db.countTeams());
+		data.setEventCount(db.countEvents());
+		data.setGameCount(db.countGames());
 		
 		data.setTopEvents(db.getTopEvents(5));
 		data.setTopTeams(db.getTopTeams(5));

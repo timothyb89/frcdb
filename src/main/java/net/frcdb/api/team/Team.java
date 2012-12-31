@@ -1,5 +1,6 @@
 package net.frcdb.api.team;
 
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Embed;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -14,6 +15,7 @@ import java.util.List;
  * sources (mainly FIRST's site).
  * @author tim
  */
+@Cache
 @Entity
 public class Team {
 	

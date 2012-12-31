@@ -33,6 +33,10 @@
  * This will merge the field definitions into the new `values` object, which
  * can then be passed to the dialogform function.
  * 
+ * Note that setting the contentType attribute to `multipart/form-data` will
+ * automatically wrap the form in a FormData object rather than using jQuery's
+ * form.serialize().
+ * 
  * This file also includes a utility for pushing a JSON object's values into an
  * existing template, adjusting the 'value' field. Note that this only works 
  * with first-level values, and requires the 'name' field to be the same as
@@ -52,6 +56,7 @@
 			'height': 550,			// initial dialog height
 			'url': null,			// submit url
 			'method': 'POST',		// form submit method
+			'contentType': null,    // content type for form submission
 			'success': null,		// ajax success callback
 			'error': null,			// ajax error callback
 			'cancel': null			// user cancel call back
@@ -60,6 +65,10 @@
 		// init form and inputs
 		var dialog = $("<div>");
 		var form = $("<form>");
+		if (settings.contentType === "multipart/form-data") {
+			form.attr("enctype", "multipart/form-data");
+		}
+		
 		for (var labelName in settings.fields) {
 			if (!settings.fields.hasOwnProperty(labelName)) {
 				// skip inherited members
@@ -95,10 +104,29 @@
 		var btns = new Object();
 		btns[settings.submitText] = function() {
 			if (settings.url) {
+				var processDataWrapper = true;
+				var contentTypeWrapper = settings.contentType;
+				var dataWrapper;
+				
+				// fix upload for multipart data
+				if (contentTypeWrapper === "multipart/form-data") {
+					console.log("Using HTML5 FormData")
+					processDataWrapper = false;
+					
+					// content type must be false to prevent jquery from
+					// adding the wrong one "automatically"
+					contentTypeWrapper = false;
+					dataWrapper = new FormData(form[0]);
+				} else {
+					dataWrapper = form.serialize();
+				}
+				
 				$.ajax({
 					type: settings.method,
 					url: settings.url,
-					data: form.serialize(),
+					data: dataWrapper,
+					contentType: contentTypeWrapper,
+					processData: processDataWrapper,
 					success: function(data, textStatus, jqXHR) {
 						// close the dialog and forward the callback
 						dialog.dialog("close");

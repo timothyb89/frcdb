@@ -97,6 +97,11 @@ public class Database {
 	public List<Team> getTeams() {
 		return ofy().load().type(Team.class).list();
 	}
+	
+	public int countTeams() {
+		// TODO: this may still be very costly
+		return ofy().load().type(Team.class).count();
+	}
 
 	public Team getTeam(final int number) {
 		return ofy().load().type(Team.class)
@@ -115,6 +120,10 @@ public class Database {
 	
 	public List<Event> getEvents() {
 		return ofy().load().type(Event.class).list();
+	}
+	
+	public int countEvents() {
+		return ofy().load().type(Event.class).count();
 	}
 
 	/**
@@ -260,6 +269,10 @@ public class Database {
 
 	public List<Game> getGames() {
 		return ofy().load().type(Game.class).list();
+	}
+	
+	public int countGames() {
+		return ofy().load().type(Game.class).count();
 	}
 	
 	public List<Game> getGames(Event event) {
