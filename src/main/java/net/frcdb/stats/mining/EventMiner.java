@@ -1,5 +1,6 @@
 package net.frcdb.stats.mining;
 
+import com.googlecode.objectify.Ref;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -159,6 +160,7 @@ public class EventMiner {
 						// get + store the new entries in the db
 						for (TeamEntry te : getTeams(g, eid)) {
 							db.store(te);
+							g.getTeamReferences().add(Ref.create(te));
 						}
 						
 						System.out.println("[Info ] Created new " 
@@ -181,6 +183,7 @@ public class EventMiner {
 						// get + store the new entries to the database
 						for (TeamEntry te : getTeams(g, eid)) {
 							db.store(te);
+							g.getTeamReferences().add(Ref.create(te));
 						}
 						
 						g.setResultsURL(Sources.getResultsURL(g));

@@ -1,3 +1,4 @@
+
 <%-- 
     Document   : event
     Created on : Jul 25, 2010, 6:27:17 PM
@@ -17,40 +18,24 @@
 <%@page import="net.frcdb.api.team.Team" %>
 <%@page import="net.frcdb.api.event.Event" %>
 <%@page import="net.frcdb.db.Database" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@ taglib uri="/WEB-INF/tlds/js.tld" prefix="js" %>
+<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@taglib uri="/WEB-INF/tlds/js.tld" prefix="js" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib uri="/WEB-INF/tlds/cewolf.tld" prefix="cewolf" %>
 <%@taglib uri="http://frcdb.net/taglibs/utils" prefix="utils" %>
-<%@taglib uri="http://frcdb.net/taglibs/permission" prefix="permission" %>
-
-<%
-Event e = (Event) request.getAttribute("event");
-pageContext.setAttribute("name", e.getName());
-pageContext.setAttribute("shortName", e.getShortName());
-
-Game g = (Game) request.getAttribute("eventGame");
-pageContext.setAttribute("game", g);
-
-pageContext.setAttribute("year", g.getGameYear());
-pageContext.setAttribute("gameYear", g.getGameYear());
-pageContext.setAttribute("gameName", g.getGameName());
-%>
 
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Event: ${name}"/>
 	<tiles:putAttribute name="body">
-		<h1>Event: ${name} (${year})</h1>
+		<h1>Event: ${data.event.name} (${data.game.year})</h1>
 		<p class="breadcrumbs">
-			<a href="/event/${shortName}/${gameYear}/standings">Standings</a>,
-			<a href="/event/${shortName}/wiki">Wiki</a>
+			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">Standings</a>
 		</p>
 		
-		Viewing results for ${gameYear}. Years available:<br>
+		Viewing results for ${data.game.gameYear}. Years available:<br>
 		<ul>
-			<c:forEach items="${event.gamesSorted}" var="g">
+			<c:forEach items="${data.games}" var="g">
 				<li>
-					<a href="/event/${event.shortName}/${g.gameYear}">
+					<a href="/event/${data.event.shortName}/${g.gameYear}">
 						${g.gameYear} - ${g.gameName}
 					</a>
 				</li>
@@ -62,52 +47,40 @@ pageContext.setAttribute("gameName", g.getGameName());
 			<tbody>
 				<tr>
 					<td>Name</td>
-					<td>${name}</td>
+					<td>${data.event.name}</td>
 				</tr>
 				<tr>
 					<td>Location</td>
-					<td>${event.city}, ${event.state}</td>
+					<td>${data.event.city}, ${data.event.state}</td>
 				</tr>
 				<tr>
 					<td>Date</td>
-					<td>${utils:date(game.startDate, 'MMMM dd yyyy')} - 
-						${utils:date(game.endDate, 'MMMM dd yyyy')}</td>
+					<td>${utils:date(data.game.startDate, 'MMMM dd yyyy')} - 
+						${utils:date(data.game.endDate, 'MMMM dd yyyy')}</td>
 				</tr>
-				<% if (g.hasGameProperty(Game.PROP_GAME_OPR)) { %>
-					<% GameOPRProvider o = (GameOPRProvider) g; %>
-					
+				<c:if test="${utils:hasProperty(data.game, 'averageOPR')}">
 					<tr>
 						<td>Average OPR</td>
-						<td><%= String.format("%.2f", o.getAverageOPR()) %></td>
-					
-					<% if (o.getHighestOPRTeam() != null) { %>
-						<%
-						TeamEntry hTeam = o.getHighestOPRTeam();
-						
-						String url = "/event/"
-								+ e.getShortName() + "/"
-								+ g.getGameYear()
-								+ "/team/"
-								 + hTeam.getTeamNumber();
-						
-						String title = "#" + hTeam.getTeamNumber() + ": "
-								+ hTeam.getTeamNickname();
-						
-						double hOPR = o.getHighestOPR();
-						%>
+						<td>${utils:format("%.2f", data.game.averageOPR)}</td>
+					</tr>
+					<c:if test="${not empty data.game.highestOPRTeam}">
+						<c:set property="hoprTeam" value="${data.game.highestOPRTeam.team}"/>
 						<tr>
 							<td>Highest OPR</td>
 							<td>
-								<a href="<%= url %>" title="<%= title %>">
-									<%= String.format("%.2f", hOPR) %>
+								<a href="/event/${data.event.shortName}/${data.game.gameYear}/team/${hoprTeam.number}"
+								   title="#${hoprTeam.number}: ${hoprTeam.nickname}">
+									${utils:format("%.2f", data.game.highestOPR)}
 								</a>
 							</td>
 						</tr>
-					<% } %>
-				<% } %>
+					</c:if>
+					
+				</c:if>
 			</tbody>
 		</table>
 		
+		<%-- TODO: rewrite charts with Google Charts API
 		<% if (g.hasTeamProperty(Game.PROP_TEAM_OPR)
 				&& g.hasGameProperty(Game.PROP_GAME_OPR)) { %>
 				<jsp:useBean id="gameOPR" 
@@ -137,7 +110,7 @@ pageContext.setAttribute("gameName", g.getGameName());
 						</td></tr>
 					</tbody>
 				</table>
-		<% } %>
+		<% } %>--%>
 		
 		<h2 style="padding-top: 15px;">Teams Attending</h2>
 		<js:table id="event_teams" width="90%" align="center">
@@ -146,45 +119,36 @@ pageContext.setAttribute("gameName", g.getGameName());
 					<th>Number</th>
 					<th>Nickname</th>
 					<th>Rank</th>
-					<% if (g.hasTeamProperty(Game.PROP_TEAM_OPR)) { %>
+					<c:if test="${utils:hasProperty(data.game, 'averageOPR')}">
 						<th>OPR</th>
 						<th>DPR</th>
-					<% } %>
-					<th>
+					</c:if>
+					<%--<th> TODO: content APIs
 						Robot Info
-					</th>
+					</th>--%>
 				</tr>
 			</thead>
 			<tbody>
-				<% for (TeamEntry t : g.getTeams()) { %>
-					<%
-					String url =
-							"/event/"
-							+ e.getShortName() + "/"
-							+ g.getGameYear() 
-							+ "/team/"
-							+ t.getTeamNumber();
-					%>
+				<c:forEach items="${data.teams}" var="t">
 					<tr>
-						<td><%= t.getTeamNumber() %></td>
+						<td>${t.team.number}</td>
 						<td>
-							<a href="<%= url %>">
-								<%=	t.getTeamNickname() %>
+							<a href="/event/${data.event.shortName}/${data.game.gameYear}/team/${t.team.number}">
+								${t.team.nickname}
 							</a>
 						</td>
-						<td><%= t.getRank() %></td>
-						<% if (g.hasTeamProperty(Game.PROP_TEAM_OPR)) { %>
-							<% OPRProvider opr = (OPRProvider) t; %>
-							<td><%= String.format("%.2f", opr.getOPR()) %></td>
-							<td><%= String.format("%.2f", opr.getDPR()) %></td>
-						<% } %>
+						<td>${t.rank}</td>
+						<c:if test="${utils:hasProperty(t, 'OPR')}">
+							<td>${utils:format("%.2f", t.OPR)}</td>
+							<td>${utils.format("%.2f", t.DPR)}</td>
+						</c:if>
 						<td>
-							<a href="/team/<%= t.getTeamNumber() %>/robot/${gameYear}">
+							<a href="/team/${t.team.number}/robot/${gameYear}">
 								Info
 							</a>
 						</td>
 					</tr>
-				<% } %>
+				</c:forEach>
 			</tbody>
 		</js:table>
 		
@@ -205,32 +169,24 @@ pageContext.setAttribute("gameName", g.getGameName());
 				</tr>
 			</thead>
 			<tbody>
-				<% for (Match m : g.getMatches(MatchType.QUALIFICATION)) { %>
-					<%
-					String url =
-							"/event/"
-							+ e.getShortName() + "/"
-							+ g.getGameYear()
-							+ "/match/"
-							+ m.getNumber();
-					%>
+				<c:forEach items="${data.qualificationMatches}" var="m">
 					<tr>
-						<td><%= m.getNumber() %></td>
-						<% for (int t : m.getRedTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<% for (int t : m.getBlueTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<td><%= m.getRedScore() %></td>
-						<td><%= m.getBlueScore() %></td>
-						<td><a href="<%= url %>">Info</a></td>
+						<td>${m.number}</td>
+						<c:forEach items="${m.redTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<c:forEach items="${m.blueTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<td>${m.redScore}</td>
+						<td>${m.blueScore}</td>
+						<td>
+							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/${m.number}">
+								Info
+							</a>
+						</td>
 					</tr>
-				<% } %>
+				</c:forEach>
 			</tbody>
 		</js:table>
 		
@@ -251,32 +207,24 @@ pageContext.setAttribute("gameName", g.getGameName());
 				</tr>
 			</thead>
 			<tbody>
-				<% for (Match m : g.getMatches(MatchType.QUARTERFINAL)) { %>
-					<%
-					String url =
-							"/event/" 
-							+ e.getShortName() + "/"
-							+ g.getGameYear()
-							+ "/match/"
-							+ "q" + m.getNumber();
-					%>
+				<c:forEach items="${data.quarterfinalMatches}" var="m">
 					<tr>
-						<td><%= m.getNumber() %></td>
-						<% for (int t : m.getRedTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<% for (int t : m.getBlueTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<td><%= m.getRedScore() %></td>
-						<td><%= m.getBlueScore() %></td>
-						<td><a href="<%= url %>">Info</a></td>
+						<td>${m.number}</td>
+						<c:forEach items="${m.redTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<c:forEach items="${m.blueTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<td>${m.redScore}</td>
+						<td>${m.blueScore}</td>
+						<td>
+							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/q${m.number}">
+								Info
+							</a>
+						</td>
 					</tr>
-				<% } %>
+				</c:forEach>
 			</tbody>
 		</js:table>
 		
@@ -297,32 +245,24 @@ pageContext.setAttribute("gameName", g.getGameName());
 				</tr>
 			</thead>
 			<tbody>
-				<% for (Match m : g.getMatches(MatchType.SEMIFINAL)) { %>
-					<%
-					String url =
-							"/event/"
-							+ e.getShortName() + "/"
-							+ g.getGameYear()
-							+ "/match/"
-							+ "s" + m.getNumber();
-					%>
+				<c:forEach items="${data.semifinalMatches}" var="m">
 					<tr>
-						<td><%= m.getNumber() %></td>
-						<% for (int t : m.getRedTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<% for (int t : m.getBlueTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<td><%= m.getRedScore() %></td>
-						<td><%= m.getBlueScore() %></td>
-						<td><a href="<%= url %>">Info</a></td>
+						<td>${m.number}</td>
+						<c:forEach items="${m.redTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<c:forEach items="${m.blueTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<td>${m.redScore}</td>
+						<td>${m.blueScore}</td>
+						<td>
+							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/s${m.number}">
+								Info
+							</a>
+						</td>
 					</tr>
-				<% } %>
+				</c:forEach>
 			</tbody>
 		</js:table>
 		
@@ -343,41 +283,33 @@ pageContext.setAttribute("gameName", g.getGameName());
 				</tr>
 			</thead>
 			<tbody>
-				<% for (Match m : g.getMatches(MatchType.FINAL)) { %>
-					<%
-					String url =
-							"/event/"
-							+ e.getShortName() + "/"
-							+ g.getGameYear()
-							+ "/match/"
-							+ "f" + m.getNumber();
-					%>
+				<c:forEach items="${data.finalMatches}" var="m">
 					<tr>
-						<td><%= m.getNumber() %></td>
-						<% for (int t : m.getRedTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<% for (int t : m.getBlueTeams()) { %>
-							<td>
-								<%= t %>
-							</td>
-						<% } %>
-						<td><%= m.getRedScore() %></td>
-						<td><%= m.getBlueScore() %></td>
-						<td><a href="<%= url %>">Info</a></td>
+						<td>${m.number}</td>
+						<c:forEach items="${m.redTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<c:forEach items="${m.blueTeams}" var="t">
+							<td>${t.number}</td>
+						</c:forEach>
+						<td>${m.redScore}</td>
+						<td>${m.blueScore}</td>
+						<td>
+							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/f${m.number}">
+								Info
+							</a>
+						</td>
 					</tr>
-				<% } %>
+				</c:forEach>
 			</tbody>
 		</js:table>
-		
-		<permission:if name="root.task.add">
+
+		<c:if test="${admin}">
 			<h2>Scheduled Updates</h2>
 			<js:schedule id="eventScheduler"
-						type="eventUpdate"
-						eventName="${shortName}"
-						gameYear="${gameYear}"/>
-		</permission:if>
+						 type="eventUpdate"
+						 eventName="${shortName}"
+						 gameYear="${gameYear}"/>
+		</c:if>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

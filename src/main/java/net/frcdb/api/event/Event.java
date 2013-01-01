@@ -1,9 +1,12 @@
 package net.frcdb.api.event;
 
 import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
@@ -12,6 +15,7 @@ import net.frcdb.db.Database;
  *
  * @author tim
  */
+@Cache
 @Entity
 public class Event {
 
@@ -26,11 +30,13 @@ public class Event {
 	/**
 	 * The full event name, including sponsors, etc
 	 */
+	@Index
 	private String name;
 
 	/**
 	 * A short, identifiable, and plain-English event name.
 	 */
+	@Index
 	private String shortName;
 
 	/**
@@ -39,9 +45,9 @@ public class Event {
 	private String identifier;
 
 	private String venue;
-	private String city;
-	private String state;
-	private String country;
+	@Index private String city;
+	@Index private String state;
+	@Index private String country;
 	
 	private double latitude;
 	private double longitude;
@@ -51,6 +57,7 @@ public class Event {
 	 */
 	private List<String> aliases;
 	
+	@Index
 	private int hits;
 	
 	private List<Ref<Game>> games;
@@ -131,11 +138,11 @@ public class Event {
 		this.longitude = longitude;
 	}
 
-	public List<Game> getGames() {
+	public Collection<Game> getGames() {
 		return Database.getInstance().getGames(this);
 	}
 
-	public List<Game> getGamesSorted() {
+	public Collection<Game> getGamesSorted() {
 		return Database.getInstance().getGamesSorted(this);
 	}
 
@@ -186,6 +193,14 @@ public class Event {
 
 	public void setHits(int hits) {
 		this.hits = hits;
+	}
+
+	@Override
+	public String toString() {
+		return "Event["
+			+ "shortName=" + shortName + ", "
+			+ "identifier=" + identifier
+			+ "]";
 	}
 	
 }

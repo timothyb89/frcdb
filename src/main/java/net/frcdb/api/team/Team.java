@@ -49,6 +49,7 @@ public class Team {
 	 */
 	private String location;
 	
+	@Index
 	private String country;
 	
 	/**

@@ -1,5 +1,6 @@
 package net.frcdb.export;
 
+import com.googlecode.objectify.Ref;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -197,6 +198,7 @@ public class GamesImport {
 		}
 		
 		db.store(te);
+		g.getTeamReferences().add(Ref.create(te));
 	}
 	
 	private void parseMatch(JsonNode node, Game g) {
@@ -223,6 +225,20 @@ public class GamesImport {
 		}
 		
 		db.store(m);
+		
+		switch (m.getType()) {
+			case QUALIFICATION:
+				g.getQualificationMatchReferences().add(Ref.create(m));
+				break;
+			case QUARTERFINAL:
+				g.getSemifinalsMatchReferences().add(Ref.create(m));
+				break;
+			case SEMIFINAL:
+				g.getSemifinalsMatchReferences().add(Ref.create(m));
+				break;
+			case FINAL:
+				g.getFinalsMatchReferences().add(Ref.create(m));
+		}
 	}
 
 	private void parseStanding(JsonNode node, Game g) {
@@ -278,6 +294,7 @@ public class GamesImport {
 		}
 		
 		db.store(s);
+		g.getStandingReferences().add(Ref.create(s));
 	}
 	
 	public static void main(String[] args) throws IOException {

@@ -29,7 +29,7 @@ public class FinalMatchLevel implements Statistic {
 	public void calculate(Game game, List<Team> teams, Database db) {
 		Map<Team, MatchType> levels = new HashMap<Team, MatchType>();
 		
-		for (Match m : game.getMatches()) {
+		for (Match m : game.getAllMatches()) {
 			for (Team t : m.getTeams()) {
 				MatchType currentHighest = levels.get(t);
 				if (currentHighest == null) { // no current value

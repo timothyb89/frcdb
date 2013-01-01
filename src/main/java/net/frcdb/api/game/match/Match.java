@@ -1,6 +1,7 @@
 package net.frcdb.api.game.match;
 
 import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
@@ -18,6 +19,7 @@ import net.frcdb.util.ListUtil;
  *
  * @author tim
  */
+@Cache
 @Entity
 public class Match implements ContentProvider {
 	

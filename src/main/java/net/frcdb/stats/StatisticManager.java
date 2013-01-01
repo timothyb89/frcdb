@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
@@ -96,15 +97,11 @@ public class StatisticManager {
 		Database db = new Database();
 		
 		System.out.print("[Info ] Initializing team cache... ");
-		List<Team> dbTeams = db.getTeams();
-		
 		List<Team> teams = new ArrayList<Team>();
 		teams.addAll(db.getTeams());
 		System.out.println("done.");
 		
 		System.out.print("[Info ] Initializing event cache... ");
-		List<Event> dbEvents = db.getEvents();
-		
 		List<Event> events = new ArrayList<Event>();
 		events.addAll(db.getEvents());
 		System.out.println("done.");

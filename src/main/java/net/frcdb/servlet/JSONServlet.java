@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -82,12 +83,10 @@ public class JSONServlet extends HttpServlet {
 			} catch (IllegalArgumentException ex) {
 				jsonError(ex.getMessage(), response);
 			}
-
-			return;
 		}
 	}
 	
-	private void writeTeams(OutputStream out, List<Team> teams) 
+	private void writeTeams(OutputStream out, Collection<Team> teams) 
 			throws IOException {
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
@@ -101,7 +100,7 @@ public class JSONServlet extends HttpServlet {
 		g.close();
 	}
 	
-	private void writeEvents(OutputStream out, List<Event> events) 
+	private void writeEvents(OutputStream out, Collection<Event> events) 
 			throws IOException {
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);

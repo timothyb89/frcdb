@@ -32,7 +32,8 @@ import net.frcdb.util.ListUtil;
 import net.frcdb.util.StringUtil;
 
 /**
- *
+ * TODO: Pretty much everything here needs to use keys instead of list() queries
+ * whenever possible to hit the cache.
  * @author tim
  */
 public class Database {
@@ -94,8 +95,11 @@ public class Database {
 				.first().get();
 	}
 	
-	public List<Team> getTeams() {
-		return ofy().load().type(Team.class).list();
+	public Collection<Team> getTeams() {
+		//return ofy().load().type(Team.class).list();
+		// only get-by-key will use the cache!
+		return ofy().load().keys(
+				ofy().load().type(Team.class).keys()).values();
 	}
 	
 	public int countTeams() {
@@ -118,8 +122,9 @@ public class Database {
 				.list();
 	}
 	
-	public List<Event> getEvents() {
-		return ofy().load().type(Event.class).list();
+	public Collection<Event> getEvents() {
+		return ofy().load().keys(
+				ofy().load().type(Event.class).keys()).values();
 	}
 	
 	public int countEvents() {
@@ -136,7 +141,7 @@ public class Database {
 	 */
 	public Event getNearestEvent(final String name) {
 		// slow, due to custom iteration
-		List<Event> events = getEvents();
+		Collection<Event> events = getEvents();
 		
 		// orientdb lists aren't mutable, so make a copy
 		
@@ -267,18 +272,19 @@ public class Database {
 		return ret;
 	}
 
-	public List<Game> getGames() {
-		return ofy().load().type(Game.class).list();
+	public Collection<Game> getGames() {
+		return ofy().load().keys(ofy().load().type(Game.class).keys()).values();
 	}
 	
 	public int countGames() {
+		// TODO: costly! D:
 		return ofy().load().type(Game.class).count();
 	}
 	
-	public List<Game> getGames(Event event) {
-		return ofy().load().type(Game.class)
+	public Collection<Game> getGames(Event event) {
+		return ofy().load().keys(ofy().load().type(Game.class)
 				.ancestor(event)
-				.list();
+				.keys()).values();
 	}
 	
 	public Game getGame(Event event, int year) {
@@ -297,15 +303,11 @@ public class Database {
 				.first().get();
 	}
 	
-	public List<Game> getGamesSorted(String event) {
-		return ofy().load().type(Game.class)
-				.filter("eventName =", event)
+	public Collection<Game> getGamesSorted(Event event) {
+		return ofy().load().keys(ofy().load().type(Game.class)
+				.ancestor(event)
 				.order("gameYear")
-				.list();
-	}
-	
-	public List<Game> getGamesSorted(Event event) {
-		return getGamesSorted(event.getShortName());
+				.keys()).values();
 	}
 	
 	/**
@@ -400,16 +402,6 @@ public class Database {
 				.count();
 	}
 	
-	public List<Match> getMatches() {
-		return ofy().load().type(Match.class).list();
-	}
-	
-	public List<Match> getMatches(Game game) {
-		return ofy().load().type(Match.class)
-				.ancestor(game)
-				.list();
-	}
-	
 	public List<Match> getMatches(Game game, MatchType type) {
 		return ofy().load().type(Match.class)
 				.ancestor(game)
@@ -449,8 +441,11 @@ public class Database {
 	 * @param game the game to purge
 	 */
 	public void purgeMatches(Game game) {
-		ofy().delete().keys(ListUtil.refsToKeys(game.getMatchReferences()));
-		game.getMatchReferences().clear();
+		ofy().delete().keys(ListUtil.refsToKeys(game.getAllMatchReferences()));
+		game.getQualificationMatchReferences().clear();
+		game.getQuarterfinalsMatchReferences().clear();
+		game.getSemifinalsMatchReferences().clear();
+		game.getFinalsMatchReferences().clear();
 	}
 	
 	public List<Standing> getStandings(String event, int year) {

@@ -162,7 +162,7 @@ public class OPRDPRCalc implements Statistic {
 			return;
 		}
 		
-		if (game.getMatches().isEmpty()) {
+		if (game.getQualificationMatches().isEmpty()) {
 			logger.warn("Skipping due to lack of match data: " + game);
 			return;
 		}
@@ -171,9 +171,9 @@ public class OPRDPRCalc implements Statistic {
 		
 		logger.info("Updating OPR and DPR for: " +
 				game + ", with " 
-				+ game.getMatches().size() + " total matches.");
+				+ game.getQualificationMatches().size() + " total matches.");
 
-		List<Team> uTeams = getUniqueTeams(game.getMatches());
+		List<Team> uTeams = getUniqueTeams(game.getAllMatches());
 
 		try {
 			calc(game, uTeams);

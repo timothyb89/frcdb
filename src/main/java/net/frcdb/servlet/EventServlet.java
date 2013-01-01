@@ -2,6 +2,7 @@ package net.frcdb.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
@@ -18,12 +19,14 @@ import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.game.team.element.OPRProvider;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
+import net.frcdb.servlet.bean.EventData;
 import net.frcdb.servlet.bean.EventMatchData;
 import net.frcdb.servlet.bean.EventTeamData;
 import net.frcdb.util.JSONUtil;
 import net.frcdb.util.ListUtil;
+
 /**
- *
+ * TODO: standardize the EventData / EventMatchData / etc formatting.
  * @author tim
  */
 public class EventServlet extends HttpServlet {
@@ -58,8 +61,10 @@ public class EventServlet extends HttpServlet {
 		List<String> groups = ListUtil.extract("/([\\S&&[^/]]+)/?", path);
 		if (groups != null) {
 			try {
-				allocateEvent(groups.get(1), db, request);
-				allocateGame(request);
+				String event = groups.get(1);
+				int year = Event.CURRENT_YEAR;
+				request.setAttribute("data", createEventData(event, year));
+				
 				forward("/event.jsp", request, response);
 			} catch (IllegalArgumentException ex) {
 				request.setAttribute("error", ex.getMessage());
@@ -87,8 +92,10 @@ public class EventServlet extends HttpServlet {
 		groups = ListUtil.extract("/([\\S&&[^/]]+)/(\\d+)/?", path);
 		if (groups != null) {
 			try {
-				allocateEvent(groups.get(1), db, request);
-				allocateGame(groups.get(2), db, request);
+				String event = groups.get(1);
+				int year = Integer.parseInt(groups.get(2));
+				request.setAttribute("data", createEventData(event, year));
+				
 				forward("/event.jsp", request, response);
 			} catch (IllegalArgumentException ex) {
 				request.setAttribute("error", ex.getMessage());
@@ -247,6 +254,7 @@ public class EventServlet extends HttpServlet {
 			throw new IllegalArgumentException("Event not found!");
 		} else {
 			request.setAttribute("event", evt);
+			
 			// register a hit
 			// TODO: fix this later when the db supports it
 			//db.store(new HitEntry("event", evt.getShortName()));
@@ -257,6 +265,41 @@ public class EventServlet extends HttpServlet {
 		}
 	}
 
+	private EventData createEventData(String eventName, int year) {
+		Event event = Database.getInstance().getEventByShortName(eventName);
+		if (event == null) {
+			throw new IllegalArgumentException("Event not found: " + eventName);
+		}
+		
+		EventData data = new EventData();
+		data.setEvent(event);
+		
+		Game game = null;
+		Collection<Game> games = event.getGamesSorted();
+		data.setGames(games);
+		
+		for (Game g : games) {
+			if (g.getGameYear() == year) {
+				game = g;
+			}
+		}
+		
+		if (game == null) {
+			throw new IllegalArgumentException("Event " + event.getShortName()
+					+ " has no game for year " + year);
+		}
+		
+		data.setGame(game);
+		
+		data.setTeams(game.getTeams());
+		data.setQualificationMatches(game.getQualificationMatches());
+		data.setQuarterfinalMatches(game.getQuarterfinalsMatches());
+		data.setSemifinalMatches(game.getSemifinalsMatches());
+		data.setFinalMatches(game.getFinalsMatches());
+		
+		return data;
+	}
+	
 	private void allocateGame(String number, Database db,
 			HttpServletRequest request) {
 		Event evt = (Event) request.getAttribute("event");

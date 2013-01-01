@@ -3,7 +3,7 @@ package net.frcdb.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +20,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 /**
- *
+ * TODO: full results are extremely expensive, may need to disable them.
  * @author tim
  */
 public class SearchServlet extends HttpServlet {
@@ -46,7 +46,7 @@ public class SearchServlet extends HttpServlet {
 			Database db = Database.getInstance();
 			if (path.equalsIgnoreCase("/json")) {
 				if (type.equals("teams")) {
-					List<Team> results = teamSearchJson(db, q);
+					Collection<Team> results = teamSearchJson(db, q);
 					exportTeamResults(results, response);
 				}
 			} else if (path.equalsIgnoreCase("/nearest")) {
@@ -106,8 +106,8 @@ public class SearchServlet extends HttpServlet {
 			// continue
 		}
 		
-		List<Team> res;
-		List<Team> all = db.getTeams();
+		Collection<Team> res;
+		Collection<Team> all = db.getTeams();
 		
 		if (q.isEmpty()) {
 			res = all;
@@ -130,19 +130,19 @@ public class SearchServlet extends HttpServlet {
 		}
 		
 		if (res.size() == 1) {
-			return "/team/" + res.get(0).getNumber();
+			// TODO: we already have the team loaded, just forward there
+			return "/team/" + res.iterator().next().getNumber();
 		} else {
-			System.out.println("returning " + res.size() + " teams");
 			request.setAttribute("teamSearchResults", res);
 			return null;
 		}
 	}
 	
-	private List<Team> teamSearchJson(Database db, String q) {
+	private Collection<Team> teamSearchJson(Database db, String q) {
 		q = q.toLowerCase();
 		
-		List<Team> res;
-		List<Team> all = db.getTeams();
+		Collection<Team> res;
+		Collection<Team> all = db.getTeams();
 		
 		if (q.isEmpty()) {
 			res = all;
@@ -172,7 +172,7 @@ public class SearchServlet extends HttpServlet {
 		return res;
 	}
 	
-	private void exportTeamResults(List<Team> teams,
+	private void exportTeamResults(Collection<Team> teams,
 			HttpServletResponse response) throws IOException {
 		response.setContentType("application/json;charset=UTF-8");
 		
@@ -189,8 +189,8 @@ public class SearchServlet extends HttpServlet {
 			return "/event/" + event.getShortName();
 		}
 		
-		List<Event> res;
-		List<Event> all = db.getEvents();
+		Collection<Event> res;
+		Collection<Event> all = db.getEvents();
 		if (q.isEmpty()) {
 			res = all;
 		} else {
@@ -233,7 +233,7 @@ public class SearchServlet extends HttpServlet {
 		}
 		
 		if (res.size() == 1) {
-			return "/event/" + res.get(0).getShortName();
+			return "/event/" + res.iterator().next().getShortName();
 		} else {
 			request.setAttribute("eventSearchResults", res);
 			return null;

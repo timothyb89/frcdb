@@ -1,6 +1,7 @@
 package net.frcdb.api.game.event;
 
 import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * cache the value in a transient field for quick access later?)
  * @author tim
  */
+@Cache
 @Entity
 public abstract class Game {
 
@@ -68,14 +70,21 @@ public abstract class Game {
 	private String standingsURL;
 	private String awardsURL;
 	
-	@Index private List<Ref<Match>> matches;
+	@Index private List<Ref<Match>> qualificationMatches;
+	@Index private List<Ref<Match>> quarterfinalsMatches;
+	@Index private List<Ref<Match>> semifinalsMatches;
+	@Index private List<Ref<Match>> finalsMatches;
 	@Index private List<Ref<TeamEntry>> teams;
 	@Index private List<Ref<Standing>> standings;
 
 	public Game() {
 		gameYear = getGameYear();
 		
-		matches = new ArrayList<Ref<Match>>();
+		qualificationMatches = new ArrayList<Ref<Match>>();
+		quarterfinalsMatches = new ArrayList<Ref<Match>>();
+		semifinalsMatches = new ArrayList<Ref<Match>>();
+		finalsMatches = new ArrayList<Ref<Match>>();
+		
 		teams = new ArrayList<Ref<TeamEntry>>();
 		standings = new ArrayList<Ref<Standing>>();
 	}
@@ -85,7 +94,11 @@ public abstract class Game {
 		
 		gameYear = getGameYear();
 		
-		matches = new ArrayList<Ref<Match>>();
+		qualificationMatches = new ArrayList<Ref<Match>>();
+		quarterfinalsMatches = new ArrayList<Ref<Match>>();
+		semifinalsMatches = new ArrayList<Ref<Match>>();
+		finalsMatches = new ArrayList<Ref<Match>>();
+		
 		teams = new ArrayList<Ref<TeamEntry>>();
 		standings = new ArrayList<Ref<Standing>>();
 	}
@@ -229,14 +242,55 @@ public abstract class Game {
 		this.endDate = endDate;
 	}
 	
-	public List<Ref<Match>> getMatchReferences() {
-		return matches;
+	public List<Ref<Match>> getQualificationMatchReferences() {
+		return qualificationMatches;
 	}
 	
-	public Collection<Match> getMatches() {
-		return Database.ofy().load().refs(matches).values();
+	public Collection<Match> getQualificationMatches() {
+		return Database.ofy().load().refs(qualificationMatches).values();
+	}
+	
+	public List<Ref<Match>> getQuarterfinalsMatchReferences() {
+		return quarterfinalsMatches;
+	}
+	
+	public Collection<Match> getQuarterfinalsMatches() {
+		return Database.ofy().load().refs(quarterfinalsMatches).values();
 	}
 
+	public List<Ref<Match>> getSemifinalsMatchReferences() {
+		return semifinalsMatches;
+	}
+	
+	public Collection<Match> getSemifinalsMatches() {
+		return Database.ofy().load().refs(semifinalsMatches).values();
+	}
+	
+	public List<Ref<Match>> getFinalsMatchReferences() {
+		return finalsMatches;
+	}
+	
+	public Collection<Match> getFinalsMatches() {
+		return Database.ofy().load().refs(finalsMatches).values();
+	}
+	
+	public List<Ref<Match>> getAllMatchReferences() {
+		List<Ref<Match>> ret = new ArrayList<Ref<Match>>(
+				qualificationMatches.size()
+				+ quarterfinalsMatches.size()
+				+ semifinalsMatches.size()
+				+ finalsMatches.size());
+		ret.addAll(qualificationMatches);
+		ret.addAll(quarterfinalsMatches);
+		ret.addAll(semifinalsMatches);
+		ret.addAll(finalsMatches);
+		return ret;
+	}
+	
+	public Collection<Match> getAllMatches() {
+		return Database.ofy().load().refs(getAllMatchReferences()).values();
+	}
+	
 	public List<Match> getMatches(MatchType type) {
 		return Database.getInstance().getMatches(this, type);
 	}
@@ -261,7 +315,6 @@ public abstract class Game {
 		return Database.getInstance().getEntry(this, t);
 	}
 
-
 	public String getFullEventName() {
 		return event.get().getName();
 	}
@@ -285,7 +338,7 @@ public abstract class Game {
 
 		List<Team> added = new ArrayList<Team>();
 		
-		for (Match m : getMatches()) {
+		for (Match m : getAllMatches()) {
 			for (Team team : m.getTeams()) {
 				// only add if not added already
 				if (!added.contains(team)) {
@@ -295,6 +348,7 @@ public abstract class Game {
 					
 					// store to the database
 					Database.getInstance().store(te);
+					teams.add(Ref.create(te));
 				}
 			}
 		}
@@ -331,6 +385,20 @@ public abstract class Game {
 		
 		for (Match m : matches) {
 			Database.getInstance().store(m);
+			
+			switch (m.getType()) {
+				case QUALIFICATION:
+					qualificationMatches.add(Ref.create(m));
+					break;
+				case QUARTERFINAL:
+					quarterfinalsMatches.add(Ref.create(m));
+					break;
+				case SEMIFINAL:
+					semifinalsMatches.add(Ref.create(m));
+					break;
+				case FINAL:
+					finalsMatches.add(Ref.create(m));
+			}
 		}
 	}
 	
@@ -343,8 +411,8 @@ public abstract class Game {
 	}
 
 	/**
-	 * Updates the match results. The caller is responsible for storing this
-	 * event after the update has completed.
+	 * Updates the event standings. The caller is responsible for storing this
+	 * game after the update has completed.
 	 * Note that events that have not occurred will return a 404 error. This is
 	 * silently ignored.
 	 * @param db The database to get team data from
@@ -369,6 +437,7 @@ public abstract class Game {
 
 		for (Standing s : nstandings) {
 			Database.getInstance().store(s);
+			standings.add(Ref.create(s));
 			
 			TeamEntry te = s.getTeam();
 

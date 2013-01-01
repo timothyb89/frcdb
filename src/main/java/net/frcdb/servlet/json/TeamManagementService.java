@@ -1,12 +1,9 @@
 package net.frcdb.servlet.json;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
-import com.sun.jersey.multipart.FormDataParam;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -86,9 +83,8 @@ public class TeamManagementService {
 		if (!UserUtil.isUserAdmin()) {
 			return JsonResponse.error("You are not allowed to import teams.");
 		}
-		com.sun.jersey.core.impl.provider.entity.ByteArrayProvider provider;
-		FormDataBodyPart field = form.getField("file");
 		
+		FormDataBodyPart field = form.getField("file");
 		BodyPartEntity entity = (BodyPartEntity) field.getEntity();
 		
 		try {

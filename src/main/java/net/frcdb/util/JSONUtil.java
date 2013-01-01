@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import net.frcdb.api.event.Event;
@@ -200,7 +201,7 @@ public class JSONUtil {
 		g.writeEndArray(); // end teams array
 		
 		g.writeArrayFieldStart("matches");
-		for (Match m : game.getMatches()) {
+		for (Match m : game.getAllMatches()) {
 			g.writeStartObject();
 			g.writeStringField("type", m.getType().getText().toLowerCase());
 			g.writeNumberField("number", m.getNumber());
@@ -266,7 +267,7 @@ public class JSONUtil {
 	public static void exportMatches(JsonGenerator g, Game game) throws IOException {
 		g.writeStartArray();
 		
-		for (Match m : game.getMatches()) {
+		for (Match m : game.getAllMatches()) {
 			g.writeStartObject();
 			g.writeStringField("type", m.getType().getText().toLowerCase());
 			g.writeNumberField("number", m.getNumber());
@@ -305,7 +306,7 @@ public class JSONUtil {
 		g.close();
 	}
 	
-	public static void exportTeamResults(JsonGenerator g, List<Team> teams)
+	public static void exportTeamResults(JsonGenerator g, Collection<Team> teams)
 			throws IOException {
 		g.writeStartArray();
 		
@@ -321,7 +322,7 @@ public class JSONUtil {
 		g.writeEndArray();
 	}
 	
-	public static void exportTeamResults(OutputStream out, List<Team> teams)
+	public static void exportTeamResults(OutputStream out, Collection<Team> teams)
 			throws IOException {
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
