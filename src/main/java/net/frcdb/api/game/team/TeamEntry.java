@@ -23,6 +23,7 @@ public class TeamEntry {
 	private Long id;
 	
 	@Parent
+	@Load
 	private Ref<Game> game;
 	
 	@Index

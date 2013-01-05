@@ -62,7 +62,7 @@ Document   : team
 						title="${year.year} - ${year.name}">
 					<c:forEach items="${year.games}" var="game">
 						<h3>
-							<a href="/event/${game.entry.eventName}/${year.year}">
+							<a href="/event/${game.game.event.shortName}/${year.year}">
 								${game.eventName}
 							</a>
 						</h3>

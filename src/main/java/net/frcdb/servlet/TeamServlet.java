@@ -181,6 +181,7 @@ public class TeamServlet extends HttpServlet {
 					
 					year.game()
 							.entry(g.getEntry(t))
+							.game(g)
 							.eventName(eventName);
 				}
 			}

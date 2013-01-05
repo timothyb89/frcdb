@@ -2,6 +2,7 @@ package net.frcdb.servlet.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
 
@@ -109,6 +110,7 @@ public class TeamData {
 	public class GameData {
 		
 		private String eventName;
+		private Game game;
 		private TeamEntry entry;
 
 		public TeamEntry getEntry() {
@@ -124,6 +126,19 @@ public class TeamData {
 			return this;
 		}
 
+		public Game getGame() {
+			return game;
+		}
+
+		public void setGame(Game game) {
+			this.game = game;
+		}
+
+		public GameData game(Game game) {
+			this.game = game;
+			return this;
+		}
+		
 		public String getEventName() {
 			return eventName;
 		}
