@@ -4,6 +4,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Parent;
@@ -45,6 +46,7 @@ public abstract class Game {
 	
 	public static final Class PROP_GAME_OPR = GameOPRProvider.class;
 
+	@Ignore
 	private transient Logger logger = LoggerFactory.getLogger(Game.class);
 	
 	@Id
@@ -482,9 +484,9 @@ public abstract class Game {
 	@Override
 	public String toString() {
 		return "Game["
-				+ "event=" + event.get().getShortName()
+				+ "event=" + event.get().getShortName() + ", "
 				+ "year=" + getGameYear() + ", "
-				+ "name=" + getGameName() + ", "
+				+ "name=" + getGameName()
 				+ "]";
 	}
 

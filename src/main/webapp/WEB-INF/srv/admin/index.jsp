@@ -21,6 +21,9 @@
 		<button id="eventCreate">Create Event</button>
 		<button id="eventsImport">Import Event Data</button>
 		
+		<h3>Game Actions</h3>
+		<button id="gamesImport">Import Games (.zip)</button>
+		
 		<script type="text/javascript">
 			var teamTemplate = {
 				"Name":          { name: "name", type: "text" },
@@ -50,6 +53,10 @@
 			
 			var eventImportTemplate = {
 				"Events JSON": { name: "file", type: "file" }
+			};
+			
+			var gamesImportTemplate = {
+				"Games .zip": { name: "file", type: "file" }
 			};
 			
 			$("#teamCreate").button().click(function() {
@@ -103,6 +110,19 @@
 					title: "Import Events",
 					fields: eventImportTemplate,
 					url: "/json/admin/event/import",
+					contentType: "multipart/form-data",
+					success: function(response) {
+						console.log(response);
+						alert(response.message);
+					}
+				});
+			});
+			
+			$("#gamesImport").button().click(function() {
+				$.dialogform({
+					title: "Import Games",
+					fields: gamesImportTemplate,
+					url: "/json/admin/game/import",
 					contentType: "multipart/form-data",
 					success: function(response) {
 						console.log(response);

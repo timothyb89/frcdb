@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datastore-indexes autoGenerate="true">
+
+	<datastore-index kind="TeamEntry" ancestor="false">
+		<property name="team" direction="asc"/>
+		<property name="gameYear" direction="asc"/>
+	</datastore-index>
+
+	<datastore-index kind="TeamEntry" ancestor="true">
+		<property name="team" direction="asc"/>
+	</datastore-index>
+
+	<datastore-index kind="Match" ancestor="true">
+		<property name="type" direction="asc"/>
+	</datastore-index>
+
+	<datastore-index kind="Match" ancestor="true">
+		<property name="redTeams" direction="asc"/>
+	</datastore-index>
+
+	<datastore-index kind="Match" ancestor="true">
+		<property name="blueTeams" direction="asc"/>
+	</datastore-index>
+
+	<datastore-index kind="Match" ancestor="true">
+		<property name="type" direction="asc"/>
+		<property name="number" direction="asc"/>
+	</datastore-index>
+
+</datastore-indexes>

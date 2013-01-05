@@ -36,9 +36,8 @@
 					<ul>
 						<c:forEach items="${data.currentGames}" var="game">
 							<li>
-								<a href="/event/${game.eventName}/${game.gameYear}">
-									<%-- possibly slow --%>
-									${game.fullEventName}
+								<a href="/event/${game.event.shortName}/${game.gameYear}">
+									${game.event.name}
 								</a>
 							</li>
 						</c:forEach>
@@ -93,9 +92,9 @@
 				<ul>
 					<c:forEach items="${data.latestGames}" var="game">
 						<li>
-							<a href="/event/${game.eventName}/${game.gameYear}">
+							<a href="/event/${game.event.shortName}/${game.gameYear}">
 								<%-- possibly slow --%>
-								${game.fullEventName} (${utils:date(game.startDate, "MMMM dd")})
+								${game.event.name} (${utils:date(game.startDate, "MMMM dd")})
 							</a>
 						</li>
 					</c:forEach>
@@ -111,9 +110,9 @@
 					<ul>
 						<c:forEach items="${data.upcomingGames}" var="game">
 							<li>
-								<a href="/event/${game.eventName}/${game.gameYear}">
+								<a href="/event/${game.event.shortName}/${game.gameYear}">
 									<%-- possibly slow --%>
-									${game.fullEventName} (${utils:date(game.startDate, "MMMM dd")})
+									${game.event.name} (${utils:date(game.startDate, "MMMM dd")})
 								</a>
 							</li>
 						</c:forEach>

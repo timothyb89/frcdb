@@ -195,7 +195,7 @@ public class TeamServlet extends HttpServlet {
 			db.store(t);
 			
 			// warn on inactive team
-			if (db.countEntries(t.getNumber(), Event.CURRENT_YEAR) == 0) {
+			if (db.countEntries(t, Event.CURRENT_YEAR) == 0) {
 				request.setAttribute("warning", "Team <b>#" + t.getNumber() 
 						+ "</b> did not compete this year.");
 			}

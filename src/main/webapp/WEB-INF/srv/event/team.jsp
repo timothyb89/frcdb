@@ -7,17 +7,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@taglib uri="/WEB-INF/tlds/js" prefix="js" %>
-<%@taglib uri="/WEB-INF/tlds/cewolf.tld" prefix="cewolf" %>
 <%@taglib uri="http://frcdb.net/taglibs/utils" prefix="utils" %>
 
 <tiles:insertDefinition name="layout-default">
-    <tiles:putAttribute name="title">Event: ${data.event.name}, Team #${data.team.teamNumber}"</tiles:putAttribute>
+    <tiles:putAttribute name="title">Event: ${data.event.name}, Team #${data.team.team.number}"</tiles:putAttribute>
     <tiles:putAttribute name="body">
-        <h1>Event: ${data.event.name}, Team #${data.team.teamNumber}</h1>
+        <h1>Event: ${data.event.name}, Team #${data.team.team.number}</h1>
         <p class="breadcrumbs">
             <a href="/event/${data.event.shortName}/${data.game.gameYear}">Event Page</a>,
-            <a href="/team/${data.team.teamNumber}">Team Page</a>,
-            <a href="/team/${data.team.teamNumber}/robot/${data.game.gameYear}">Robot Info</a>
+            <a href="/team/${data.team.team.number}">Team Page</a>,
+            <a href="/team/${data.team.team.number}/robot/${data.game.gameYear}">Robot Info</a>
         </p>
 
         <h2>Scores</h2>
@@ -25,7 +24,7 @@
             <tbody>
                 <tr>
                     <td>Nickname</td>
-                    <td>${data.team.teamNickname}</td>
+                    <td>${data.team.team.nickname}</td>
                 </tr>
                 <c:if test="${utils:hasProperty(data.team, 'OPR')}">
                     <tr>
@@ -65,6 +64,7 @@
             </tbody>
         </table>
 
+		<%-- convert to google charts 
         <c:if test="${utils:hasProperty(data.team, 'OPR')}">
             <jsp:useBean id="teamOPR" 
                          class="net.frcdb.servlet.event.TeamOPRPie"/>
@@ -149,7 +149,7 @@
                         </td></tr>
                 </tbody>
             </table>
-        </c:if>
+        </c:if>--%>
 
         <h2 style="padding-top: 15px;">Matches Played</h2>
 
@@ -174,12 +174,12 @@
                         <c:set var="url" value="/event/${data.event.shortName}/${data.game.gameYear}/match/${prefix}${m.number}" />
                         <c:set var="title" value="${m.type.text} match #${m.number}" />
                         <td>${m.number}</td>
-                        <td>${m.redTeams[0]}</td>
-                        <td>${m.redTeams[1]}</td>
-                        <td>${m.redTeams[2]}</td>
-                        <td>${m.blueTeams[0]}</td>
-                        <td>${m.blueTeams[1]}</td>
-                        <td>${m.blueTeams[2]}</td>
+                        <td>${m.redTeams[0].number}</td>
+                        <td>${m.redTeams[1].number}</td>
+                        <td>${m.redTeams[2].number}</td>
+                        <td>${m.blueTeams[0].number}</td>
+                        <td>${m.blueTeams[1].number}</td>
+                        <td>${m.blueTeams[2].number}</td>
                         <td>
                             <a href="${url}" title="${title}">
                                 ${m.redScore}
@@ -209,10 +209,10 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${data.playedWith}" var="team">
-					<c:set var="url" value="/event/${data.event.shortName}/${data.game.gameYear}/team/${team.teamNumber}"/>
+					<c:set var="url" value="/event/${data.event.shortName}/${data.game.gameYear}/team/${team.team.number}"/>
 					<tr>
-						<td>${team.teamNumber}</td>
-						<td><a href="${url}">${team.teamNickname}</a></td>
+						<td>${team.team.number}</td>
+						<td><a href="${url}">${team.team.nickname}</a></td>
 						<c:if test="${utils:hasProperty(team, 'OPR')}">
 							<td>${utils:format('%.3f', team.OPR)}</td>
 							<td>${utils:format('%.3f', team.DPR)}</td>
@@ -236,10 +236,10 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${data.playedAgainst}" var="team">
-					<c:set var="url" value="/event/${data.event.shortName}/${data.game.gameYear}/team/${team.teamNumber}" />
+					<c:set var="url" value="/event/${data.event.shortName}/${data.game.gameYear}/team/${team.team.number}" />
 					<tr>
-						<td>${team.teamNumber}</td>
-						<td><a href="${url}">${team.teamNickname}</a></td>
+						<td>${team.team.number}</td>
+						<td><a href="${url}">${team.team.nickname}</a></td>
 						<c:if test="${utils:hasProperty(team, 'OPR')}">
 							<td>${utils:format('%.3f', team.OPR)}</td>
 							<td>${utils:format('%.3f', team.DPR)}</td>
@@ -250,8 +250,8 @@
 		</js:table>
 
 		Back to
-		<a href="/event/${data.game.eventName}/${data.game.gameYear}">
-			Event: ${data.event.name}
+		<a href="/event/${data.game.event.shortName}/${data.game.gameYear}">
+			Event: ${data.game.event.name}
 		</a>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

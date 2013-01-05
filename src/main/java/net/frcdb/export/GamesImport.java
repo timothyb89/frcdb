@@ -4,10 +4,8 @@ import com.googlecode.objectify.Ref;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.event.GameType;
@@ -35,8 +33,6 @@ public class GamesImport {
 	private Logger logger = LoggerFactory.getLogger(GamesImport.class);
 	private Database db;
 	
-	private List<Team> teams;
-	
 	public GamesImport(InputStream input) throws IOException {
 		db = new Database();
 		
@@ -46,21 +42,20 @@ public class GamesImport {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.readTree(input);
-		
+
 		double secs = (System.currentTimeMillis() - time) / 1000d;
-		logger.info("Done in " + secs + " seconds; now creating team cache...");
-		
-		time = System.currentTimeMillis();
-		teams = new ArrayList<Team>();
-		teams.addAll(db.getTeams());
-		
-		secs = (System.currentTimeMillis() - time) / 1000d;
 		logger.info("Finished in " + secs + " seconds; now importing games...");
 		
-		Iterator<JsonNode> iter = rootNode.getElements();
-		while (iter.hasNext()) {
-			JsonNode gameNode = iter.next();
-			parse(gameNode);
+		// parse single node if needed
+		if (rootNode.isArray()) {
+			Iterator<JsonNode> iter = rootNode.getElements();
+			while (iter.hasNext()) {
+				JsonNode gameNode = iter.next();
+				parse(gameNode);
+			}
+		} else {
+			logger.info("Parsing single node...");
+			parse(rootNode);
 		}
 	}
 	
@@ -75,7 +70,7 @@ public class GamesImport {
 		g.setStartDate(new Date(gameNode.get("startDate").asLong()));
 		g.setEndDate(new Date(gameNode.get("endDate").asLong()));
 		
-		db.store(g);
+		Database.save().entity(g).now();
 		
 		// parse teams
 		JsonNode teamsNode = gameNode.get("teams");
@@ -85,6 +80,8 @@ public class GamesImport {
 			parseTeamEntry(teamNode, g);
 		}
 		
+		Database.save().entity(g).now();
+		
 		JsonNode matchesNode = gameNode.get("matches");
 		Iterator<JsonNode> matchIterator = matchesNode.getElements();
 		while (matchIterator.hasNext()) {
@@ -92,12 +89,16 @@ public class GamesImport {
 			parseMatch(matchNode, g);
 		}
 		
+		Database.save().entity(g).now();
+		
 		JsonNode standingsNode = gameNode.get("standings");
 		Iterator<JsonNode> standingIterator = standingsNode.getElements();
 		while (standingIterator.hasNext()) {
 			JsonNode standingNode = standingIterator.next();
 			parseStanding(standingNode, g);
 		}
+		
+		Database.save().entity(g).now();
 		
 		// parse opr/dpr last
 		if (g instanceof GameOPRProvider) {
@@ -129,7 +130,7 @@ public class GamesImport {
 			}
 		}
 		
-		db.store(g);
+		Database.save().entity(g).now();
 		
 		logger.info("Finished importing: " + g);
 	}
@@ -137,6 +138,11 @@ public class GamesImport {
 	private void parseTeamEntry(JsonNode node, Game g) {
 		int teamNumber = node.get("number").asInt();
 		Team team = db.getTeam(teamNumber);
+		
+		if (team == null) {
+			logger.warn("Team " + teamNumber + " not found! Skipping...");
+			return;
+		}
 		
 		TeamEntry te = g.createEntry(team);
 		te.setRank(node.get("rank").asInt());
@@ -197,7 +203,7 @@ public class GamesImport {
 			}
 		}
 		
-		db.store(te);
+		Database.save().entity(te).now();
 		g.getTeamReferences().add(Ref.create(te));
 	}
 	
@@ -212,26 +218,38 @@ public class GamesImport {
 		Iterator<JsonNode> redTeams = node.get("redTeams").getElements();
 		while (redTeams.hasNext()) {
 			JsonNode t = redTeams.next();
+			Team team = db.getTeam(t.asInt());
+			if (team == null) {
+				logger.warn("Team not found in match #" + m.getNumber() + ": "
+						+ t.asText());
+				continue;
+			}
 			
-			m.addRedTeam(db.getTeam(t.asInt()));
+			m.addRedTeam(team);
 		}
 		
 		m.setBlueScore(node.get("blueScore").asInt());
 		Iterator<JsonNode> blueTeams = node.get("blueTeams").getElements();
 		while (blueTeams.hasNext()) {
 			JsonNode t = blueTeams.next();
+			Team team = db.getTeam(t.asInt());
+			if (team == null) {
+				logger.warn("Team not found in match #" + m.getNumber() + ": "
+						+ t.asText());
+				continue;
+			}
 			
-			m.addBlueTeam(db.getTeam(t.asInt()));
+			m.addBlueTeam(team);
 		}
 		
-		db.store(m);
+		Database.save().entity(m).now();
 		
 		switch (m.getType()) {
 			case QUALIFICATION:
 				g.getQualificationMatchReferences().add(Ref.create(m));
 				break;
 			case QUARTERFINAL:
-				g.getSemifinalsMatchReferences().add(Ref.create(m));
+				g.getQuarterfinalsMatchReferences().add(Ref.create(m));
 				break;
 			case SEMIFINAL:
 				g.getSemifinalsMatchReferences().add(Ref.create(m));
@@ -247,6 +265,10 @@ public class GamesImport {
 		s.setRank(node.get("rank").asInt());
 		
 		Team team = db.getTeam(node.get("team").asInt());
+		if (team == null) {
+			logger.warn("Team not found: " + node.get("team").asText());
+			return;
+		}
 		
 		s.setTeam(g.getEntry(team));
 		s.setMatchesPlayed(node.get("matchesPlayed").asInt());
@@ -293,7 +315,7 @@ public class GamesImport {
 			}
 		}
 		
-		db.store(s);
+		Database.save().entity(s).now();
 		g.getStandingReferences().add(Ref.create(s));
 	}
 	

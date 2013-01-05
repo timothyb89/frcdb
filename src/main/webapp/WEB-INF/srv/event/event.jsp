@@ -5,19 +5,6 @@
     Author     : tim
 --%>
 
-<%@page import="net.frcdb.api.game.team.element.OPRProvider"%>
-<%@page import="net.frcdb.api.game.event.element.GameOPRProvider"%>
-<%@page import="net.frcdb.api.game.match.MatchType"%>
-<%@page import="net.frcdb.api.game.match.Match"%>
-<%@page import="net.frcdb.api.game.team.TeamEntry"%>
-<%@page import="net.frcdb.api.game.event.Game"%>
-<%@page import="net.frcdb.api.award.Award"%>
-<%@page import="java.util.Date"%>
-<%@page import="java.util.List" %>
-<%@page import="net.frcdb.api.team.HistoryEntry"%>
-<%@page import="net.frcdb.api.team.Team" %>
-<%@page import="net.frcdb.api.event.Event" %>
-<%@page import="net.frcdb.db.Database" %>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@taglib uri="/WEB-INF/tlds/js.tld" prefix="js" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -26,7 +13,7 @@
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Event: ${name}"/>
 	<tiles:putAttribute name="body">
-		<h1>Event: ${data.event.name} (${data.game.year})</h1>
+		<h1>Event: ${data.event.name} (${data.game.gameYear})</h1>
 		<p class="breadcrumbs">
 			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">Standings</a>
 		</p>
@@ -140,13 +127,13 @@
 						<td>${t.rank}</td>
 						<c:if test="${utils:hasProperty(t, 'OPR')}">
 							<td>${utils:format("%.2f", t.OPR)}</td>
-							<td>${utils.format("%.2f", t.DPR)}</td>
+							<td>${utils:format("%.2f", t.DPR)}</td>
 						</c:if>
-						<td>
+						<%--<td>
 							<a href="/team/${t.team.number}/robot/${gameYear}">
 								Info
 							</a>
-						</td>
+						</td>--%>
 					</tr>
 				</c:forEach>
 			</tbody>

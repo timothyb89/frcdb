@@ -29,6 +29,7 @@ public class TeamEntry {
 	private int gameYear;
 	
 	@Load
+	@Index
 	private Ref<Team> team;
 	
 	@Index
@@ -48,6 +49,9 @@ public class TeamEntry {
 	public TeamEntry(Game game, Team team) {
 		this.game = Ref.create(game);
 		this.team = Ref.create(team);
+		
+		// auto-set this id to the team number
+		id = Long.valueOf(team.getNumber());
 		
 		gameYear = game.getGameYear();
 	}

@@ -8,8 +8,6 @@ import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Parent;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.team.TeamEntry;
-import net.frcdb.api.team.Team;
-
 
 /**
  *
@@ -32,6 +30,7 @@ public class Standing implements Comparable<Standing> {
 	private int matchesPlayed;
 
 	public Standing() {
+			
 	}
 
 	public Standing(Game game) {

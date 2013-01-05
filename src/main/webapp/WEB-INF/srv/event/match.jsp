@@ -57,7 +57,7 @@
 			<tbody>
 				<c:forEach items="${data.redTeams}" var="team">
 					<tr>
-						<td>${team.teamNumber}</td>
+						<td>${team.team.number}</td>
 						<c:if test="${utils:hasProperty(data.game, 'highestOPR')}">
 							<td>${utils:format('%.3f', team.OPR)}</td>
 							<td>${utils:format('%.3f', team.DPR)}</td>
@@ -81,7 +81,7 @@
 			<tbody>
 				<c:forEach items="${data.blueTeams}" var="team">
 					<tr>
-						<td>${team.teamNumber}</td>
+						<td>${team.team.number}</td>
 						<c:if test="${utils:hasProperty(data.game, 'highestOPR')}">
 							<td>${utils:format('%.3f', team.OPR)}</td>
 							<td>${utils:format('%.3f', team.DPR)}</td>
@@ -95,7 +95,7 @@
 		<content:show id="match" provider="${data.match}" />
 		
 		<p>
-		<a href="/event/${data.match.eventName}/${data.match.gameYear}">
+		<a href="/event/${data.event.name}/${data.game.gameYear}">
 			Back to Event Page
 		</a>
 		<p>

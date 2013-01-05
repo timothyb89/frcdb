@@ -1,8 +1,10 @@
 package net.frcdb.db;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.cmd.Saver;
 import java.util.*;
 import net.frcdb.api.award.Award;
 import net.frcdb.api.event.Event;
@@ -337,11 +339,11 @@ public class Database {
 	}
 	
 	public TeamEntry getEntry(Game game, Team team) {
-		return ofy().load().type(TeamEntry.class)
-				.ancestor(game)
-				.filter("team", team)
-				.limit(1)
-				.first().get();
+		// special case: TeamEntries have preset IDs with the team number
+		return ofy().load().key(Key.create(
+				Key.create(game),
+				TeamEntry.class,
+				team.getNumber())).get();
 	}
 	
 	/**
@@ -390,14 +392,14 @@ public class Database {
 	 */
 	public List<TeamEntry> getCurrentEntries(final Team team) {
 		return ofy().load().type(TeamEntry.class)
-				.filter("teamNumber =", team.getNumber())
+				.filter("team =", team)
 				.filter("gameYear =", Event.CURRENT_YEAR)
 				.list();
 	}
 	
-	public int countEntries(int team, int year) {
+	public int countEntries(Team team, int year) {
 		return ofy().load().type(TeamEntry.class)
-				.filter("teamNumber =", team)
+				.filter("team =", team)
 				.filter("gameYear =", year)
 				.count();
 	}
@@ -429,7 +431,7 @@ public class Database {
 	
 	public Match getMatch(Game game, MatchType type, int number) {
 		return ofy().load().type(Match.class)
-				.ancestor(Game.class)
+				.ancestor(game)
 				.filter("type =", type)
 				.filter("number =", number)
 				.limit(1)
@@ -446,13 +448,6 @@ public class Database {
 		game.getQuarterfinalsMatchReferences().clear();
 		game.getSemifinalsMatchReferences().clear();
 		game.getFinalsMatchReferences().clear();
-	}
-	
-	public List<Standing> getStandings(String event, int year) {
-		return ofy().load().type(Standing.class)
-				.filter("eventName =", event)
-				.filter("gameYear =", year)
-				.list();
 	}
 	
 	public List<Standing> getStandings(Game game) {
@@ -575,6 +570,10 @@ public class Database {
         return ObjectifyService.ofy();
     }
 
+	public static Saver save() {
+		return ofy().save();
+	}
+	
     public static ObjectifyFactory factory() {
         return ObjectifyService.factory();
     }

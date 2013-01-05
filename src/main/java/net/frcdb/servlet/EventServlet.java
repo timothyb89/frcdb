@@ -165,7 +165,7 @@ public class EventServlet extends HttpServlet {
 		}
 
 		// /eventname/year/match/number/
-		groups = ListUtil.extract("/([\\S&&[^/]]+)/(\\d+)/match/([qsf]?\\d+)/?", path);
+		groups = ListUtil.extract("/([\\S&&[^/]]+)/(\\d+)/match/([qsfQSF]?\\d+)/?", path);
 		if (groups != null) {
 			try {
 				allocateEvent(groups.get(1), db, request);
@@ -446,6 +446,8 @@ public class EventServlet extends HttpServlet {
 		Event event = (Event) request.getAttribute("event");
 		Game game = (Game) request.getAttribute("eventGame");
 
+		number = number.toLowerCase();
+		
 		int mNum = 0;
 		try {
 			Match m;

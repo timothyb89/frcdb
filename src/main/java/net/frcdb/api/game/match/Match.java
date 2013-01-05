@@ -4,6 +4,7 @@ import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Parent;
 import java.util.ArrayList;
@@ -29,12 +30,12 @@ public class Match implements ContentProvider {
 	@Parent
 	private Ref<Game> game;
 	
-	private MatchType type;
+	@Index private MatchType type;
 	private String time;
-	private int number;
+	@Index private int number;
 	
-	@Load private List<Ref<Team>> redTeams;
-	@Load private List<Ref<Team>> blueTeams;
+	@Load @Index private List<Ref<Team>> redTeams;
+	@Load @Index private List<Ref<Team>> blueTeams;
 
 	private int blueScore;
 	private int redScore;
