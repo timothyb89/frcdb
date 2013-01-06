@@ -331,18 +331,21 @@ public class EventServlet extends HttpServlet {
 								.refs(stats.getTopTeams()).values();
 						for (TeamEntry t : teams) {
 							g.writeStartArray();
-							g.writeString(String.valueOf(t.getTeam().getNumber()));
+							g.writeString(
+									t.getTeam().getNumber() + " - "
+									+ t.getTeam().getNickname());
 							
 							double opr = ((OPRProvider) t).getOPR();
 							remaining -= opr;
 							
-							g.writeNumber(opr);
+							// derp digit reduction
+							g.writeNumber(String.format("%.2f", opr));
 							g.writeEndArray();
 						}
 						
 						g.writeStartArray();
 						g.writeString("Others");
-						g.writeNumber(remaining);
+						g.writeNumber(String.format("%.2f", remaining));
 						g.writeEndArray();
 						
 						g.writeEndArray();

@@ -86,7 +86,7 @@
 				$(document).ready(function() {
 					var data = JSON.parse($("#oprShareData").html());
 					var table = google.visualization.arrayToDataTable(data);
-					var options = { title: "OPR Share" };
+					var options = { };
 					var chart = new google.visualization.PieChart(
 							$("#oprShareChart")[0]);
 					chart.draw(table, options);
