@@ -1,7 +1,9 @@
 package net.frcdb.api.game.event;
 
+import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Embed;
 import com.googlecode.objectify.annotation.EntitySubclass;
+import com.googlecode.objectify.annotation.Load;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.element.GameOPRProvider;
 import net.frcdb.api.game.event.element.OPRStatistics;
@@ -47,10 +49,10 @@ public class Logomotion2011 extends Game implements GameOPRProvider {
 	private double totalDPR;
 	
 	private double highestOPR;
-	private TeamEntry highestOPRTeam;
+	@Load private Ref<TeamEntry> highestOPRTeam;
 	
 	private double lowestOPR;
-	private TeamEntry lowestOPRTeam;
+	@Load private Ref<TeamEntry> lowestOPRTeam;
 
 	@Embed
 	private OPRStatistics oprStatistics;
@@ -159,12 +161,12 @@ public class Logomotion2011 extends Game implements GameOPRProvider {
 
 	@Override
 	public TeamEntry getHighestOPRTeam() {
-		return highestOPRTeam;
+		return highestOPRTeam.get();
 	}
 
 	@Override
 	public void setHighestOPRTeam(TeamEntry highestOPRTeam) {
-		this.highestOPRTeam = highestOPRTeam;
+		this.highestOPRTeam = Ref.create(highestOPRTeam);
 	}
 
 	@Override
@@ -179,12 +181,12 @@ public class Logomotion2011 extends Game implements GameOPRProvider {
 
 	@Override
 	public TeamEntry getLowestOPRTeam() {
-		return lowestOPRTeam;
+		return lowestOPRTeam.get();
 	}
 
 	@Override
 	public void setLowestOPRTeam(TeamEntry lowestOPRTeam) {
-		this.lowestOPRTeam = lowestOPRTeam;
+		this.lowestOPRTeam = Ref.create(lowestOPRTeam);
 	}
 
 	@Override

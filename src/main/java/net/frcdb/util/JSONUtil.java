@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -363,6 +364,28 @@ public class JSONUtil {
 		g.writeEndObject();
 		
 		g.close();
+	}
+	
+	public static String streamToString(StreamGenerator s) {
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		try {
+			JsonGenerator g = f.createJsonGenerator(writer);
+			g.useDefaultPrettyPrinter();
+			
+			s.generate(g);
+			g.close();
+			
+			return writer.toString();
+		} catch (IOException ex) {
+			return null;
+		}
+	}
+
+	public static interface StreamGenerator {
+
+		public void generate(JsonGenerator g) throws IOException;
+		
 	}
 	
 }

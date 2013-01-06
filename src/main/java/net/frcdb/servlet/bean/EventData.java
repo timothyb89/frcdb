@@ -21,6 +21,8 @@ public class EventData {
 	private Collection<Match> quarterfinalMatches;
 	private Collection<Match> semifinalMatches;
 	private Collection<Match> finalMatches;
+	
+	private String oprShareData;
 
 	public EventData() {
 	}
@@ -87,6 +89,14 @@ public class EventData {
 
 	public void setFinalMatches(Collection<Match> finalMatches) {
 		this.finalMatches = finalMatches;
+	}
+
+	public String getOprShareData() {
+		return oprShareData;
+	}
+
+	public void setOprShareData(String oprShareData) {
+		this.oprShareData = oprShareData;
 	}
 	
 }

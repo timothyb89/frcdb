@@ -12,6 +12,8 @@ import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
 import net.frcdb.util.Pair;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,6 +21,8 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  */
 public class GameSummaryCalc implements Statistic {
 
+	private Logger logger = LoggerFactory.getLogger(GameSummaryCalc.class);
+	
 	@Override
 	public String[] getNames() {
 		return new String[] {"gamesummary"};
@@ -26,6 +30,11 @@ public class GameSummaryCalc implements Statistic {
 
 	@Override
 	public void calculate(Game game, List<Team> allTeams, Database db) {
+		if (!game.hasGameProperty(Game.PROP_GAME_OPR)) {
+			// skip
+			logger.debug("Skipping OPR-less game: " + game);
+			return;
+		}
 		
 		SummaryStatistics oprStats = new SummaryStatistics();
 		
@@ -38,10 +47,6 @@ public class GameSummaryCalc implements Statistic {
 			}
 		}
 		
-		System.out.println(oprStats);
-		
-		System.out.println("X-values:");
-		
 		// calculate x values
 		
 		List<Pair<TeamEntry, Double>> sorted = new ArrayList<Pair<TeamEntry, Double>>();
@@ -52,8 +57,6 @@ public class GameSummaryCalc implements Statistic {
 						oprStats.getStandardDeviation();
 				
 				sorted.add(new Pair<TeamEntry, Double>(t, x));
-				
-				System.out.println(t.getTeam() + "\t" + x);
 			}
 			// todo: store this somewhere
 		}

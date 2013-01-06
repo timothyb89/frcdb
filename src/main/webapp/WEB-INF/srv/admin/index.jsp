@@ -24,6 +24,9 @@
 		<h3>Game Actions</h3>
 		<button id="gamesImport">Import Games (.zip)</button>
 		
+		<h3>Statistics</h3>
+		<button id="executeStatistic">Execute statistic</button>
+		
 		<script type="text/javascript">
 			var teamTemplate = {
 				"Name":          { name: "name", type: "text" },
@@ -57,6 +60,12 @@
 			
 			var gamesImportTemplate = {
 				"Games .zip": { name: "file", type: "file" }
+			};
+		
+			var executeStatisticTemplate = {
+				"Name":       { name: "name", type: "text" },
+				"Event name": { name: "event", type: "text" },
+				"Year":       { name: "year", type: "number" }
 			};
 			
 			$("#teamCreate").button().click(function() {
@@ -124,6 +133,18 @@
 					fields: gamesImportTemplate,
 					url: "/json/admin/game/import",
 					contentType: "multipart/form-data",
+					success: function(response) {
+						console.log(response);
+						alert(response.message);
+					}
+				});
+			});
+			
+			$("#executeStatistic").button().click(function() {
+				$.dialogform({
+					title: "Execute Statistic",
+					fields: executeStatisticTemplate,
+					url: "/json/admin/stats/execute",
 					success: function(response) {
 						console.log(response);
 						alert(response.message);

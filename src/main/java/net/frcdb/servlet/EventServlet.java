@@ -1,5 +1,7 @@
 package net.frcdb.servlet;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.googlecode.objectify.Ref;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
+import net.frcdb.api.game.event.element.GameOPRProvider;
+import net.frcdb.api.game.event.element.OPRStatistics;
 import net.frcdb.api.game.match.Alliance;
 import net.frcdb.api.game.match.Match;
 import net.frcdb.api.game.match.MatchType;
@@ -23,7 +27,9 @@ import net.frcdb.servlet.bean.EventData;
 import net.frcdb.servlet.bean.EventMatchData;
 import net.frcdb.servlet.bean.EventTeamData;
 import net.frcdb.util.JSONUtil;
+import net.frcdb.util.JSONUtil.StreamGenerator;
 import net.frcdb.util.ListUtil;
+import org.apache.taglibs.standard.tag.common.core.SetSupport;
 
 /**
  * TODO: standardize the EventData / EventMatchData / etc formatting.
@@ -296,6 +302,55 @@ public class EventServlet extends HttpServlet {
 		data.setQuarterfinalMatches(game.getQuarterfinalsMatches());
 		data.setSemifinalMatches(game.getSemifinalsMatches());
 		data.setFinalMatches(game.getFinalsMatches());
+		
+		// this is awfully messy, sigh
+		if (game.hasGameProperty(Game.PROP_GAME_OPR)) {
+			GameOPRProvider oprp = (GameOPRProvider) game;
+			
+			final OPRStatistics stats = oprp.getOPRStatistics();
+			
+			if (stats != null
+					&& stats.getTopTeams() != null
+					&& !stats.getTopTeams().isEmpty()) {
+				data.setOprShareData(JSONUtil.streamToString(new StreamGenerator() {
+
+					@Override
+					public void generate(JsonGenerator g) throws IOException {
+						g.writeStartArray();
+						
+						// title
+						g.writeStartArray();
+						g.writeString("Team");
+						g.writeString("OPR");
+						g.writeEndArray();
+						
+						double remaining = stats.getSum();
+						
+						// entries
+						Collection<TeamEntry> teams = Database.ofy().load()
+								.refs(stats.getTopTeams()).values();
+						for (TeamEntry t : teams) {
+							g.writeStartArray();
+							g.writeString(String.valueOf(t.getTeam().getNumber()));
+							
+							double opr = ((OPRProvider) t).getOPR();
+							remaining -= opr;
+							
+							g.writeNumber(opr);
+							g.writeEndArray();
+						}
+						
+						g.writeStartArray();
+						g.writeString("Others");
+						g.writeNumber(remaining);
+						g.writeEndArray();
+						
+						g.writeEndArray();
+					}
+					
+				}));
+			}
+		}
 		
 		return data;
 	}

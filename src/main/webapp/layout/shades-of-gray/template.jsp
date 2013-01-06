@@ -58,6 +58,10 @@
 		<script type="text/javascript" src="/js/jquery/jquery.uploader.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.dialogform.js"></script>
 
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		
+		<tiles:insertAttribute name="head-extra" defaultValue=""/>
+		
 		<title>FRC-DB: <tiles:getAsString name="title"/></title>
 	</head>
 	<body style="margin: 0 12%">

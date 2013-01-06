@@ -118,6 +118,7 @@
 					contentTypeWrapper = false;
 					dataWrapper = new FormData(form[0]);
 				} else {
+					contentTypeWrapper = "'application/x-www-form-urlencoded";
 					dataWrapper = form.serialize();
 				}
 				

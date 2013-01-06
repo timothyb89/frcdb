@@ -12,6 +12,11 @@
 
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Event: ${name}"/>
+	<tiles:putAttribute name="head-extra">
+		<script type="text/javascript">
+			google.load("visualization", "1", { packages: ["corechart"] });
+		</script>
+	</tiles:putAttribute>
 	<tiles:putAttribute name="body">
 		<h1>Event: ${data.event.name} (${data.game.gameYear})</h1>
 		<p class="breadcrumbs">
@@ -50,7 +55,8 @@
 						<td>Average OPR</td>
 						<td>${utils:format("%.2f", data.game.averageOPR)}</td>
 					</tr>
-					<c:if test="${not empty data.game.highestOPRTeam}">
+					<%-- TODO: fixme! --%>
+					<%--<c:if test="${not empty data.game.highestOPRTeam}">
 						<c:set property="hoprTeam" value="${data.game.highestOPRTeam.team}"/>
 						<tr>
 							<td>Highest OPR</td>
@@ -61,43 +67,32 @@
 								</a>
 							</td>
 						</tr>
-					</c:if>
+					</c:if>--%>
 					
 				</c:if>
 			</tbody>
 		</table>
-		
-		<%-- TODO: rewrite charts with Google Charts API
-		<% if (g.hasTeamProperty(Game.PROP_TEAM_OPR)
-				&& g.hasGameProperty(Game.PROP_GAME_OPR)) { %>
-				<jsp:useBean id="gameOPR" 
-							 class="net.frcdb.servlet.event.GameOPRPie"/>
-				<jsp:setProperty name="gameOPR" 
-								 property="entry" 
-								 value="${game}"/>
 
-				<cewolf:chart id="oprPie"
-							  type="pie3d">
-					<cewolf:data>
-						<cewolf:producer id="gameOPR"/>
-					</cewolf:data>
-				</cewolf:chart>
-				
-				<h2>OPR Distribution</h2>
-				<table style="margin: 0 auto;" border="1">
-					<tbody>
-						<tr><td>
-							<cewolf:img chartid="oprPie" 
-										renderer="/cewolf" 
-										width="350"
-										height="200">
-								<cewolf:map tooltipgeneratorid="gameOPR"
-											linkgeneratorid="gameOPR"/>
-							</cewolf:img>
-						</td></tr>
-					</tbody>
-				</table>
-		<% } %>--%>
+		<c:if test="${not empty data.oprShareData}">
+			<h2>OPR Distribution</h2>
+			<div id="oprShareChart"
+				 style="width: 90%; height: 250px; margin: 0 auto;"></div>
+			
+			<script type="application/json" id="oprShareData">
+				${data.oprShareData}
+			</script>
+			
+			<script type="text/javascript">
+				$(document).ready(function() {
+					var data = JSON.parse($("#oprShareData").html());
+					var table = google.visualization.arrayToDataTable(data);
+					var options = { title: "OPR Share" };
+					var chart = new google.visualization.PieChart(
+							$("#oprShareChart")[0]);
+					chart.draw(table, options);
+				});
+			</script>
+		</c:if>
 		
 		<h2 style="padding-top: 15px;">Teams Attending</h2>
 		<js:table id="event_teams" width="90%" align="center">

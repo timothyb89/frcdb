@@ -2,8 +2,11 @@ package net.frcdb.stats.calc;
 
 import Jama.CholeskyDecomposition;
 import Jama.Matrix;
+import com.googlecode.objectify.Ref;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.event.element.GameOPRProvider;
@@ -215,8 +218,35 @@ public class OPRDPRCalc implements Statistic {
 					dprTotal += d;
 				}
 			}
+			
+			// get top teams
+			List<TeamEntry> sortedTeams = new ArrayList<TeamEntry>();
+			sortedTeams.addAll(game.getTeams());
+			Collections.sort(sortedTeams, new Comparator<TeamEntry>() {
 
-			goprp.setOPRStatistics(new OPRStatistics(stats));
+				@Override
+				public int compare(TeamEntry o1, TeamEntry o2) {
+					double a = ((OPRProvider) o1).getOPR();
+					double b = ((OPRProvider) o2).getOPR();
+					
+					if (a < b) {
+						return 1;
+					} else if (a > b) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			});
+			
+			List<Ref<TeamEntry>> topTeams = new ArrayList<Ref<TeamEntry>>(5);
+			for (int i = 0; i < Math.min(5, sortedTeams.size()); i++) {
+				topTeams.add(Ref.create(sortedTeams.get(i)));
+			}
+			
+			OPRStatistics oprStats = new OPRStatistics(stats);
+			oprStats.setTopTeams(topTeams);
+			goprp.setOPRStatistics(oprStats);
 
 			// set team z scores
 			for (int i = 0; i < uTeams.size(); i++) {

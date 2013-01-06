@@ -1,7 +1,10 @@
 package net.frcdb.api.game.event.element;
 
+import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import java.util.List;
+import net.frcdb.api.game.team.TeamEntry;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
@@ -18,6 +21,8 @@ public class OPRStatistics {
 	private double standardDeviation;
 	private double sum;
 
+	private List<Ref<TeamEntry>> topTeams;
+	
 	@Id
 	private Long id;
 	
@@ -79,6 +84,14 @@ public class OPRStatistics {
 
 	public void setSum(double sum) {
 		this.sum = sum;
+	}
+
+	public List<Ref<TeamEntry>> getTopTeams() {
+		return topTeams;
+	}
+
+	public void setTopTeams(List<Ref<TeamEntry>> topTeams) {
+		this.topTeams = topTeams;
 	}
 	
 }
