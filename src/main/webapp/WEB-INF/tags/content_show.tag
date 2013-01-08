@@ -4,18 +4,20 @@
     Author     : tjbuckley12
 --%>
 
+<%-- assumed compiler breakage
 <%@tag description="Lists and allows for uploading of content"
 	   pageEncoding="UTF-8"
-	   body-content="empty"%>
+	   body-content="empty"%> --%>
 
 <%@taglib uri="http://frcdb.net/taglibs/content" prefix="content" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%--
 <%@attribute name="id" type="java.lang.String" required="true"%>
 <%@attribute name="provider" type="java.lang.Object" required="true"%>
 <%@attribute name="uploader" type="java.lang.Boolean" required="false" %>
-<%@attribute name="pending" type="java.lang.Boolean" required="false" %>
-
+<%@attribute name="pending" type="java.lang.Boolean" required="false" %>--%>
+<%--
 <c:if test="${empty uploader}">
 	<c:set var="uploader" value="true"/>
 </c:if>
@@ -75,3 +77,4 @@
 						cpid="${provider.recordId}"/>
 	</c:if>
 </div>
+--%>

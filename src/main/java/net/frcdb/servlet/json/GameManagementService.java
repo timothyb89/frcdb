@@ -27,6 +27,8 @@ import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Response;
 import net.frcdb.export.GamesImport;
@@ -63,6 +65,8 @@ public class GameManagementService {
 		
 		int count = 0;
 		
+		List<String> keys = new ArrayList<String>();
+		
 		ZipEntry entry;
 		while ((entry = zis.getNextEntry()) != null) {
 			if (entry.isDirectory()) {
@@ -85,12 +89,20 @@ public class GameManagementService {
 			
 			channel.closeFinally();
 			
+			keys.add(service.getBlobKey(file).getKeyString());
+			
+			count++;
+		}
+		
+		// queue later to make the request return faster
+		// writing the files while parsing causes problems
+		
+		for (String key : keys) {
 			// queue it
 			queue.add(withUrl("/json/admin/game/import-task")
 					.method(TaskOptions.Method.POST)
-					.param("key", service.getBlobKey(file).getKeyString()));
-			
-			count++;
+					.countdownMillis(1000)
+					.param("key", key));
 		}
 		
 		return JsonResponse.success("Queued " + count + " events for import.");
@@ -110,7 +122,10 @@ public class GameManagementService {
 
 			// clean up
 			stream.close();
-			s.delete(bk);
+			
+			FileService service = FileServiceFactory.getFileService();
+			AppEngineFile file = service.getBlobFile(bk);
+			service.delete(file);
 			
 			return Response.ok("Imported " + i).build();
 		} catch (Exception ex) {

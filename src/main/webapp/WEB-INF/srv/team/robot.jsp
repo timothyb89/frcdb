@@ -20,6 +20,8 @@
 			<a href="/team/${number}">Team Page</a>
 		</p>
 		
+		Not implemented yet, sorry!
+		<%--
 		Viewing info for ${data.robot.year}. Years available:<br>
 		<ul>
 			<c:forEach items="${data.years}" var="year">
@@ -138,7 +140,7 @@
 					});
 				});
 			});
-		</script>
+		</script>--%>
 	</tiles:putAttribute>
 </tiles:insertDefinition>
 		

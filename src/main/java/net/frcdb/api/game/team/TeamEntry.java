@@ -37,11 +37,10 @@ public class TeamEntry {
 	private int rank;
 	private int matchesPlayed;
 	
-	@Index private int wins;
-	@Index private int losses;
-	@Index private int ties;
+	private int wins;
+	private int losses;
+	private int ties;
 	
-	@Index
 	private MatchType finalMatchLevel;
 
 	public TeamEntry() {

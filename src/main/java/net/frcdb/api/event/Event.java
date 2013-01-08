@@ -42,12 +42,13 @@ public class Event {
 	/**
 	 * The event ID, usually the state abbreviation or similar.
 	 */
+	@Index
 	private String identifier;
 
 	private String venue;
-	@Index private String city;
-	@Index private String state;
-	@Index private String country;
+	private String city;
+	private String state;
+	private String country;
 	
 	private double latitude;
 	private double longitude;

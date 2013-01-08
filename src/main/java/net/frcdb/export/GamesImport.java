@@ -95,7 +95,13 @@ public class GamesImport {
 		Iterator<JsonNode> standingIterator = standingsNode.getElements();
 		while (standingIterator.hasNext()) {
 			JsonNode standingNode = standingIterator.next();
-			parseStanding(standingNode, g);
+			
+			try {
+				parseStanding(standingNode, g);
+			} catch (Exception ex) {
+				logger.error("Failed to parse standing, referenced team may"
+						+ " not exist? " + standingNode.toString(), ex);
+			}
 		}
 		
 		Database.save().entity(g).now();

@@ -52,8 +52,8 @@
 			'submitText': 'Submit',	// text for the submit button
 			'cancelEnabled': true,	// turn on/off the cancel button
 			'cancelText': 'Cancel',	// cancel button text
-			'width': 450,			// initial dialog width
-			'height': 550,			// initial dialog height
+			'width': 350,			// initial dialog width
+			'height': 400,			// initial dialog height
 			'url': null,			// submit url
 			'method': 'POST',		// form submit method
 			'contentType': null,    // content type for form submission

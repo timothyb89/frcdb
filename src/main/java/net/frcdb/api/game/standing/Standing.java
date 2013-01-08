@@ -22,10 +22,9 @@ public class Standing implements Comparable<Standing> {
 	@Parent
 	private Ref<Game> game;
 	
-	@Index
 	private int gameYear;
 	
-	@Index private int rank;
+	private int rank;
 	@Load private Ref<TeamEntry> team;
 	private int matchesPlayed;
 

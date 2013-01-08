@@ -5,15 +5,17 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@tag body-content="empty" description="put the tag description here" pageEncoding="UTF-8"%>
-
-<%@taglib uri="http://frcdb.net/taglibs/permission" prefix="perm" %>
+<%-- assumed compiler breakage
+<%@tag body-content="empty"
+	   description="put the tag description here"
+	   pageEncoding="UTF-8"%> --%>
 
 <%-- The list of normal or fragment attributes can be specified here: --%>
+<%--
 <%@attribute name="type" type="java.lang.String"%>
 <%@attribute name="id" type="java.lang.String"%>
 <%@attribute name="eventName" type="java.lang.String"%>
-<%@attribute name="gameYear" type="java.lang.String"%>
+<%@attribute name="gameYear" type="java.lang.String"%>--%>
 
 <div id="${id}">
 	JS must be enabled.

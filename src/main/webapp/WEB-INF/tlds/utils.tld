@@ -66,6 +66,16 @@
 		<function-class>net.frcdb.tag.ELUtils</function-class>
 		<function-signature>int size(java.util.List)</function-signature>
 	</function>
+	<function>
+		<name>isUserLoggedIn</name>
+		<function-class>net.frcdb.tag.ELUtils</function-class>
+		<function-signature>boolean isUserLoggedIn()</function-signature>
+	</function>
+	<function>
+		<name>isUserAdmin</name>
+		<function-class>net.frcdb.tag.ELUtils</function-class>
+		<function-signature>boolean isUserAdmin()</function-signature>
+	</function>
 	<tag>
 		<name>login</name>
 		<tag-class>net.frcdb.tag.users.LoginTag</tag-class>

@@ -91,8 +91,9 @@
 			</tbody>
 		</js:table>
 
+		<%-- fixme
 		<h2>Media for This Match</h2>
-		<content:show id="match" provider="${data.match}" />
+		<content:show id="match" provider="${data.match}" /> --%>
 		
 		<p>
 		<a href="/event/${data.event.name}/${data.game.gameYear}">

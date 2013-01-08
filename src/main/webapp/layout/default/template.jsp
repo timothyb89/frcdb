@@ -62,13 +62,10 @@ session.setMaxInactiveInterval(15 * 60);
 			<tr>
 				<td width="25px"></td>
 				<td width="200px" valign="top">
-					<dialog:create>
 						<tiles:insertAttribute name="menu"/>
-					</dialog:create>
 				</td>
 				<td>
 					<div id="main">
-						<dialog:create>
 							<div id="content">
 								<% if (session.getAttribute("error") != null) { %>
 									<div class="error">
@@ -87,7 +84,6 @@ session.setMaxInactiveInterval(15 * 60);
 
 								<tiles:insertAttribute name="body"/>
 							</div>
-						</dialog:create>
 					</div>
 				</td>
 				<td width="25px"></td>

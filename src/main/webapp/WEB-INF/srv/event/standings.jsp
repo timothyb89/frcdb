@@ -35,7 +35,7 @@ pageContext.setAttribute("gameName", g.getGameName());
 	<tiles:putAttribute name="title" value="Event Standings: ${name}"/>
 	<tiles:putAttribute name="body">
 		<h1>Event Standings: ${name}</h1>
-		<p class="breadcrumbs">
+		<%--<p class="breadcrumbs">
 			<a href="/event/${shortName}/${gameYear}">Event Page</a>
 		</p>
 		
@@ -119,6 +119,7 @@ pageContext.setAttribute("gameName", g.getGameName());
 			</js:table>
 		<% } %>
 
-		Back to <a href="/event/${shortName}">Event: ${name}</a>
+		Back to <a href="/event/${shortName}">Event: ${name}</a>--%>
+		Whoops, unimplemented right now, sorry!
 	</tiles:putAttribute>
 </tiles:insertDefinition>

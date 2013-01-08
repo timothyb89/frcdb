@@ -8,7 +8,6 @@
 <%@taglib uri="/WEB-INF/tlds/content" prefix="content" %>
 <%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@taglib uri="/WEB-INF/tlds/js" prefix="js" %>
-<%@taglib uri="http://frcdb.net/taglibs/permission" prefix="perm" %>
 
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Moderation Queue"/>
@@ -33,7 +32,7 @@
 						</ul>
 					</div>
 					<div class="moderator-item-controls">
-						<perm:switch>
+						<%--<perm:switch>
 							<perm:case name="root.content.moderate">
 								<a class="mbutton"
 								   href="/moderator/${item.id}/approve">Approve</a>
@@ -46,7 +45,7 @@
 							<perm:default>
 								You aren't allowed to moderate content.
 							</perm:default>
-						</perm:switch>
+						</perm:switch>--%>
 					</div>
 				</div>
 				<br class="clear"/>

@@ -74,6 +74,13 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 			<version>1.16</version>
+			<!-- jaxb 2.2 is incompatible with the appengine, use the jdk builtin -->
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -95,6 +102,7 @@
 			<artifactId>jersey-multipart</artifactId>
 			<version>1.16</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>

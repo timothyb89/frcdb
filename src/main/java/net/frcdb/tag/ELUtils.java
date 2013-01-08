@@ -8,6 +8,7 @@ import java.beans.PropertyDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import net.frcdb.util.UserUtil;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
@@ -69,6 +70,14 @@ public class ELUtils {
 	
 	public static int size(List list) {
 		return list.size();
+	}
+	
+	public static boolean isUserLoggedIn() {
+		return UserUtil.isUserLoggedIn();
+	}
+	
+	public static boolean isUserAdmin() {
+		return UserUtil.isUserAdmin();
 	}
 	
 }

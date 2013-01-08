@@ -20,7 +20,34 @@
 	<tiles:putAttribute name="body">
 		<h1>Event: ${data.event.name} (${data.game.gameYear})</h1>
 		<p class="breadcrumbs">
-			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">Standings</a>
+			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">
+				Standings
+			</a>
+			<c:if test="${utils:isUserAdmin()}">
+				, <a href="#" id="runStatistic">Run Statistic</a>
+				<script type="text/javascript">
+					var executeStatisticTemplate = {
+						"Name":       { name: "name", type: "text" },
+						"Event name": { name: "event", type: "text",
+						                readonly: "true",
+										value: "${data.event.shortName}" },
+						"Year":       { name: "year", type: "number",
+										value: "${data.game.gameYear}" }
+					};
+				
+					$("#runStatistic").click(function() {
+						$.dialogform({
+							title: "Execute Statistic",
+							fields: executeStatisticTemplate,
+							url: "/json/admin/stats/execute",
+							success: function(response) {
+								console.log(response);
+								alert(response.message);
+							}
+						});
+					});
+				</script>
+			</c:if>
 		</p>
 		
 		Viewing results for ${data.game.gameYear}. Years available:<br>
@@ -286,12 +313,13 @@
 			</tbody>
 		</js:table>
 
+		<%-- todo: rewrite this
 		<c:if test="${admin}">
 			<h2>Scheduled Updates</h2>
 			<js:schedule id="eventScheduler"
 						 type="eventUpdate"
 						 eventName="${shortName}"
 						 gameYear="${gameYear}"/>
-		</c:if>
+		</c:if>--%>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -49,22 +49,18 @@ public class Team {
 	 */
 	private String location;
 	
-	@Index
 	private String country;
 	
 	/**
 	 * The team's state or province
 	 */
-	@Index
 	private String state;
 	
-	@Index
 	private String city;
 
 	/**
 	 * The year the team started
 	 */
-	@Index
 	private int rookieSeason;
 
 	/**
