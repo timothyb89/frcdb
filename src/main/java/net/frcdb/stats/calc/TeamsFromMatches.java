@@ -26,4 +26,9 @@ public class TeamsFromMatches implements Statistic {
 		}
 	}
 
+	@Override
+	public String getBackendName() {
+		return null; // probably want something here
+	}
+
 }

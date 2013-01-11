@@ -6,6 +6,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import net.frcdb.util.UserUtil;
@@ -64,11 +65,11 @@ public class ELUtils {
 		return sdf.format(date);
 	}
 	
-	public static boolean isEmpty(List list) {
+	public static boolean isEmpty(Collection list) {
 		return list.isEmpty();
 	}
 	
-	public static int size(List list) {
+	public static int size(Collection list) {
 		return list.size();
 	}
 	

@@ -13,4 +13,8 @@
                 <goal>gae:deploy</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Deploy (Backends)</actionName>
+            <displayName>Deploy (Backends)</displayName>
+        </action>
     </actions>

@@ -26,5 +26,10 @@ public class Counts implements GlobalStatistic {
 		
 		Database.save().entities(tr, er);
 	}
+
+	@Override
+	public String getBackendName() {
+		return null;
+	}
 	
 }

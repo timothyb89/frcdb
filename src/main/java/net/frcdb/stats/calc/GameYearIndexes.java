@@ -19,5 +19,10 @@ public class GameYearIndexes implements GameStatistic {
 		game.setGameYearIndex(game.getGameYear());
 		Database.getInstance().store(game);
 	}
+
+	@Override
+	public String getBackendName() {
+		return null;
+	}
 	
 }

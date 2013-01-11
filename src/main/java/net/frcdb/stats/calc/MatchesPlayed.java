@@ -49,4 +49,9 @@ public class MatchesPlayed implements GameStatistic {
 		}
 	}
 
+	@Override
+	public String getBackendName() {
+		return null;
+	}
+
 }

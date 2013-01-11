@@ -28,4 +28,9 @@ public class DateCalc implements GlobalStatistic {
 		}
 	}
 
+	@Override
+	public String getBackendName() {
+		return null;
+	}
+	
 }

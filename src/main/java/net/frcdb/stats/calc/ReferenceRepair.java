@@ -58,5 +58,10 @@ public class ReferenceRepair implements EventStatistic {
 		
 		return false;
 	}
+
+	@Override
+	public String getBackendName() {
+		return null;
+	}
 	
 }

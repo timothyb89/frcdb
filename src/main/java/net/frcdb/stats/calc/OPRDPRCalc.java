@@ -273,4 +273,9 @@ public class OPRDPRCalc implements GameStatistic {
 		}
 	}
 
+	@Override
+	public String getBackendName() {
+		return "stat-compute";
+	}
+
 }

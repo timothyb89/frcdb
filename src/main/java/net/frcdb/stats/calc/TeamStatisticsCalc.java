@@ -53,5 +53,10 @@ public class TeamStatisticsCalc implements GameStatistic {
 			Database.save().entity(team);
 		}
 	}
+
+	@Override
+	public String getBackendName() {
+		return null;
+	}
 	
 }

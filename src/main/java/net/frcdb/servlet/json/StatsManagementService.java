@@ -1,5 +1,6 @@
 package net.frcdb.servlet.json;
 
+import com.google.appengine.api.backends.BackendServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -87,13 +88,26 @@ public class StatsManagementService {
 		
 		// TODO: check event and year?
 		
-		// queue the task
 		Queue queue = QueueFactory.getQueue("statistics");
-		queue.add(withUrl("/json/admin/stats/execute-task")
-				.method(TaskOptions.Method.POST)
-				.param("name", name)
-				.param("event", event)
-				.param("year", String.valueOf(year)));
+		
+		// execute on a backend if needed
+		if (s.getBackendName() != null) {
+			String host = BackendServiceFactory.getBackendService()
+					.getBackendAddress(s.getBackendName());
+			queue.add(withUrl("/json/admin/stats/execute-task")
+					.method(TaskOptions.Method.POST)
+					.param("name", name)
+					.param("event", event)
+					.param("year", String.valueOf(year))
+					.header("Host", host));
+		} else {
+			// queue the task normally
+			queue.add(withUrl("/json/admin/stats/execute-task")
+					.method(TaskOptions.Method.POST)
+					.param("name", name)
+					.param("event", event)
+					.param("year", String.valueOf(year)));
+		}
 		
 		return JsonResponse.success("Statistic has been queued for calculation.");
 	}
