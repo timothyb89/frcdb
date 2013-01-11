@@ -1,11 +1,9 @@
 package net.frcdb.stats.calc;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.match.Match;
-import net.frcdb.api.game.match.MatchType;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
@@ -16,22 +14,20 @@ import org.slf4j.LoggerFactory;
  * Counts qualification matches.
  * @author tim
  */
-public class MatchesPlayed implements Statistic {
+public class MatchesPlayed implements GameStatistic {
 
 	private Logger logger = LoggerFactory.getLogger(MatchesPlayed.class);
 	
 	@Override
 	public String[] getNames() {
-		return new String[] {"matchesplayed", "played"};
+		return new String[] {"matchesplayed", "matches", "played"};
 	}
 
 	@Override
-	public void calculate(Game game, List<Team> teams, Database db) {
-		logger.info("MatchesPlayed: " + game);
-		
+	public void calculate(Game game) {
 		Map<Team, Integer> count = new HashMap<Team, Integer>();
 		
-		for (Match m : game.getMatches(MatchType.QUALIFICATION)) {
+		for (Match m : game.getQualificationMatches()) {
 			for (Team t : m.getTeams()) {
 				if (count.get(t) == null) {
 					count.put(t, 1);
@@ -49,6 +45,7 @@ public class MatchesPlayed implements Statistic {
 			}
 			
 			entry.setMatchesPlayed(count.get(t));
+			Database.save().entity(entry);
 		}
 	}
 

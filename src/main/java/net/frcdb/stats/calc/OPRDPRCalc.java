@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tim
  */
-public class OPRDPRCalc implements Statistic {
+public class OPRDPRCalc implements GameStatistic {
 
 	private Matrix opr;
 	private Matrix dpr;
@@ -141,24 +141,13 @@ public class OPRDPRCalc implements Statistic {
 		return dpr;
 	}
 
-	private static void printMatrix(Matrix m) {
-		for (int y = 0; y < m.getRowDimension(); y++) {
-			System.out.printf("[Row %2d] ", y);
-			for (int x = 0; x < m.getColumnDimension(); x++) {
-				System.out.print(m.get(y, x) + " ");
-			}
-
-			System.out.println();
-		}
-	}
-
 	@Override
 	public String[] getNames() {
 		return new String[] {"OPRDPRCalc", "opr", "dpr"};
 	}
 
 	@Override
-	public void calculate(Game game, List<Team> teams, Database db) {
+	public void calculate(Game game) {
 		if (!(game instanceof GameOPRProvider)) {
 			logger.warn("Game " + game.getGameName() 
 					+ " does not support OPR, skipping...");
@@ -258,7 +247,7 @@ public class OPRDPRCalc implements Statistic {
 							stats.getStandardDeviation();
 
 					pEnt.setOPRZ(z);
-					db.store(ent);
+					Database.save().entity(ent);
 				}
 			}
 
@@ -278,7 +267,7 @@ public class OPRDPRCalc implements Statistic {
 			goprp.setLowestOPR(lowestOPR);
 			goprp.setLowestOPRTeam(lowestOPRTeam);
 
-			db.store(game);
+			Database.save().entity(game);
 		} catch (Exception ex) {
 			logger.error("Failed OPR calculation", ex);
 		}

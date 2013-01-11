@@ -19,6 +19,27 @@
 			as both a scouting and historical reference.
 		</p>
 
+		<h2>Beta warning!</h2>
+		<p>
+			We're just wrapping up a port to a new host and there's still bound
+			to be a large number of issues. Please bear with us while we get
+			things sorted, and sorry for the inconvenience!
+		</p>
+		<p>
+			Features currently disabled or broken:
+		</p>
+		<ul>
+			<li>Media uploads</li>
+			<li>Searching, except by exact team number / event shortname</li>
+			<li>Standings pages (full event view is fine, however)</li>
+			<li>Lots of other things</li>
+		</ul>
+		<p>
+			A lot of data may be missing or otherwise unavailable at the moment
+			as we can only import a small amount of data at a time. As such,
+			it may take several days for everything to get back to normal.
+		</p>
+		
 		<h2>Statistics</h2>
 		<p>
 			We know about
@@ -144,12 +165,12 @@
 		</ul>
 
 		<h2>Other Odds and Ends</h2>
-		<p>
+		<%--<p>
 			Do you post match videos to YouTube? Make an account and link them
 			to our match pages - see the "Add Media" button at the bottom of
 			every match page!
 			(<a href="http://frcdb.net/event/colorado/2011/match/f20">example</a>)
-		</p>
+		</p>--%>
 		<p>
 			To learn more about FRC-DB, click on the 'Dev Site' link
 			to view the wiki and trackers, where you can submit bug reports
@@ -165,46 +186,10 @@
 		<h1>News</h1>
 		<ul>
 			<li>
-				<b>March 13th, 2012:</b> We've just added a scheduler to
-				auto-update event data - in the next few days we'll hopefully
-				have data updating in near-real-time during events!
-			</li>
-			<li>
-				<b>February 21st, 2012:</b> FRC-DB 2.0 is ready - be sure to
-				take it for a spin! Make sure to post questions and comments
-				<a href="http://dev.frcdb.net/projects/main/boards">in the forums</a>,
-				and tell us about any issues you find
-				<a href="http://dev.frcdb.net/projects/main/issues">in the bugtracker</a>.
+				<b>January 8th, 2012:</b> We've back! The host switch is
+				wrapping up and we're live again. Existing data will be imported
+				over the next few days, and 2013 data will be coming soon.
 			</li>
 		</ul>
-		
-		<button id="testButton">Push Me</button>
-		
-		<script type="text/javascript">
-			var template = {
-				"Name": {
-					name: "name",
-					type: "text"
-				},
-				"Number": {
-					name: "number",
-					type: "number"
-				}
-			};
-		
-			$(document).ready(function() {
-				$("#testButton").button();
-				$("#testButton").click(function() {
-					$.dialogform({
-						title: "Test Form",
-						url: "/json/test/",
-						fields: template,
-						success: function(data) {
-							console.log(data);
-						}
-					});
-				});
-			});
-		</script>
 	</tiles:putAttribute>
 </tiles:insertDefinition>

@@ -1,6 +1,6 @@
 package net.frcdb.servlet.bean;
 
-import java.util.List;
+import java.util.Collection;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.team.Team;
@@ -15,12 +15,12 @@ public class IndexData {
 	private int eventCount;
 	private int gameCount;
 	
-	private List<Event> topEvents;
-	private List<Team> topTeams;
+	private Collection<Event> topEvents;
+	private Collection<Team> topTeams;
 	
-	private List<Game> latestGames;
-	private List<Game> upcomingGames;
-	private List<Game> currentGames;
+	private Collection<Game> latestGames;
+	private Collection<Game> upcomingGames;
+	private Collection<Game> currentGames;
 
 	public IndexData() {
 	}
@@ -49,43 +49,43 @@ public class IndexData {
 		this.gameCount = gameCount;
 	}
 
-	public List<Event> getTopEvents() {
+	public Collection<Event> getTopEvents() {
 		return topEvents;
 	}
 
-	public void setTopEvents(List<Event> topEvents) {
+	public void setTopEvents(Collection<Event> topEvents) {
 		this.topEvents = topEvents;
 	}
 
-	public List<Team> getTopTeams() {
+	public Collection<Team> getTopTeams() {
 		return topTeams;
 	}
 
-	public void setTopTeams(List<Team> topTeams) {
+	public void setTopTeams(Collection<Team> topTeams) {
 		this.topTeams = topTeams;
 	}
 
-	public List<Game> getLatestGames() {
+	public Collection<Game> getLatestGames() {
 		return latestGames;
 	}
 
-	public void setLatestGames(List<Game> latestGames) {
+	public void setLatestGames(Collection<Game> latestGames) {
 		this.latestGames = latestGames;
 	}
 
-	public List<Game> getUpcomingGames() {
+	public Collection<Game> getUpcomingGames() {
 		return upcomingGames;
 	}
 
-	public void setUpcomingGames(List<Game> upcomingGames) {
+	public void setUpcomingGames(Collection<Game> upcomingGames) {
 		this.upcomingGames = upcomingGames;
 	}
 
-	public List<Game> getCurrentGames() {
+	public Collection<Game> getCurrentGames() {
 		return currentGames;
 	}
 
-	public void setCurrentGames(List<Game> currentGames) {
+	public void setCurrentGames(Collection<Game> currentGames) {
 		this.currentGames = currentGames;
 	}
 	

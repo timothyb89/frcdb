@@ -28,7 +28,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="http://dev.frcdb.net/projects/main">
+				<a href="http://code.google.com/p/frcdb/">
 					Dev Site
 				</a>
 			</li>
@@ -37,7 +37,7 @@
 	<li>
 		<h2>Search</h2>
 		<form action="/search" method="GET">
-			<js:input name="q" type="text" value="Query..." size="15"/>
+			<%--<js:input name="q" type="text" value="Query..." size="15"/>
 			<br>
 			<label><input type="radio"
 					name="type"
@@ -49,7 +49,29 @@
 					value="events"
 					id="eventsBoxQ"> Events</label>
 			<br>
-			<p><input type="submit" value="Search" /></p>
+			<p><input type="submit" value="Search" /></p>--%>
+			<script>
+				(function() {
+					var cx = '015151542149676618601:yp-wr_3klpm';
+					var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+					gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+						'//www.google.com/cse/cse.js?cx=' + cx;
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+				})();
+			</script>
+			<!-- Put the following javascript before the closing </head> tag. -->
+  
+<script>
+  (function() {
+    var cx = '015151542149676618601:yp-wr_3klpm';
+    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<!-- Place this tag where you want the search box to render -->
+<gcse:searchbox-only></gcse:searchbox-only>
 		</form>
 	</li>
 	<li>

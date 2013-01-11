@@ -1,6 +1,6 @@
 package net.frcdb.stats.calc;
 
-import java.util.List;
+import java.util.Collection;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.game.team.element.OPRProvider;
@@ -13,7 +13,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  *
  * @author tim
  */
-public class TeamStatisticsCalc implements Statistic {
+public class TeamStatisticsCalc implements GameStatistic {
 
 	@Override
 	public String[] getNames() {
@@ -21,9 +21,10 @@ public class TeamStatisticsCalc implements Statistic {
 	}
 
 	@Override
-	public void calculate(Game game, List<Team> teams, Database db) {
+	public void calculate(Game game) {
+		// TODO: this may be too expensive...
 		int year = game.getGameYear();
-		for (Team team : teams) {
+		for (Team team : Database.getInstance().getTeams()) {
 			TeamStatistics stats = team.getStatistics(year);
 			if (stats == null) {
 				stats = new TeamStatistics();
@@ -31,7 +32,8 @@ public class TeamStatisticsCalc implements Statistic {
 				team.addStatistics(stats);
 			}
 			
-			List<TeamEntry> entries = db.getEntries(team, year);
+			Collection<TeamEntry> entries
+					= Database.getInstance().getEntries(team, year);
 			
 			SummaryStatistics summary = new SummaryStatistics();
 			for (TeamEntry entry : entries) {
@@ -48,7 +50,7 @@ public class TeamStatisticsCalc implements Statistic {
 			stats.setOprZVariance(summary.getMean());
 			stats.setOprZStandardDeviation(summary.getStandardDeviation());
 			
-			db.store(team);
+			Database.save().entity(team);
 		}
 	}
 	

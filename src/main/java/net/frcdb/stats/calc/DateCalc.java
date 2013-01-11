@@ -1,9 +1,7 @@
 package net.frcdb.stats.calc;
 
 import java.util.Date;
-import java.util.List;
 import net.frcdb.api.game.event.Game;
-import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
 import net.frcdb.util.DateUtil;
 
@@ -14,17 +12,19 @@ import net.frcdb.util.DateUtil;
  */
 public class DateCalc implements GlobalStatistic {
 
+	@Override
 	public String[] getNames() {
 		return new String[] {"DateCalc", "date"};
 	}
 
-	public void calculate(List<Game> games, List<Team> teams, Database db) {
-		for (Game g : games) {
+	@Override
+	public void calculate() {
+		for (Game g : Database.getInstance().getGames()) {
 			Date[] dates = DateUtil.parseEventDateRange(g.getDate());
 
 			g.setStartDate(dates[0]);
 			g.setEndDate(dates[1]);
-			db.store(g);
+			Database.save().entity(g);
 		}
 	}
 

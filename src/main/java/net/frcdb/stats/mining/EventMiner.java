@@ -99,7 +99,7 @@ public class EventMiner {
 				Event e = findEvent(db, name, id);
 				if (e == null) {
 					if (getBoolean("No event found. Add new?")) {
-						e = new Event();
+						/*e = new Event();
 						e.setName(name);
 						e.setVenue(venue);
 						e.setCity(city);
@@ -108,7 +108,8 @@ public class EventMiner {
 						e.setIdentifier(id);
 
 						String shortName = getInput("Short name for " + name + ":");
-						e.setShortName(shortName);
+						e.setShortName(shortName);*/
+						// TODO: this is pretty much completely broken
 					} else {
 						// get existing event by short name
 						while (e == null) {
@@ -196,7 +197,9 @@ public class EventMiner {
 								+ "attending.");
 					}
 					
-					db.store(g);
+					Database.save().entity(g).now();
+					
+					e.getGameReferences().add(Ref.create(g));
 				}
 
 				// store the updated event

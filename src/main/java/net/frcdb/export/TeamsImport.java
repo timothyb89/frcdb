@@ -47,9 +47,15 @@ public class TeamsImport {
 	}
 	
 	private void parse(JsonNode node) {
-		Team team = new Team();
+		int number = node.get("number").getIntValue();
 		
-		team.setNumber(node.get("number").getIntValue());
+		if (db.getTeam(number) != null) {
+			return; // skip existing
+		}
+		
+		Team team = new Team();
+		team.setNumber(number);
+		
 		team.setName(node.get("name").getTextValue());
 		team.setNickname(node.get("nickname").getTextValue());
 		team.setCity(node.get("city").getTextValue());

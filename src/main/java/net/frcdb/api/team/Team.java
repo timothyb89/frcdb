@@ -1,10 +1,12 @@
 package net.frcdb.api.team;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Embed;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +21,8 @@ import java.util.List;
 @Entity
 public class Team {
 	
-	@Id
-	private Long id;
+	@Parent
+	private Key<TeamRoot> parent;
 	
 	/**
 	 * The team name (generally containing lots of sponsors, etc)
@@ -37,7 +39,8 @@ public class Team {
 	 * The team number
 	 */
 	@Index
-	private int number;
+	@Id
+	private long number;
 
 	/**
 	 * The team's ID in the FIRST database
@@ -80,6 +83,7 @@ public class Team {
 	private List<TeamStatistics> statistics;
 
 	public Team() {
+		parent = Key.create(TeamRoot.get());
 		statistics = new ArrayList<TeamStatistics>();
 	}
 
@@ -106,8 +110,8 @@ public class Team {
 		this.nickname = nickname;
 	}
 
-	public Integer getNumber() {
-		return number;
+	public int getNumber() {
+		return (int) number; // derp
 	}
 
 	public void setNumber(int number) {

@@ -1,12 +1,13 @@
 package net.frcdb.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.frcdb.api.event.EventRoot;
+import net.frcdb.api.team.TeamRoot;
 import net.frcdb.db.Database;
 import net.frcdb.servlet.bean.IndexData;
 
@@ -32,14 +33,13 @@ public class IndexServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Database db = Database.getInstance();
 		
-		// TODO: the counts are still very expensive!
-		// should just make a Stats object and keep numbers there; update at
-		// store-time
+		TeamRoot teamRoot = TeamRoot.get();
+		EventRoot eventRoot = EventRoot.get();
 		
 		IndexData data = new IndexData();
-		data.setTeamCount(db.countTeams());
-		data.setEventCount(db.countEvents());
-		data.setGameCount(db.countGames());
+		data.setTeamCount(teamRoot.getCount());
+		data.setEventCount(eventRoot.getEventCount());
+		data.setGameCount(eventRoot.getGameCount());
 		
 		data.setTopEvents(db.getTopEvents(5));
 		data.setTopTeams(db.getTopTeams(5));

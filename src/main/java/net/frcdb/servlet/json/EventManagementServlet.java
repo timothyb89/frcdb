@@ -58,9 +58,8 @@ public class EventManagementServlet {
 			return JsonResponse.error("You are not allowed to create events.");
 		}
 		
-		Event event = new Event();
+		Event event = new Event(shortName);
 		event.setName(name);
-		event.setShortName(shortName);
 		event.setIdentifier(identifier);
 		event.setVenue(venue);
 		event.setCity(city);

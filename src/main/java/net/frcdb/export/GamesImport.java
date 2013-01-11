@@ -136,7 +136,10 @@ public class GamesImport {
 			}
 		}
 		
-		Database.save().entity(g).now();
+		// append to the event
+		event.getGameReferences().add(Ref.create(g));
+		
+		Database.save().entities(g, event).now();
 		
 		logger.info("Finished importing: " + g);
 	}

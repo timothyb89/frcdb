@@ -9,7 +9,7 @@ Document   : team
 <%@taglib uri="/WEB-INF/tlds/js" prefix="js" %>
 
 <tiles:insertDefinition name="layout-default">
-	<tiles:putAttribute name="title" value="Team: ${team.number}"/>
+	<tiles:putAttribute name="title" value="Team #${data.team.number}"/>
 	<tiles:putAttribute name="body">
 		<h1>Team #${data.team.number}: ${data.team.nickname}</h1>
 		<p class="breadcrumbs">

@@ -8,6 +8,7 @@ import com.googlecode.objectify.cmd.Saver;
 import java.util.*;
 import net.frcdb.api.award.Award;
 import net.frcdb.api.event.Event;
+import net.frcdb.api.event.EventRoot;
 import net.frcdb.api.game.event.*;
 import net.frcdb.api.game.event.element.OPRStatistics;
 import net.frcdb.api.game.match.Match;
@@ -22,6 +23,7 @@ import net.frcdb.api.game.team.LunacyTeamEntry;
 import net.frcdb.api.game.team.ReboundTeamEntry;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
+import net.frcdb.api.team.TeamRoot;
 import net.frcdb.api.team.TeamStatistics;
 import net.frcdb.config.ConfigurationProperty;
 import net.frcdb.content.Content;
@@ -32,6 +34,8 @@ import net.frcdb.robot.RobotComponent;
 import net.frcdb.robot.RobotProperty;
 import net.frcdb.util.ListUtil;
 import net.frcdb.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO: Pretty much everything here needs to use keys instead of list() queries
@@ -44,6 +48,7 @@ public class Database {
 		// Entity registration
 		factory().register(ConfigurationProperty.class);
 		
+		factory().register(EventRoot.class);
 		factory().register(Event.class);
 		
 		// games
@@ -72,15 +77,17 @@ public class Database {
 		factory().register(LogomotionTeamEntry.class);
 		factory().register(ReboundTeamEntry.class);
 		
+		factory().register(TeamRoot.class);
 		factory().register(Team.class);
 		factory().register(TeamStatistics.class);
 		
 		// robots
 		
 		//content
-		
-		
+	
 	}
+	
+	private Logger logger = LoggerFactory.getLogger(Database.class);
 	
 	public Database() {
 		
@@ -105,23 +112,27 @@ public class Database {
 	}
 	
 	public int countTeams() {
-		// TODO: this may still be very costly
 		return ofy().load().type(Team.class).count();
 	}
 
+	/**
+	 * Gets a team with the given number. As this is a direct key load, it
+	 * doesn't make any datastore queries and should return quickly and will use
+	 * the cache if possible.
+	 * @param number the number of the team to fetch
+	 * @return the team with the given number, or null if not found
+	 */
 	public Team getTeam(final int number) {
-		return ofy().load().type(Team.class)
-				.filter("number =", number)
-				.limit(1)
-				.first().get();
+		Key<Team> key = Key.create(TeamRoot.key(), Team.class, number);
+		return ofy().load().key(key).get();
 	}
 
-	public List<Team> getTopTeams(int count) {
-		return ofy().load().type(Team.class)
+	public Collection<Team> getTopTeams(int count) {
+		return ofy().load().keys(ofy().load().type(Team.class)
 				.filter("hits >", 0)
 				.order("-hits")
 				.limit(count)
-				.list();
+				.keys()).values();
 	}
 	
 	public Collection<Event> getEvents() {
@@ -138,6 +149,7 @@ public class Database {
 	 * Levenshtein distance between the events' names and the query. This may
 	 * return unexpected results, so be sure to ask the user for confirmation
 	 * before accepting any returned values.
+	 * Holy crap this is expensive
 	 * @param name the event name to search for
 	 * @return the event with the shortest Levenshtein distance to the query.
 	 */
@@ -169,13 +181,20 @@ public class Database {
 		return cache.get(0);
 	}
 
+	/**
+	 * Gets an event via its short name. As this is a direct key query, it
+	 * is the cheapest way to fetch an event, and will completely avoid the
+	 * datastore if the cache is warm.
+	 * @param shortName the exact short name of the event to fetch
+	 * @return the event with the given short name, or null if not found
+	 */
 	public Event getEventByShortName(String shortName) {
-		shortName = shortName.toLowerCase();
+		if (shortName == null || shortName.isEmpty()) {
+			return null;
+		}
 		
-		return ofy().load().type(Event.class)
-				.filter("shortName =", shortName)
-				.limit(1)
-				.first().get();
+		Key<Event> key = Key.create(EventRoot.key(), Event.class, shortName);
+		return ofy().load().key(key).get();
 	}
 	
 	public Event getEventByEID(final int eid) {
@@ -201,10 +220,7 @@ public class Database {
 		// normalize
 		shortName = shortName.toLowerCase();
 		
-		Event e = ofy().load().type(Event.class)
-				.filter("shortName =", shortName)
-				.limit(1)
-				.first().get();
+		Event e = getEventByShortName(shortName);
 		
 		if (e == null) {
 			return null;
@@ -213,12 +229,12 @@ public class Database {
 		}
 	}
 	
-	public List<Event> getTopEvents(int count) {
-		return ofy().load().type(Event.class)
+	public Collection<Event> getTopEvents(int count) {
+		return ofy().load().keys(ofy().load().type(Event.class)
 				.filter("hits >", 0)
 				.limit(count)
 				.order("-hits")
-				.list();
+				.keys()).values();
 	}
 	
 	//public ODocument getNearestEvent(double latitude, double longitude) {
@@ -231,12 +247,12 @@ public class Database {
 	 * @param count the number of games to get
 	 * @return a list of the latest games in descending order
 	 */
-	public List<Game> getLatestGames(int count) {
-		return ofy().load().type(Game.class)
+	public Collection<Game> getLatestGames(int count) {
+		return ofy().load().keys(ofy().load().type(Game.class)
 				.filter("endDate <", new Date())
 				.limit(count)
-				.order("endDate")
-				.list();
+				.order("-endDate")
+				.keys()).values();
 	}
 	
 	/**
@@ -244,12 +260,12 @@ public class Database {
 	 * @param count the number of events to get
 	 * @return a list of future games
 	 */
-	public List<Game> getUpcomingGames(int count) {
-		return ofy().load().type(Game.class)
+	public Collection<Game> getUpcomingGames(int count) {
+		return ofy().load().keys(ofy().load().type(Game.class)
 				.filter("startDate >", new Date())
 				.limit(count)
 				.order("startDate")
-				.list();
+				.keys()).values();
 	}
 	
 	/**
@@ -278,6 +294,13 @@ public class Database {
 		return ofy().load().keys(ofy().load().type(Game.class).keys()).values();
 	}
 	
+	public Collection<Game> getGames(int year) {
+		return ofy().load().keys(ofy().load()
+				.type(Game.class)
+				.filter("gameYearIndex =", year)
+				.keys()).values();
+	}
+	
 	public int countGames() {
 		// TODO: costly! D:
 		return ofy().load().type(Game.class).count();
@@ -290,26 +313,16 @@ public class Database {
 	}
 	
 	public Game getGame(Event event, int year) {
-		return ofy().load().type(Game.class)
-				.ancestor(event)
-				.filter("gameYear", year)
-				.limit(1)
-				.first().get();
+		Key<Game> key = Key.create(Key.create(event), Game.class, year);
+		return ofy().load().key(key).get();
 	}
 	
 	public Game getLatestGame(Event event) {
-		return ofy().load().type(Game.class)
+		return ofy().load().key(ofy().load().type(Game.class)
 				.ancestor(event)
-				.order("-gameYear")
+				.order("-__key__")
 				.limit(1)
-				.first().get();
-	}
-	
-	public Collection<Game> getGamesSorted(Event event) {
-		return ofy().load().keys(ofy().load().type(Game.class)
-				.ancestor(event)
-				.order("gameYear")
-				.keys()).values();
+				.first().key()).get();
 	}
 	
 	/**
@@ -317,25 +330,25 @@ public class Database {
 	 * @param team The team to search for
 	 * @return a list of games the given team has entries for
 	 */
-	public List<Game> getGames(Team team) {
-		List<TeamEntry> entries = getEntries(team);
+	public Collection<Game> getGames(Team team) {
+		Collection<TeamEntry> entries = getEntries(team);
 		
-		return ofy().load().type(Game.class)
+		return ofy().load().keys(ofy().load().type(Game.class)
 				.filter("teams", entries)
-				.list(); // TODO: make sure this works
+				.keys()).values(); // TODO: make sure this works
 	}
 
-	public List<TeamEntry> getEntries(Team team) {
-		return ofy().load().type(TeamEntry.class)
+	public Collection<TeamEntry> getEntries(Team team) {
+		return ofy().load().keys(ofy().load().type(TeamEntry.class)
 				.filter("team =", team)
-				.list();
+				.keys()).values();
 	}
 	
-	public List<TeamEntry> getEntries(Team team, int year) {
-		return ofy().load().type(TeamEntry.class)
+	public Collection<TeamEntry> getEntries(Team team, int year) {
+		return ofy().load().keys(ofy().load().type(TeamEntry.class)
 				.filter("team", team)
 				.filter("gameYear =", year)
-				.list();
+				.keys()).values();
 	}
 	
 	public TeamEntry getEntry(Game game, Team team) {
@@ -360,7 +373,7 @@ public class Database {
 		
 		// TODO: Fix me
 		
-		List<TeamEntry> ents = getEntries(team);
+		Collection<TeamEntry> ents = getEntries(team);
 		if (ents == null) {
 			return r;
 		}
@@ -430,12 +443,13 @@ public class Database {
 	}
 	
 	public Match getMatch(Game game, MatchType type, int number) {
-		return ofy().load().type(Match.class)
+		return ofy().load().key(ofy().load().type(Match.class)
 				.ancestor(game)
 				.filter("type =", type)
 				.filter("number =", number)
 				.limit(1)
-				.first().get();
+				.first()
+				.key()).get();
 	}
 	
 	/**

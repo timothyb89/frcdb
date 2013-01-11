@@ -49,14 +49,16 @@ public abstract class Game {
 	@Ignore
 	private transient Logger logger = LoggerFactory.getLogger(Game.class);
 	
-	@Id
-	private Long id;
-	
 	@Parent
 	@Load
 	private Ref<Event> event;
 	
-	@Index private int gameYear;
+	@Id
+	private long gameYear;
+	
+	/** for queries by game year - can't use the id */
+	@Index
+	private int gameYearIndex;
 	
 	private int eid;
 	
@@ -81,6 +83,7 @@ public abstract class Game {
 
 	public Game() {
 		gameYear = getGameYear();
+		gameYearIndex = getGameYear();
 		
 		qualificationMatches = new ArrayList<Ref<Match>>();
 		quarterfinalsMatches = new ArrayList<Ref<Match>>();
@@ -95,6 +98,7 @@ public abstract class Game {
 		this.event = Ref.create(event);
 		
 		gameYear = getGameYear();
+		gameYearIndex = getGameYear();
 		
 		qualificationMatches = new ArrayList<Ref<Match>>();
 		quarterfinalsMatches = new ArrayList<Ref<Match>>();
@@ -105,6 +109,19 @@ public abstract class Game {
 		standings = new ArrayList<Ref<Standing>>();
 	}
 
+	/**
+	 * Sets the game year indexed value. This should pretty much never be
+	 * called.
+	 * @param gameYearIndex it's a mystery!
+	 */
+	public void setGameYearIndex(int gameYearIndex) {
+		this.gameYearIndex = gameYearIndex;
+	}
+	
+	public void setEvent(Event event) {
+		this.event = Ref.create(event);
+	}
+	
 	public Event getEvent() {
 		return event.get();
 	}

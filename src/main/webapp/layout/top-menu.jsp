@@ -36,7 +36,7 @@
 		</a>
 	</li>
 	<li>
-		<a href="http://dev.frcdb.net/projects/main">
+		<a href="http://code.google.com/p/frcdb/">
 			Dev
 		</a>
 	</li>

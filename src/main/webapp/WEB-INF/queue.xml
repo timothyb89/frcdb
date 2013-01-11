@@ -3,8 +3,9 @@
 	<queue>
 		<name>import</name>
 		<rate>1/s</rate>
-		<bucket-size>5</bucket-size>
-		<max-concurrent-requests>5</max-concurrent-requests>
+		<bucket-size>1</bucket-size>
+		<!-- only process one at a time to prevent concurrency problems -->
+		<max-concurrent-requests>1</max-concurrent-requests>
 		<retry-parameters>
 			<task-retry-limit>1</task-retry-limit>
 		</retry-parameters>

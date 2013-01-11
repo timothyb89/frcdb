@@ -46,7 +46,9 @@ public class SearchServlet extends HttpServlet {
 			Database db = Database.getInstance();
 			if (path.equalsIgnoreCase("/json")) {
 				if (type.equals("teams")) {
-					Collection<Team> results = teamSearchJson(db, q);
+					//Collection<Team> results = teamSearchJson(db, q);
+					// TODO: costly!
+					Collection<Team> results = new ArrayList<Team>();
 					exportTeamResults(results, response);
 				}
 			} else if (path.equalsIgnoreCase("/nearest")) {
@@ -106,10 +108,10 @@ public class SearchServlet extends HttpServlet {
 			// continue
 		}
 		
-		Collection<Team> res;
-		Collection<Team> all = db.getTeams();
+		Collection<Team> res = new ArrayList<Team>();
+		//Collection<Team> all = db.getTeams();
 		
-		if (q.isEmpty()) {
+		/*if (q.isEmpty()) {
 			res = all;
 		} else {
 			// horribly inefficient, but seems to be the only way...
@@ -135,7 +137,10 @@ public class SearchServlet extends HttpServlet {
 		} else {
 			request.setAttribute("teamSearchResults", res);
 			return null;
-		}
+		}*/
+		// TODO: search is disabled due to ridiculous cost
+		request.setAttribute("teamSearchResults", res);
+		return null;
 	}
 	
 	private Collection<Team> teamSearchJson(Database db, String q) {
@@ -189,7 +194,9 @@ public class SearchServlet extends HttpServlet {
 			return "/event/" + event.getShortName();
 		}
 		
-		Collection<Event> res;
+		Collection<Event> res = new ArrayList<Event>();
+		
+		/*
 		Collection<Event> all = db.getEvents();
 		if (q.isEmpty()) {
 			res = all;
@@ -237,7 +244,10 @@ public class SearchServlet extends HttpServlet {
 		} else {
 			request.setAttribute("eventSearchResults", res);
 			return null;
-		}
+		}*/
+		// TODO: event search is disabled due to cost
+		request.setAttribute("eventSearchResults", res);
+		return null;
 	}
 	
 	private void exportNearestEvent(HttpServletRequest request,

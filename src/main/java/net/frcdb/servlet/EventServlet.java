@@ -1,7 +1,6 @@
 package net.frcdb.servlet;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.googlecode.objectify.Ref;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import net.frcdb.servlet.bean.EventTeamData;
 import net.frcdb.util.JSONUtil;
 import net.frcdb.util.JSONUtil.StreamGenerator;
 import net.frcdb.util.ListUtil;
-import org.apache.taglibs.standard.tag.common.core.SetSupport;
 
 /**
  * TODO: standardize the EventData / EventMatchData / etc formatting.
@@ -281,7 +279,7 @@ public class EventServlet extends HttpServlet {
 		data.setEvent(event);
 		
 		Game game = null;
-		Collection<Game> games = event.getGamesSorted();
+		Collection<Game> games = event.getGames();
 		data.setGames(games);
 		
 		for (Game g : games) {

@@ -11,7 +11,7 @@
 <%@taglib uri="http://frcdb.net/taglibs/utils" prefix="utils" %>
 
 <tiles:insertDefinition name="layout-default">
-	<tiles:putAttribute name="title" value="Event: ${name}"/>
+	<tiles:putAttribute name="title" value="${data.event.name}"/>
 	<tiles:putAttribute name="head-extra">
 		<script type="text/javascript">
 			google.load("visualization", "1", { packages: ["corechart"] });

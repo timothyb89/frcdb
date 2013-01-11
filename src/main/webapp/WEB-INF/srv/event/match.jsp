@@ -11,7 +11,8 @@
 <%@taglib uri="http://frcdb.net/taglibs/content" prefix="content" %>
 
 <tiles:insertDefinition name="layout-default">
-	<tiles:putAttribute name="title" value="Event: ${data.event.name}, Match #${data.match.number}"/>
+	<tiles:putAttribute name="title"
+						value="${data.event.name}, Match #${data.match.type.prefix}${data.match.number}"/>
 	<tiles:putAttribute name="body">
 		<h1>Event: ${data.event.name}, ${data.match.type.text} Match #${data.match.number}</h1>
 		<p class="breadcrumbs">

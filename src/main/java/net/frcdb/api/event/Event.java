@@ -1,10 +1,12 @@
 package net.frcdb.api.event;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,8 +26,8 @@ public class Event {
 	 */
 	public static final int CURRENT_YEAR = 2012;
 	
-	@Id
-	private Long id;
+	@Parent
+	private Key<EventRoot> parent;
 
 	/**
 	 * The full event name, including sponsors, etc
@@ -37,6 +39,7 @@ public class Event {
 	 * A short, identifiable, and plain-English event name.
 	 */
 	@Index
+	@Id
 	private String shortName;
 
 	/**
@@ -58,13 +61,23 @@ public class Event {
 	 */
 	private List<String> aliases;
 	
+	private List<Ref<Game>> games;
+	
 	@Index
 	private int hits;
-	
-	private List<Ref<Game>> games;
 
 	public Event() {
+		parent = Key.create(EventRoot.get());
 		
+		games = new ArrayList<Ref<Game>>();
+	}
+	
+	public Event(String shortName) {
+		parent = Key.create(EventRoot.get());
+		
+		games = new ArrayList<Ref<Game>>();
+		
+		this.shortName = shortName;
 	}
 	
 	public String getName() {
@@ -140,11 +153,11 @@ public class Event {
 	}
 
 	public Collection<Game> getGames() {
-		return Database.getInstance().getGames(this);
+		return Database.ofy().load().refs(games).values();
 	}
-
-	public Collection<Game> getGamesSorted() {
-		return Database.getInstance().getGamesSorted(this);
+	
+	public List<Ref<Game>> getGameReferences() {
+		return games;
 	}
 
 	public Game getGame(int year) {

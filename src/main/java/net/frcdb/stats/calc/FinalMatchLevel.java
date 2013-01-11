@@ -1,7 +1,6 @@
 package net.frcdb.stats.calc;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.match.Match;
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tim
  */
-public class FinalMatchLevel implements Statistic {
+public class FinalMatchLevel implements GameStatistic {
 
 	private Logger logger = LoggerFactory.getLogger(FinalMatchLevel.class);
 	
@@ -26,7 +25,7 @@ public class FinalMatchLevel implements Statistic {
 	}
 
 	@Override
-	public void calculate(Game game, List<Team> teams, Database db) {
+	public void calculate(Game game) {
 		Map<Team, MatchType> levels = new HashMap<Team, MatchType>();
 		
 		for (Match m : game.getAllMatches()) {
@@ -81,7 +80,7 @@ public class FinalMatchLevel implements Statistic {
 			}
 			
 			entry.setFinalMatchLevel(MatchType.clone(levels.get(t)));
-			db.store(entry);
+			Database.save().entity(entry);
 		}
 	}
 

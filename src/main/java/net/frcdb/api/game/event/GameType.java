@@ -14,6 +14,11 @@ public enum GameType {
 		public Game create(Event event) {
 			return new Rebound2012(event);
 		}
+
+		@Override
+		public Class getGameClass() {
+			return Rebound2012.class;
+		}
 		
 	},
 	
@@ -22,6 +27,11 @@ public enum GameType {
 		@Override
 		public Game create(Event event) {
 			return new Logomotion2011(event);
+		}
+
+		@Override
+		public Class getGameClass() {
+			return Logomotion2011.class;
 		}
 		
 	},
@@ -33,6 +43,11 @@ public enum GameType {
 			return new Breakaway2010(event);
 		}
 
+		@Override
+		public Class getGameClass() {
+			return Breakaway2010.class;
+		}
+
 	},
 
 	LUNACY(2009, "Lunacy") {
@@ -40,6 +55,11 @@ public enum GameType {
 		@Override
 		public Game create(Event event) {
 			return new Lunacy2009(event);
+		}
+
+		@Override
+		public Class getGameClass() {
+			return Lunacy2009.class;
 		}
 
 	};
@@ -60,6 +80,10 @@ public enum GameType {
 		return name;
 	}
 
+	public Class<? extends Game> getGameClass() {
+		return null;
+	}
+	
 	public abstract Game create(Event event);
 
 	public static GameType getGame(int year) {

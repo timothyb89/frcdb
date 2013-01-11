@@ -43,10 +43,10 @@ public class EventsImport {
 	}
 	
 	private void parse(JsonNode eventNode) {
-		Event event = new Event();
+		String shortName = eventNode.get("shortName").asText();
+		Event event = new Event(shortName);
 		
 		String name       = eventNode.get("name").asText();
-		String shortName  = eventNode.get("shortName").asText();
 		String venue      = eventNode.get("venue").asText();
 		String city       = eventNode.get("city").asText();
 		String state      = eventNode.get("state").asText();
