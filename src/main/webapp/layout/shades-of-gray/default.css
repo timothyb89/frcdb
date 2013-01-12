@@ -120,6 +120,8 @@ h2 {
 .nav ul {
 	list-style-type: none;
 	margin-left: 0;
+	float: left;
+	padding: 0;
 }
 
 .nav ul li {
@@ -130,7 +132,6 @@ h2 {
 	font: bold 1em Verdana,sans-serif;
 	line-height: 51px;
 	height: 51px;
-	padding: 0 20px;
 }
 
 .nav ul li:hover {
@@ -139,22 +140,22 @@ h2 {
 
 .nav a {
 	color: #CCC;
-	
+	padding: 0 20px;
 	display: block;
 }
 
-/*.nav a {
-	background: #191919 url(img/nav.gif);
-	border-right: 1px solid #161616;
-	color: #CCC;
-	float: left;
-	font: bold 1em Verdana,sans-serif;
-	line-height: 51px;
-	padding: 0 20px;
+#searchbox-wrapper {
+	display: table;
+	float: right;
+	height: 51px;
+	padding-right: 1em;
 }
-.nav a:hover {
-	background: #191919 url(img/nav_hover.gif);
-}*/
+
+#searchbox {
+	display: table-cell;
+	vertical-align: middle;
+	width: 250px;
+}
 
 /* sub-navigation */
 .subnav {

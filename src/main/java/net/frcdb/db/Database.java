@@ -32,6 +32,7 @@ import net.frcdb.content.moderation.ModerationStatus;
 import net.frcdb.robot.Robot;
 import net.frcdb.robot.RobotComponent;
 import net.frcdb.robot.RobotProperty;
+import net.frcdb.stats.StatisticsRoot;
 import net.frcdb.util.ListUtil;
 import net.frcdb.util.StringUtil;
 import org.slf4j.Logger;
@@ -80,6 +81,8 @@ public class Database {
 		factory().register(TeamRoot.class);
 		factory().register(Team.class);
 		factory().register(TeamStatistics.class);
+		
+		factory().register(StatisticsRoot.class);
 		
 		// robots
 		

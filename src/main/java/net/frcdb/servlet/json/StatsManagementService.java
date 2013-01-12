@@ -25,6 +25,7 @@ import net.frcdb.stats.calc.GameYearIndexes;
 import net.frcdb.stats.calc.GlobalStatistic;
 import net.frcdb.stats.calc.OPRDPRCalc;
 import net.frcdb.stats.calc.ReferenceRepair;
+import net.frcdb.stats.calc.SitemapGenerator;
 import net.frcdb.stats.calc.Statistic;
 import net.frcdb.stats.calc.TeamStatisticsCalc;
 import net.frcdb.util.UserUtil;
@@ -54,6 +55,7 @@ public class StatsManagementService {
 		register(new ReferenceRepair());
 		
 		register(new Counts());
+		register(new SitemapGenerator());
 	}
 	
 	public static Statistic getStatistic(String name) {

@@ -35,7 +35,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link href="${themePath}/default.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="${themePath}/default.css" rel="stylesheet" type="text/css" media="screen">
 
 		<script type="text/javascript" src="/js/functions.js"></script>
 
@@ -52,7 +52,7 @@
 		<link rel="stylesheet" type="text/css" href="/layout/common.css">
 
 		<script type="text/javascript" src="/js/jquery.fancybox.pack.js"></script>
-		<link rel="stylesheet" type="text/css" href="/js/jquery.fancybox.css"/>
+		<link rel="stylesheet" type="text/css" href="/js/jquery.fancybox.css">
 
 		<script type="text/javascript" src="/js/jquery/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.uploader.js"></script>

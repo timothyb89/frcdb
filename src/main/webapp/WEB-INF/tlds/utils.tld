@@ -59,12 +59,12 @@
 	<function>
 		<name>isEmpty</name>
 		<function-class>net.frcdb.tag.ELUtils</function-class>
-		<function-signature>boolean isEmpty(java.util.List)</function-signature>
+		<function-signature>boolean isEmpty(java.util.Collection)</function-signature>
 	</function>
 	<function>
 		<name>size</name>
 		<function-class>net.frcdb.tag.ELUtils</function-class>
-		<function-signature>int size(java.util.List)</function-signature>
+		<function-signature>int size(java.util.Collection)</function-signature>
 	</function>
 	<function>
 		<name>isUserLoggedIn</name>
