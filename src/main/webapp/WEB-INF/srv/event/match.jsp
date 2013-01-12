@@ -97,7 +97,7 @@
 		<content:show id="match" provider="${data.match}" /> --%>
 		
 		<p>
-		<a href="/event/${data.event.name}/${data.game.gameYear}">
+		<a href="/event/${data.event.shortName}/${data.game.gameYear}">
 			Back to Event Page
 		</a>
 		<p>

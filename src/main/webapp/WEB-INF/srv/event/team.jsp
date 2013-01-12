@@ -15,8 +15,8 @@
         <h1>Event: ${data.event.name}, Team #${data.team.team.number}</h1>
         <p class="breadcrumbs">
             <a href="/event/${data.event.shortName}/${data.game.gameYear}">Event Page</a>,
-            <a href="/team/${data.team.team.number}">Team Page</a>,
-            <a href="/team/${data.team.team.number}/robot/${data.game.gameYear}">Robot Info</a>
+            <a href="/team/${data.team.team.number}">Team Page</a><%--,
+            <a href="/team/${data.team.team.number}/robot/${data.game.gameYear}">Robot Info</a>--%>
         </p>
 
         <h2>Scores</h2>
