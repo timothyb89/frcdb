@@ -11,27 +11,30 @@ import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import net.frcdb.api.event.Event;
+import net.frcdb.api.game.event.Game;
+import net.frcdb.db.Database;
+import net.frcdb.export.GamesImport;
 import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
-import java.util.ArrayList;
-import java.util.List;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.core.Response;
-import net.frcdb.export.GamesImport;
 
 /**
  *
@@ -41,6 +44,66 @@ import net.frcdb.export.GamesImport;
 public class GameManagementService {
 	
 	private Logger logger = LoggerFactory.getLogger(GameManagementService.class);
+	
+	@POST
+	@Path("/modify")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonResponse modifyGame(
+			@FormParam("shortName") String shortName,
+			@FormParam("gameYear") int gameYear,
+			@FormParam("eid") String eid,
+			@FormParam("startDate") String startDate,
+			@FormParam("endDate") String endDate,
+			@FormParam("resultsURL") String resultsURL,
+			@FormParam("standingsURL") String standingsURL,
+			@FormParam("awardsURL") String awardsURL) {
+		
+		if (!UserUtil.isUserAdmin()) {
+			return JsonResponse.error("You are not allowed to create events.");
+		}
+		
+		Event e = Database.getInstance().getEventByShortName(shortName);
+		if (e == null) {
+			return JsonResponse.error("Event not found: " + shortName);
+		}
+		
+		Game g = e.getGame(gameYear);
+		if (g == null) {
+			return JsonResponse.error("No game for year " + gameYear);
+		}
+		
+		if (crappyValidate(eid)) {
+			g.setEid(Integer.parseInt(eid));
+		}
+		
+		if (crappyValidate(startDate)) {
+			// todo
+		}
+		
+		if (crappyValidate(endDate)) {
+			// todo
+		}
+		
+		if (crappyValidate(resultsURL)) {
+			g.setResultsURL(resultsURL);
+		}
+		
+		if (crappyValidate(standingsURL)) {
+			g.setStandingsURL(standingsURL);
+		}
+		
+		if (crappyValidate(awardsURL)) {
+			g.setAwardsURL(awardsURL);
+		}
+		
+		Database.save().entity(g);
+		
+		return JsonResponse.success("Game updated.");
+	}
+	
+	private boolean crappyValidate(String s) {
+		return s != null && !s.isEmpty();
+	}
 	
 	@POST
 	@Path("/import")

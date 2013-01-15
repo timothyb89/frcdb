@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
-import net.frcdb.api.game.event.GameType;
 import net.frcdb.api.game.event.element.GameOPRProvider;
 import net.frcdb.api.game.match.Match;
 import net.frcdb.api.game.standing.Standing;
@@ -44,7 +41,6 @@ public class JSONUtil {
 		g.writeNumberField("number", team.getNumber());
 		g.writeStringField("name", team.getName());
 		g.writeStringField("nickname", team.getNickname());
-		g.writeStringField("location", team.getLocation());
 		g.writeStringField("city", team.getCity());
 		g.writeStringField("state", team.getState());
 		g.writeStringField("country", team.getCountry());
@@ -53,7 +49,7 @@ public class JSONUtil {
 		g.writeStringField("motto", team.getMotto());
 		
 		// bad place for a db query, oh well
-		Database db = Database.getInstance();
+		/*Database db = Database.getInstance();
 		
 		Map<GameType, List<Game>> games = db.getParticipatedGames(team);
 		g.writeArrayFieldStart("entries");
@@ -75,6 +71,7 @@ public class JSONUtil {
 			g.writeEndObject();
 		}
 		g.writeEndArray();
+		*/
 		
 		g.writeEndObject();
 	}
@@ -121,6 +118,42 @@ public class JSONUtil {
 		exportGame(g, game);
 		
 		g.close();
+	}
+	
+	public static void exportBasicGame(JsonGenerator g, Game game) 
+			throws IOException {
+		g.writeStartObject();
+		g.writeNumberField("gameYear", game.getGameYear());
+		g.writeStringField("gameName", game.getGameName());
+		g.writeStringField("eventShortName", game.getEvent().getShortName());
+		g.writeNumberField("startDate", game.getStartDate().getTime());
+		g.writeNumberField("endDate", game.getEndDate().getTime());
+		g.writeStringField("resultsURL", game.getResultsURL());
+		g.writeStringField("standingsURL", game.getStandingsURL());
+		g.writeStringField("awardsURL", game.getAwardsURL());
+		
+		if (game instanceof GameOPRProvider) {
+			GameOPRProvider goprp = (GameOPRProvider) game;
+			g.writeNumberField("averageOPR", goprp.getAverageOPR());
+			g.writeNumberField("averageDPR", goprp.getAverageDPR());
+			g.writeNumberField("totalOPR", goprp.getTotalOPR());
+			g.writeNumberField("totalDPR", goprp.getTotalDPR());
+			g.writeNumberField("highestOPR", goprp.getHighestOPR());
+			if (goprp.getHighestOPRTeam() != null) {
+				g.writeNumberField(
+						"highestOPRTeam",
+						goprp.getHighestOPRTeam().getTeam().getNumber());
+			}
+			
+			g.writeNumberField("lowestOPR", goprp.getLowestOPR());
+			if (goprp.getLowestOPRTeam() != null) {
+				g.writeNumberField(
+						"lowestOPRTeam",
+						goprp.getLowestOPRTeam().getTeam().getNumber());
+			}
+		}
+		
+		g.writeEndObject();
 	}
 	
 	public static void exportGame(JsonGenerator g, Game game) 

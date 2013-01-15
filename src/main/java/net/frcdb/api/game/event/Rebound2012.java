@@ -162,6 +162,10 @@ public class Rebound2012 extends Game implements GameOPRProvider {
 
 	@Override
 	public TeamEntry getHighestOPRTeam() {
+		if (highestOPRTeam == null) {
+			return null;
+		}
+		
 		return highestOPRTeam.get();
 	}
 
@@ -182,6 +186,10 @@ public class Rebound2012 extends Game implements GameOPRProvider {
 
 	@Override
 	public TeamEntry getLowestOPRTeam() {
+		if (lowestOPRTeam == null) {
+			return null;
+		}
+		
 		return lowestOPRTeam.get();
 	}
 

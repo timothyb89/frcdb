@@ -28,30 +28,8 @@
 		<button id="executeStatistic">Execute statistic</button>
 		
 		<script type="text/javascript">
-			var teamTemplate = {
-				"Name":          { name: "name", type: "text" },
-				"Nickname":      { name: "nickname", type: "text" },
-				"Number":	     { name: "number", type: "number" },
-				"Country":       { name: "country", type: "text" },
-				"State":         { name: "state", type: "text" },
-				"City":          { name: "city", type: "text" },
-				"Rookie Season": { name: "rookieSeason", type: "number" },
-				"Motto":         { name: "motto", type: "text" },
-				"Website":       { name: "website", type: "text" }
-			};
-		
 			var teamImportTemplate = {
 				"Teams JSON": { name: "file", type: "file" }
-			};
-
-			var eventTemplate = {
-				"Name":       { name: "name", type: "text" },
-				"Short Name": { name: "shortName", type: "text" /*, disabled: true */},
-				"Identifier": { name: "identifier", type: "text" },
-				"Venue":      { name: "venue", type: "text" },
-				"City":       { name: "city", type: "text" },
-				"State":      { name: "State", type: "text" },
-				"Country":    { name: "country", type: "text" }
 			};
 			
 			var eventImportTemplate = {
@@ -71,7 +49,7 @@
 			$("#teamCreate").button().click(function() {
 				$.dialogform({
 					title: "Create Team",
-					fields: teamTemplate,
+					fields: EditorTemplates.team,
 					url: "/json/admin/team/create",
 					success: function(response) {
 						console.log(response);
@@ -105,7 +83,7 @@
 			$("#eventCreate").button().click(function() {
 				$.dialogform({
 					title: "Create Event",
-					fields: eventTemplate,
+					fields: EditorTemplates.event,
 					url: "/json/admin/event/create",
 					success: function(response) {
 						console.log(response);

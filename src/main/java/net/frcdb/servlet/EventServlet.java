@@ -270,7 +270,7 @@ public class EventServlet extends HttpServlet {
 	}
 
 	private EventData createEventData(String eventName, int year) {
-		Event event = Database.getInstance().getEventByShortName(eventName);
+		final Event event = Database.getInstance().getEventByShortName(eventName);
 		if (event == null) {
 			throw new IllegalArgumentException("Event not found: " + eventName);
 		}
@@ -287,6 +287,8 @@ public class EventServlet extends HttpServlet {
 				game = g;
 			}
 		}
+		
+		
 		
 		if (game == null) {
 			throw new IllegalArgumentException("Event " + event.getShortName()
@@ -352,6 +354,25 @@ public class EventServlet extends HttpServlet {
 				}));
 			}
 		}
+		
+		data.setEventJson(JSONUtil.streamToString(new StreamGenerator() {
+
+			@Override
+			public void generate(JsonGenerator g) throws IOException {
+				JSONUtil.exportEvent(g, event);
+			}
+			
+		}));
+		
+		final Game finalGame = game; // bleh
+		data.setGameJson(JSONUtil.streamToString(new StreamGenerator() {
+
+			@Override
+			public void generate(JsonGenerator g) throws IOException {
+				JSONUtil.exportBasicGame(g, finalGame);
+			}
+			
+		}));
 		
 		return data;
 	}

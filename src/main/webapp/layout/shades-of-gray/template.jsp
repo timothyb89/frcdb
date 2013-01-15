@@ -38,6 +38,7 @@
 		<link href="${themePath}/default.css" rel="stylesheet" type="text/css" media="screen">
 
 		<script type="text/javascript" src="/js/functions.js"></script>
+		<script type="text/javascript" src="/js/editor-templates.js"></script>
 
 		<script type="text/javascript" src="/js/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.ui.all.min.js"></script>

@@ -202,5 +202,44 @@
 	
 		return copy;
 	};
+	
+	/**
+	 * Merges properties in props with the given template. A new template with
+	 * the merged properties will be returned. "Parent" properties in the
+	 * original template will always be preserved, but "child" properties will
+	 * be overwritten by those contained in props.
+	 * Pretty much equivalent to $.extend(true, newProps, template), with the
+	 * main difference of $.extend() probably handling copying better
+	 */
+	$.templateMerge = function(template, props) {
+		var copy = $.extend({}, template); // deep copy
+		
+		for (var parentName in props) {
+			if (!props.hasOwnProperty(parentName)) {
+				continue;
+			}
+			
+			// check template for parent property
+			var p = copy[parentName];
+			if (!p) {
+				// template doesn't have the parent property
+				// for now, just assume incomplete and skip
+				continue;
+			}
+			
+			var prop = props[parentName];
+			// push all children of the diff property to the template
+			for (var childName in prop) {
+				if (!prop.hasOwnProperty(childName)) {
+					continue;
+				}
+				
+				// push
+				p[childName] = prop[childName];
+			}
+		}
+		
+		return copy;
+	};
 })(jQuery);
 

@@ -19,12 +19,27 @@
 	</tiles:putAttribute>
 	<tiles:putAttribute name="body">
 		<h1>Event: ${data.event.name} (${data.game.gameYear})</h1>
+		
+		<c:if test="${not empty data.eventJson}">
+			<script type="application/json" id="event-data">
+${data.eventJson}
+			</script>
+		</c:if>
+		
+		<c:if test="${not empty data.eventJson}">
+			<script type="application/json" id="game-data">
+${data.gameJson}
+			</script>
+		</c:if>
+			
 		<p class="breadcrumbs">
 			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">
 				Standings
 			</a>
 			<c:if test="${utils:isUserAdmin()}">
-				, <a href="#" id="runStatistic">Run Statistic</a>
+				, <a href="#" id="runStatistic">Run Statistic</a>,
+				<a href="#" id="event-edit">Edit Event</a>,
+				<a href="#" id="game-edit">Edit Game</a>
 				<script type="text/javascript">
 					var executeStatisticTemplate = {
 						"Name":       { name: "name", type: "text" },
@@ -40,6 +55,54 @@
 							title: "Execute Statistic",
 							fields: executeStatisticTemplate,
 							url: "/json/admin/stats/execute",
+							success: function(response) {
+								console.log(response);
+								alert(response.message);
+							}
+						});
+					});
+					
+					var eventTemplate = $.extend(true, {
+						"Short Name": {
+							readonly: true,
+							value: "${data.event.shortName}"
+						}
+					}, EditorTemplates.event);
+					
+					eventTemplate = $.pushJsonToTemplate(
+							JSON.parse($("#event-data").html()), eventTemplate);
+					
+					$("#event-edit").click(function() {
+						$.dialogform({
+							title: "Edit Event",
+							fields: eventTemplate,
+							url: "/json/admin/event/modify",
+							success: function(response) {
+								console.log(response);
+								alert(response.message);
+							}
+						});
+					});
+					
+					var gameTemplate = $.extend(true, {
+						"Event Name": {
+							readonly: true,
+							value: "${data.event.shortName}"
+						},
+						"Game Year": {
+							readonly: true,
+							value: "${data.game.gameYear}"
+						}
+					}, EditorTemplates.game);
+					
+					gameTemplate = $.pushJsonToTemplate(
+							JSON.parse($("#game-data").html()), gameTemplate);
+					
+					$("#game-edit").click(function() {
+						$.dialogform({
+							title: "Edit Game",
+							fields: gameTemplate,
+							url: "/json/admin/game/modify",
 							success: function(response) {
 								console.log(response);
 								alert(response.message);

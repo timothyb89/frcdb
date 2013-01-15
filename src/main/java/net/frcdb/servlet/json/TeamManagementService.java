@@ -11,6 +11,7 @@ import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -28,12 +29,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
-import net.frcdb.export.GamesImport;
 import net.frcdb.export.TeamsImport;
 import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.*;
 
 /**
  *
@@ -87,6 +86,68 @@ public class TeamManagementService {
 		Database.getInstance().store(team);
 		
 		return JsonResponse.success(team, "Team created successfully.");
+	}
+	
+	@POST
+	@Path("/modify")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonResponse modifyTeam(
+			@FormParam("number") int number,
+			@FormParam("name") String name,
+			@FormParam("nickname") String nickname,
+			@FormParam("country") String country,
+			@FormParam("state") String state,
+			@FormParam("city") String city,
+			@FormParam("rookieSeason") String rookieSeason,
+			@FormParam("motto") String motto,
+			@FormParam("website") String website) {
+		
+		if (!UserUtil.isUserAdmin()) {
+			return JsonResponse.error("You are not allowed to import teams.");
+		}
+		
+		Team t = Database.getInstance().getTeam(number);
+		if (t == null) {
+			return JsonResponse.error("Team " + number + " does not exist");
+		}
+		
+		if (crappyValidate(name)) {
+			t.setName(name);
+		}
+		
+		if (crappyValidate(nickname)) {
+			t.setNickname(nickname);
+		}
+		
+		if (crappyValidate(country)) {
+			t.setCountry(country);
+		}
+		
+		if (crappyValidate(state)) {
+			t.setState(state);
+		}
+		
+		if (crappyValidate(city)) {
+			t.setCity(city);
+		}
+		
+		if (crappyValidate(rookieSeason)) {
+			try {
+				t.setRookieSeason(Integer.parseInt(rookieSeason));
+			} catch (NumberFormatException e) {}
+		}
+		
+		if (crappyValidate(website)) {
+			t.setWebsite(website);
+		}
+		
+		Database.save().entity(t);
+		
+		return JsonResponse.success("Team updated.");
+	}
+	
+	private boolean crappyValidate(String s) {
+		return s != null && !s.isEmpty();
 	}
 	
 	@POST

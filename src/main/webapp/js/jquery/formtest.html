@@ -10,37 +10,54 @@
 			  type="text/css" 
 			  href="themes/ui-darkness/jquery-ui-1.8.7.custom.css">
 		<script type="text/javascript" src="jquery.dialogform.js"></script>
+		<script type="text/javascript" src="../editor-templates.js"></script>
 	</head>
 	<body>
 		<h2>Dialog Form Test</h2>
 		
-		<button id="testButton">Push Me</button>
+		<a href="#" id="team-edit">Edit</a>
+		
+		<script type="application/json" id="team-data">
+{
+  "number" : 987,
+  "name" : "S & S Philpott LLC. / Albertsons / Nevada YESCO LLC. / NSTec / PTC / ITT Technical Institute & Cimarron-Memorial High School",
+  "nickname" : "HIGHROLLERS",
+  "city" : "Las Vegas",
+  "state" : "NV",
+  "country" : "USA",
+  "rookieSeason" : 2002,
+  "website" : "http://www.team987.com",
+  "motto" : null
+}	
+		</script>
 		
 		<script type="text/javascript">
-			var template = {
-				"Name": {
-					name: "text",
-					type: "text"
-				},
-				"Number": {
-					name: "number",
-					type: "number"
-				}
-			};
-		
-			$(document).ready(function() {
-				$("#testButton").button();
-				$("#testButton").click(function() {
-					$.dialogform({
-						title: "Test Form",
-						fields: $.extend(true, {
-							"Name": {
-								value: 'John Smith'
+					//var template = $.templateMerge(EditorTemplates.team, {
+					//	"Number": {
+							readonly: true
+					//	}
+					//});
+					var template = $.extend(true, {
+						"Number": {
+							readonly: true
+						}
+					}, EditorTemplates.team);
+					
+					//var f = $.pushJsonToTemplate(
+					//		JSON.parse($("#team-data").html()),
+					//		template);
+					
+					$("#team-edit").click(function() {
+						$.dialogform({
+							title: "Modify Team",
+							fields: f,
+							url: "/json/admin/team/modify",
+							success: function(response) {
+								console.log(response);
+								alert("Error: " + response.message);
 							}
-						}, template)
+						});
 					});
-				});
-			});
 		</script>
 	</body>
 </html>

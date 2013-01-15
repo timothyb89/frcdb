@@ -72,6 +72,60 @@ public class EventManagementServlet {
 	}
 	
 	@POST
+	@Path("/modify")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonResponse modifyEvent(
+			@FormParam("shortName") String shortName,
+			@FormParam("name") String name,
+			@FormParam("identifier") String identifier,
+			@FormParam("venue") String venue,
+			@FormParam("city") String city,
+			@FormParam("state") String state,
+			@FormParam("country") String country) {
+		
+		if (!UserUtil.isUserAdmin()) {
+			return JsonResponse.error("You are not allowed to create events.");
+		}
+		
+		Event e = Database.getInstance().getEventByShortName(shortName);
+		if (e == null) {
+			return JsonResponse.error("Event not found: " + shortName);
+		}
+		
+		if (crappyValidate(name)) {
+			e.setName(name);
+		}
+		
+		if (crappyValidate(identifier)) {
+			e.setIdentifier(identifier);
+		}
+		
+		if (crappyValidate(venue)) {
+			e.setVenue(venue);
+		}
+		
+		if (crappyValidate(city)) {
+			e.setCity(city);
+		}
+		
+		if (crappyValidate(state)) {
+			e.setState(state);
+		}
+		
+		if (crappyValidate(country)) {
+			e.setCountry(country);
+		}
+		
+		Database.save().entity(e);
+		
+		return JsonResponse.success("Event updated.");
+	}
+	
+	private boolean crappyValidate(String s) {
+		return s != null && !s.isEmpty();
+	}
+	
+	@POST
 	@Path("/import")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

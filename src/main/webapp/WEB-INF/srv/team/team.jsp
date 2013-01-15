@@ -5,16 +5,52 @@ Document   : team
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@taglib uri="/WEB-INF/tlds/js" prefix="js" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib uri="http://frcdb.net/taglibs/utils" prefix="utils" %>
+<%@ taglib uri="/WEB-INF/tlds/js" prefix="js" %>
 
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Team #${data.team.number}"/>
 	<tiles:putAttribute name="body">
 		<h1>Team #${data.team.number}: ${data.team.nickname}</h1>
 		<p class="breadcrumbs">
-			<a href="/team/${data.team.number}/robot">Robot Info</a>
+			<c:if test="${utils:isUserAdmin()}">
+				<a href="#" id="team-edit">Edit</a>
+			</c:if>
+			<%--<a href="/team/${data.team.number}/robot">Robot Info</a>--%>
 		</p>
+		
+		<c:if test="${not empty data.teamJson}">
+			<%-- might as well show this to users --%>
+			<script type="application/json" id="team-data">
+${data.teamJson}	
+			</script>
+			<c:if test="${utils:isUserAdmin()}">
+				<script type="text/javascript">
+					var template = $.extend(true, {
+						"Number": {
+							readonly: true
+						}
+					}, EditorTemplates.team);
+					
+					var f = $.pushJsonToTemplate(
+							JSON.parse($("#team-data").html()),
+							template);
+					
+					$("#team-edit").click(function() {
+						$.dialogform({
+							title: "Modify Team",
+							fields: f,
+							url: "/json/admin/team/modify",
+							success: function(response) {
+								console.log(response);
+								alert(response.message);
+							}
+						});
+					});
+				</script>
+			</c:if>
+		</c:if>
 		
 		<h2>Team Info</h2>
 		<table width="90%" border="1" style="margin: auto;">

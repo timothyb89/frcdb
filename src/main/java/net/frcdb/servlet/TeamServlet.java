@@ -1,5 +1,6 @@
 package net.frcdb.servlet;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import net.frcdb.robot.year.YearTemplate;
 import net.frcdb.servlet.bean.RobotData;
 import net.frcdb.servlet.bean.TeamData;
 import net.frcdb.util.JSONUtil;
+import net.frcdb.util.JSONUtil.StreamGenerator;
 import net.frcdb.util.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +163,7 @@ public class TeamServlet extends HttpServlet {
 			TeamData data = new TeamData();
 			
 			int number = Integer.parseInt(param);
-			Team t = db.getTeam(number);
+			final Team t = db.getTeam(number);
 
 			if (t == null) {
 				throw new IllegalArgumentException("Team not found: " + param);
@@ -186,12 +188,18 @@ public class TeamServlet extends HttpServlet {
 				}
 			}
 			
+			data.setTeamJson(JSONUtil.streamToString(new StreamGenerator() {
+
+				@Override
+				public void generate(JsonGenerator g) throws IOException {
+					JSONUtil.exportTeam(g, t);
+				}
+				
+			}));
+			
 			request.setAttribute("data", data);
 			
 			// register a hit
-			//db.store(new HitEntry("team", String.valueOf(t.getNumber())));
-			
-			// use simple hit counting for now
 			t.setHits(t.getHits() + 1);
 			db.store(t);
 			

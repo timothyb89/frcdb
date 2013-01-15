@@ -13,6 +13,7 @@ import net.frcdb.api.team.Team;
 public class TeamData {
 	
 	private Team team;
+	private String teamJson;
 	private List<YearData> years;
 
 	public TeamData() {
@@ -32,6 +33,14 @@ public class TeamData {
 		return this;
 	}
 
+	public String getTeamJson() {
+		return teamJson;
+	}
+	
+	public void setTeamJson(String teamJson) {
+		this.teamJson = teamJson;
+	}
+	
 	public List<YearData> getYears() {
 		return years;
 	}

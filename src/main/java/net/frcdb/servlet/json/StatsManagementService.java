@@ -20,6 +20,7 @@ import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
 import net.frcdb.stats.calc.Counts;
 import net.frcdb.stats.calc.EventStatistic;
+import net.frcdb.stats.calc.FixSources;
 import net.frcdb.stats.calc.GameStatistic;
 import net.frcdb.stats.calc.GameYearIndexes;
 import net.frcdb.stats.calc.GlobalStatistic;
@@ -51,6 +52,7 @@ public class StatsManagementService {
 		register(new OPRDPRCalc());
 		register(new TeamStatisticsCalc());
 		register(new GameYearIndexes());
+		register(new FixSources());
 		
 		register(new ReferenceRepair());
 		

@@ -15,6 +15,9 @@ public class EventData {
 	private Event event;
 	private Collection<Game> games;
 	
+	private String eventJson;
+	private String gameJson;
+	
 	private Game game;
 	private Collection<TeamEntry> teams;
 	private Collection<Match> qualificationMatches;
@@ -33,6 +36,22 @@ public class EventData {
 
 	public void setEvent(Event event) {
 		this.event = event;
+	}
+
+	public String getEventJson() {
+		return eventJson;
+	}
+
+	public void setEventJson(String eventJson) {
+		this.eventJson = eventJson;
+	}
+
+	public String getGameJson() {
+		return gameJson;
+	}
+
+	public void setGameJson(String gameJson) {
+		this.gameJson = gameJson;
 	}
 
 	public Collection<Game> getGames() {
