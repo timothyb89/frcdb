@@ -29,12 +29,13 @@ import net.frcdb.stats.calc.ReferenceRepair;
 import net.frcdb.stats.calc.SitemapGenerator;
 import net.frcdb.stats.calc.Statistic;
 import net.frcdb.stats.calc.TeamStatisticsCalc;
+import net.frcdb.stats.calc.TeamUpdater;
 import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Defines handling for statistics
  * @author tim
  */
 @Path("/admin/stats")
@@ -58,6 +59,7 @@ public class StatsManagementService {
 		
 		register(new Counts());
 		register(new SitemapGenerator());
+		register(new TeamUpdater());
 	}
 	
 	public static Statistic getStatistic(String name) {

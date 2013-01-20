@@ -120,7 +120,7 @@ public class Database {
 
 	/**
 	 * Gets a team with the given number. As this is a direct key load, it
-	 * doesn't make any datastore queries and should return quickly and will use
+	 * doesn't make any datastore queries and should return quickly, using
 	 * the cache if possible.
 	 * @param number the number of the team to fetch
 	 * @return the team with the given number, or null if not found
@@ -279,9 +279,10 @@ public class Database {
 		Date now = new Date();
 		
 		// only one inequality filter supported
-		List<Game> notEnded = ofy().load().type(Game.class)
+		Collection<Game> notEnded = ofy().load().keys(ofy().load()
+				.type(Game.class)
 				.filter("endDate >=", now)
-				.list();
+				.keys()).values();
 		
 		List<Game> ret = new ArrayList<Game>();
 		for (Game g : notEnded) {

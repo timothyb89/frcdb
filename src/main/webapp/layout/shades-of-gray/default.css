@@ -114,6 +114,11 @@ h2 {
 .content a:hover {color: #CCC;}
 .content .descr {margin-bottom: 5px;}
 
+.content h2, .content h3, .content h4 {
+	padding-top: 0.75em;
+	padding-bottom: 0.25em;
+}
+
 /* navigation */
 .nav {background: #191919 url(img/nav.gif);}
 

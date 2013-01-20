@@ -91,6 +91,7 @@ public class Team {
 		this.name = name;
 		this.number = number;
 		
+		parent = Key.create(TeamRoot.get());
 		statistics = new ArrayList<TeamStatistics>();
 	}
 
