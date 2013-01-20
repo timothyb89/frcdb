@@ -16,5 +16,8 @@
         <action>
             <actionName>CUSTOM-Deploy (Backends)</actionName>
             <displayName>Deploy (Backends)</displayName>
+            <goals>
+                <goal>gae:backends-update</goal>
+            </goals>
         </action>
     </actions>
