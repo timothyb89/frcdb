@@ -20,6 +20,9 @@ public class StatisticsRoot {
 	
 	private String sitemapKey;
 
+	private String teamsKey;
+	private String eventsKey;
+	
 	public StatisticsRoot() {
 	}
 
@@ -29,6 +32,22 @@ public class StatisticsRoot {
 
 	public void setSitemapKey(String sitemapKey) {
 		this.sitemapKey = sitemapKey;
+	}
+
+	public String getTeamsKey() {
+		return teamsKey;
+	}
+
+	public void setTeamsKey(String teamsKey) {
+		this.teamsKey = teamsKey;
+	}
+
+	public String getEventsKey() {
+		return eventsKey;
+	}
+
+	public void setEventsKey(String eventsKey) {
+		this.eventsKey = eventsKey;
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.googlecode.objectify.Ref;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -105,6 +106,12 @@ public class JSONUtil {
 			}
 			g.writeEndArray(); // end aliases array
 		}
+		
+		g.writeArrayFieldStart("years");
+		for (Ref<Game> ref : event.getGameReferences()) {
+			g.writeNumber(ref.getKey().getId());
+		}
+		g.writeEndArray();
 		
 		g.writeEndObject();
 	}

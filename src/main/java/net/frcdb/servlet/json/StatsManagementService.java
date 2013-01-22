@@ -19,6 +19,7 @@ import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
 import net.frcdb.stats.calc.Counts;
+import net.frcdb.stats.calc.EventCacheGenerator;
 import net.frcdb.stats.calc.EventStatistic;
 import net.frcdb.stats.calc.FixSources;
 import net.frcdb.stats.calc.GameStatistic;
@@ -28,6 +29,7 @@ import net.frcdb.stats.calc.OPRDPRCalc;
 import net.frcdb.stats.calc.ReferenceRepair;
 import net.frcdb.stats.calc.SitemapGenerator;
 import net.frcdb.stats.calc.Statistic;
+import net.frcdb.stats.calc.TeamCacheGenerator;
 import net.frcdb.stats.calc.TeamStatisticsCalc;
 import net.frcdb.stats.calc.TeamUpdater;
 import net.frcdb.util.UserUtil;
@@ -60,6 +62,8 @@ public class StatsManagementService {
 		register(new Counts());
 		register(new SitemapGenerator());
 		register(new TeamUpdater());
+		register(new TeamCacheGenerator());
+		register(new EventCacheGenerator());
 	}
 	
 	public static Statistic getStatistic(String name) {

@@ -15,9 +15,9 @@ import net.frcdb.stats.StatisticsRoot;
  *
  * @author tim
  */
-public class SitemapServlet extends HttpServlet {
+public class TeamCacheServlet extends HttpServlet {
 
-	/**
+		/**
 	 * Processes requests for both HTTP
 	 * <code>GET</code> and
 	 * <code>POST</code> methods.
@@ -32,9 +32,9 @@ public class SitemapServlet extends HttpServlet {
 			HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String key = StatisticsRoot.get().getSitemapKey();
+		String key = StatisticsRoot.get().getTeamsKey();
 		if (key == null) {
-			error(404, "No sitemap exists", response);
+			error(404, "No team cache exists", response);
 			return;
 		}
 		

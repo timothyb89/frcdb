@@ -51,6 +51,7 @@ public class SitemapGenerator implements GlobalStatistic {
 				logger.error("Failed to delete old sitemap", ex);
 			}
 		}
+		
 		try {
 			AppEngineFile file = service.createNewBlobFile("application/xml");
 			
