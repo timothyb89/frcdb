@@ -342,43 +342,6 @@ public abstract class Game {
 	public String getFullEventName() {
 		return event.get().getName();
 	}
-	
-	/**
-	 * Updates the team list. For compatibility reasons (and because FIRST's
-	 * database is incorrect a lot) this gets team info from the match data.
-	 * First original data is cleared and removed from the database, including
-	 * the match results and team list. Then, match results are updated, and
-	 * finally the teams list is generated using that data.<br>
-	 * The updated data is automatically committed to the database.
-	 * @param db The database to get team data from
-	 * @throws IOException On I/O error
-	 */
-	public void updateTeamsFromMatches(Database db) throws IOException {
-		// clear the old entries for this game
-		Database.getInstance().purgeTeamEntries(this);
-
-		// update the match results
-		updateResults(db);
-
-		List<Team> added = new ArrayList<Team>();
-		
-		for (Match m : getAllMatches()) {
-			for (Team team : m.getTeams()) {
-				// only add if not added already
-				if (!added.contains(team)) {
-					TeamEntry te = createEntry(team);
-					
-					added.add(team);
-					
-					// store to the database
-					Database.getInstance().store(te);
-					teams.add(Ref.create(te));
-				}
-			}
-		}
-
-		db.store(this);
-	}
 
 	public String getResultsURL() {
 		return resultsURL;
@@ -396,7 +359,7 @@ public abstract class Game {
 	 * @param db The database to get team data from
 	 * @throws IOException On I/O error
 	 */
-	public void updateResults(Database db) throws IOException {
+	public void updateResults() throws IOException {
 		if (resultsURL == null) {
 			logger.warn("No match results URL defined, using default: " 
 					+ this);
@@ -405,10 +368,10 @@ public abstract class Game {
 
 		Database.getInstance().purgeMatches(this);
 
-		List<Match> matches = getMiner().getMatches(this, db);
+		List<Match> matches = getMiner().getMatches(this);
 		
 		for (Match m : matches) {
-			Database.getInstance().store(m);
+			Database.save().entity(m).now();
 			
 			switch (m.getType()) {
 				case QUALIFICATION:
@@ -442,14 +405,14 @@ public abstract class Game {
 	 * @param db The database to get team data from
 	 * @throws IOException On I/O error
 	 */
-	public void updateStandings(Database db) throws IOException {
+	public void updateStandings() throws IOException {
 		if (standingsURL == null) {
 			logger.warn("No standings URL defined for " + this 
 					+ ", using defaults");
 			standingsURL = Sources.getStandingsURL(this);
 		}
 		
-		List<Standing> nstandings = getMiner().getStandings(this, db);
+		List<Standing> nstandings = getMiner().getStandings(this);
 		if (nstandings == null || nstandings.isEmpty()) {
 			logger.warn("No standings data available: " + standingsURL);
 			return;
@@ -461,7 +424,7 @@ public abstract class Game {
 		Database.getInstance().purgeStandings(this);
 
 		for (Standing s : nstandings) {
-			Database.getInstance().store(s);
+			Database.save().entity(s).now();
 			standings.add(Ref.create(s));
 			
 			TeamEntry te = s.getTeam();
@@ -476,7 +439,7 @@ public abstract class Game {
 
 			standingParseExtra(te, s);
 
-			db.store(te);
+			Database.save().entity(te);
 		}
 	}
 	
@@ -495,6 +458,36 @@ public abstract class Game {
 	public void standingParseExtra(TeamEntry entry, Standing standing) {
 		
 	}
+	
+	/**
+	 * Updates teams based on standings data. The new teams will be persisted
+	 * to the datastore automatically, but this Game will need to be saved in
+	 * order to persist team references properly. Note that an event must have
+	 * at least started in order to call this. Preliminary team lists must be
+	 * fetched with the EID for this game when the game is first crawled. This
+	 * is non-destructive and will only add new (previously missing) teams.
+	 * @throws IOException On I/O error
+	 */
+	public void updateTeams() throws IOException {
+		if (standingsURL == null) {
+			logger.warn("No standings URL defined for " + this 
+					+ ", using defaults");
+			standingsURL = Sources.getStandingsURL(this);
+		}
+		
+		List<TeamEntry> newTeams = getMiner().getTeams(this);
+		if (newTeams == null || newTeams.isEmpty()) {
+			logger.warn("No team data available, or no teams missing: "
+					+ standingsURL);
+			return;
+		}
+
+		for (TeamEntry t : newTeams) {
+			Database.getInstance().store(t);
+			teams.add(Ref.create(t));
+		}
+	}
+	
 
 	public String getAwardsURL() {
 		return awardsURL;

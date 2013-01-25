@@ -1,5 +1,6 @@
 package net.frcdb.stats.mining.y2012;
 
+import com.googlecode.objectify.Ref;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.standing.ReboundStanding;
 import net.frcdb.api.game.standing.Standing;
+import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
 import org.apache.commons.lang.StringUtils;
@@ -19,28 +21,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * A crappy parser based on ReboundStanding that simply creates TeamEntries.
+ * This will not overwrite existing teams, but will recreate all missing teams
+ * based on standings data. Teams will not be persisted to the datastore at all,
+ * this will need to be done by the caller.
  * @author tim
  */
-public class ReboundStandings {
-
-	public static final String TEST_URL =
-			"http://www2.usfirst.org/2012comp/events/SDC/rankings.html";
-
+public class ReboundTeams {
+	
 	private Game game;
 	private String url;
 
 	private Logger logger = LoggerFactory.getLogger(ReboundStanding.class);
 	
-	public ReboundStandings(Game game) {
+	public ReboundTeams(Game game) {
 		this.game = game;
 		
 		url = game.getStandingsURL();
 	}
 
-	public List<Standing> parse() throws IOException {
+	public List<TeamEntry> parse() throws IOException {
 
-		List<Standing> ret = new ArrayList<Standing>();
+		List<TeamEntry> ret = new ArrayList<TeamEntry>();
 
 		Database db = Database.getInstance();
 		
@@ -61,8 +63,6 @@ public class ReboundStandings {
 		Element table = tableIter.next();
 		
 		for (Element row : table.select("tr:gt(1)")) { // skip first 2 headers
-			ReboundStanding s = (ReboundStanding) game.createStanding();
-			
 			// 0: rank
 			// 1: team #
 			// 2: qualification score
@@ -73,35 +73,22 @@ public class ReboundStandings {
 			// 7: record (wins-losses-ties)
 			// 8: disqualifications
 			// 9: matches played
-
-			s.setRank(Integer.parseInt(row.child(0).text()));
 			
 			Team team = db.getTeam(Integer.parseInt(row.child(1).text()));
 			if (team == null) {
-				logger.warn("Unknown team " + row.child(1).text() + ", skipping");
+				logger.warn("Unknown team, skipping: " + row.child(0).text());
 				continue;
 			}
-			s.setTeam(game.getEntry(team));
-
-			s.setQualificationScore(Float.parseFloat(row.child(2).text()));
-			s.setHybridPoints(Float.parseFloat(row.child(3).text()));
-			s.setBridgePoints(Float.parseFloat(row.child(4).text()));
-			s.setTeleopPoints(Float.parseFloat(row.child(5).text()));
-
-			s.setCoopertitionPoints(Integer.parseInt(row.child(6).text()));
-
-			String[] wlt = StringUtils.split(row.child(7).text(), '-');
-			s.setWins(Integer.parseInt(wlt[0]));
-			s.setLosses(Integer.parseInt(wlt[1]));
-			s.setTies(Integer.parseInt(wlt[2]));
-
-			s.setDisqualifications(Integer.parseInt(row.child(8).text()));
-			s.setMatchesPlayed(Integer.parseInt(row.child(9).text()));
-
-			ret.add(s);
+			
+			if (game.getEntry(team) != null) {
+				// skip if already exists
+				continue;
+			}
+			
+			TeamEntry entry = game.createEntry(team);
+			ret.add(entry);
 		}
 
 		return ret;
 	}
-	
 }

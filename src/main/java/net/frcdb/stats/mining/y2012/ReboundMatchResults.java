@@ -20,15 +20,15 @@ import org.jsoup.select.Elements;
 public class ReboundMatchResults {
 	
 	private Game game;
-	private Database db;
 
-	public ReboundMatchResults(Game game, Database db) {
+	public ReboundMatchResults(Game game) {
 		this.game = game;
-		this.db = db;
 	}
 	
 	public List<Match> parse() {
 		List<Match> ret = new ArrayList<Match>();
+		
+		Database db = Database.getInstance();
 		
 		Document doc;
 		try {
@@ -45,45 +45,48 @@ public class ReboundMatchResults {
 		tableIter.next(); // skip 2
 		tableIter.next();
 		
-		Element qualsTable = tableIter.next();
-		for (Element row : qualsTable.select("tr:gt(2)")) { // ')'?
-			Match m = new Match(game);
-			m.setType(MatchType.QUALIFICATION);
-			
-			m.setTime(row.child(0).text());
-			m.setNumber(Integer.parseInt(row.child(1).text()));
+		// CMP only has elim matches, skip qualifications table
+		if (!game.getEvent().isChampionship()) {
+			Element qualsTable = tableIter.next();
+			for (Element row : qualsTable.select("tr:gt(2)")) { // ')'?
+				Match m = new Match(game);
+				m.setType(MatchType.QUALIFICATION);
 
-			m.addRedTeam(db.getTeam(Integer.parseInt(row.child(2).text())));
-			m.addRedTeam(db.getTeam(Integer.parseInt(row.child(3).text())));
-			m.addRedTeam(db.getTeam(Integer.parseInt(row.child(4).text())));
+				m.setTime(row.child(0).text());
+				m.setNumber(Integer.parseInt(row.child(1).text()));
 
-			m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(5).text())));
-			m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(6).text())));
-			m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(7).text())));
-			
-			String redText = row.child(8).text();
-			try {
-				m.setRedScore(Integer.parseInt(redText));
-			} catch (NumberFormatException ex) {
-				if (redText.equalsIgnoreCase("DQ")) {
-					m.setRedScore(Match.SCORE_DISQUALIFIED);
-				} else {
-					m.setRedScore(Match.SCORE_UNKNOWN);
+				m.addRedTeam(db.getTeam(Integer.parseInt(row.child(2).text())));
+				m.addRedTeam(db.getTeam(Integer.parseInt(row.child(3).text())));
+				m.addRedTeam(db.getTeam(Integer.parseInt(row.child(4).text())));
+
+				m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(5).text())));
+				m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(6).text())));
+				m.addBlueTeam(db.getTeam(Integer.parseInt(row.child(7).text())));
+
+				String redText = row.child(8).text();
+				try {
+					m.setRedScore(Integer.parseInt(redText));
+				} catch (NumberFormatException ex) {
+					if (redText.equalsIgnoreCase("DQ")) {
+						m.setRedScore(Match.SCORE_DISQUALIFIED);
+					} else {
+						m.setRedScore(Match.SCORE_UNKNOWN);
+					}
 				}
-			}
 
-			String blueText = row.child(9).text();
-			try {
-				m.setBlueScore(Integer.parseInt(blueText));
-			} catch (NumberFormatException ex) {
-				if (blueText.equalsIgnoreCase("DQ")) {
-					m.setBlueScore(Match.SCORE_DISQUALIFIED);
-				} else {
-					m.setBlueScore(Match.SCORE_UNKNOWN);
+				String blueText = row.child(9).text();
+				try {
+					m.setBlueScore(Integer.parseInt(blueText));
+				} catch (NumberFormatException ex) {
+					if (blueText.equalsIgnoreCase("DQ")) {
+						m.setBlueScore(Match.SCORE_DISQUALIFIED);
+					} else {
+						m.setBlueScore(Match.SCORE_UNKNOWN);
+					}
 				}
+
+				ret.add(m);
 			}
-			
-			ret.add(m);
 		}
 		
 		Element elimsTable = tableIter.next();
