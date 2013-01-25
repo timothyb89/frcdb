@@ -33,12 +33,18 @@ ${data.gameJson}
 		</c:if>
 			
 		<p class="breadcrumbs">
+			<c:if test="${not empty data.game.parent}">
+				<a href="/event/${data.game.parent.event.shortName}/${data.game.parent.gameYear}">
+					Parent: ${data.game.parent.event.name}
+				</a> &nbsp;
+			</c:if>
 			<a href="/event/${data.event.shortName}/${data.game.gameYear}/standings">
 				Standings
-			</a>
+			</a> &nbsp;
+			
 			<c:if test="${utils:isUserAdmin()}">
-				, <a href="#" id="runStatistic">Run Statistic</a>,
-				<a href="#" id="event-edit">Edit Event</a>,
+				<a href="#" id="runStatistic">Run Statistic</a> &nbsp;
+				<a href="#" id="event-edit">Edit Event</a> &nbsp;
 				<a href="#" id="game-edit">Edit Game</a>
 				<script type="text/javascript">
 					var executeStatisticTemplate = {
@@ -84,6 +90,22 @@ ${data.gameJson}
 						});
 					});
 					
+					var gameData = JSON.parse($("#game-data").html());
+					
+					var parentString = "";
+					if (gameData.parent) {
+						parentString = new String(
+								gameData.parent.name
+								+ "="
+								+ gameData.parent.year);
+					}
+					
+					var children = [];
+					gameData.children.forEach(function(child) {
+						children.push(new String(child.name + "=" + child.year));
+					});
+					var childrenString = children.join();
+					
 					var gameTemplate = $.extend(true, {
 						"Event Name": {
 							readonly: true,
@@ -95,8 +117,11 @@ ${data.gameJson}
 						}
 					}, EditorTemplates.game);
 					
-					gameTemplate = $.pushJsonToTemplate(
-							JSON.parse($("#game-data").html()), gameTemplate);
+					gameTemplate = $.pushJsonToTemplate(gameData, gameTemplate);
+					
+					// overwrite with proper parent / children strings
+					gameTemplate["Parent Game"].value = parentString;
+					gameTemplate["Child Games"].value = childrenString;
 					
 					$("#game-edit").click(function() {
 						$.dialogform({
@@ -123,6 +148,19 @@ ${data.gameJson}
 				</li>
 			</c:forEach>
 		</ul>
+		
+		<c:if test="${not utils:isEmpty(data.game.children)}">
+			Child events:
+			<ul>
+				<c:forEach items="${data.game.children}" var="g">
+					<li>
+						<a href="/event/${g.event.shortName}/${g.gameYear}">
+							${g.event.name}
+						</a>
+					</li>
+				</c:forEach>
+			</ul>
+		</c:if>
 		
 		<h2>Event Info</h2>
 		<table width="90%" border="1" style="margin: auto; margin-bottom: 15px;">

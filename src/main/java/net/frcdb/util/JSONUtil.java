@@ -139,6 +139,26 @@ public class JSONUtil {
 		g.writeStringField("standingsURL", game.getStandingsURL());
 		g.writeStringField("awardsURL", game.getAwardsURL());
 		
+		if (game.getParent() != null) {
+			g.writeObjectFieldStart("parent");
+			g.writeStringField(
+					"name",
+					game.getParent().getEvent().getShortName());
+			g.writeNumberField("year", game.getParent().getGameYear());
+			g.writeEndObject();
+		} else {
+			g.writeNullField("parent");
+		}
+		
+		g.writeArrayFieldStart("children");
+		for (Game child : game.getChildren()) {
+			g.writeStartObject();
+			g.writeStringField("name", child.getEvent().getShortName());
+			g.writeNumberField("year", child.getGameYear());
+			g.writeEndObject();
+		}
+		g.writeEndArray();
+		
 		if (game instanceof GameOPRProvider) {
 			GameOPRProvider goprp = (GameOPRProvider) game;
 			g.writeNumberField("averageOPR", goprp.getAverageOPR());
@@ -171,6 +191,26 @@ public class JSONUtil {
 		g.writeStringField("eventShortName", game.getEvent().getShortName());
 		g.writeNumberField("startDate", game.getStartDate().getTime());
 		g.writeNumberField("endDate", game.getEndDate().getTime());
+		
+		if (game.getParent() != null) {
+			g.writeObjectFieldStart("parent");
+			g.writeStringField(
+					"name",
+					game.getParent().getEvent().getShortName());
+			g.writeNumberField("year", game.getParent().getGameYear());
+			g.writeEndObject();
+		} else {
+			g.writeNullField("parent");
+		}
+		
+		g.writeArrayFieldStart("children");
+		for (Game child : game.getChildren()) {
+			g.writeStartObject();
+			g.writeStringField("name", child.getEvent().getShortName());
+			g.writeNumberField("year", child.getGameYear());
+			g.writeEndObject();
+		}
+		g.writeEndArray();
 		
 		if (game instanceof GameOPRProvider) {
 			GameOPRProvider goprp = (GameOPRProvider) game;

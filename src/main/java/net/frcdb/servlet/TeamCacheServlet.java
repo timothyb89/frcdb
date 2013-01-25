@@ -17,7 +17,7 @@ import net.frcdb.stats.StatisticsRoot;
  */
 public class TeamCacheServlet extends HttpServlet {
 
-		/**
+	/**
 	 * Processes requests for both HTTP
 	 * <code>GET</code> and
 	 * <code>POST</code> methods.

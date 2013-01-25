@@ -30,6 +30,8 @@ var EditorTemplates = {
 		"End Date":      { name: "endDate", type: "date" },
 		"Results URL":   { name: "resultsURL", type: "url" },
 		"Standings URL": { name: "standingsURL", type: "url" },
-		"Awards URL: ":  { name: "awardsURL", type: "url" }
+		"Awards URL: ":  { name: "awardsURL", type: "url" },
+		"Parent Game":   { name: "parent", type: "text" },
+		"Child Games":   { name: "children", type: "text" }
 	}
 }

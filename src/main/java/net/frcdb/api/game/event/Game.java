@@ -80,6 +80,9 @@ public abstract class Game {
 	@Index private List<Ref<Match>> finalsMatches;
 	@Index private List<Ref<TeamEntry>> teams;
 	@Index private List<Ref<Standing>> standings;
+	
+	@Load private Ref<Game> parent;
+	@Load private List<Ref<Game>> children;
 
 	public Game() {
 		gameYear = getGameYear();
@@ -92,6 +95,7 @@ public abstract class Game {
 		
 		teams = new ArrayList<Ref<TeamEntry>>();
 		standings = new ArrayList<Ref<Standing>>();
+		children = new ArrayList<Ref<Game>>();
 	}
 	
 	public Game(Event event) {
@@ -107,6 +111,7 @@ public abstract class Game {
 		
 		teams = new ArrayList<Ref<TeamEntry>>();
 		standings = new ArrayList<Ref<Standing>>();
+		children = new ArrayList<Ref<Game>>();
 	}
 
 	/**
@@ -439,7 +444,8 @@ public abstract class Game {
 	 */
 	public void updateStandings(Database db) throws IOException {
 		if (standingsURL == null) {
-			logger.warn("No standings URL defined for " + this + ", using defaults");
+			logger.warn("No standings URL defined for " + this 
+					+ ", using defaults");
 			standingsURL = Sources.getStandingsURL(this);
 		}
 		
@@ -498,6 +504,55 @@ public abstract class Game {
 		this.awardsURL = awardsURL;
 	}
 
+	public Game getParent() {
+		if (parent == null) {
+			return null;
+		}
+		
+		return Database.ofy().load().ref(parent).get();
+	}
+
+	public Ref<Game> getParentReference() {
+		return parent;
+	}
+	
+	public void setParent(Game parent) {
+		if (parent == null) {
+			this.parent = null;
+			return;
+		}
+		
+		this.parent = Ref.create(parent);
+	}
+	
+	public List<Ref<Game>> getChildReferences() {
+		return children;
+	}
+
+	public Collection<Game> getChildren() {
+		return Database.ofy().load().refs(children).values();
+	}
+	
+	public void addChild(Game g) {
+		children.add(Ref.create(g));
+	}
+	
+	public void removeChild(Game g) {
+		children.remove(Ref.create(g));
+	}
+	
+	public boolean containsChild(Game g) {
+		Ref<Game> ref = Ref.create(g);
+		
+		for (Ref<Game> r : children) {
+			if (r.equivalent(ref)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Game["
