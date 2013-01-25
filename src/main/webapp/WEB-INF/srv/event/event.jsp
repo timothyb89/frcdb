@@ -262,157 +262,165 @@ ${data.gameJson}
 			</tbody>
 		</js:table>
 		
-		<h2 style="padding-top: 15px;">Qualification Matches</h2>
-		<js:table id="event_qualificationResults" width="90%" align="center">
-			<thead>
-				<tr>
-					<th>Number</th>
-					<th>Red 1</th>
-					<th>Red 2</th>
-					<th>Red 3</th>
-					<th>Blue 1</th>
-					<th>Blue 2</th>
-					<th>Blue 3</th>
-					<th>Red Score</th>
-					<th>Blue Score</th>
-					<th>Link</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${data.qualificationMatches}" var="m">
+		<c:if test="${not utils:isEmpty(data.qualificationMatches)}">
+			<h2 style="padding-top: 15px;">Qualification Matches</h2>
+			<js:table id="event_qualificationResults" width="90%" align="center">
+				<thead>
 					<tr>
-						<td>${m.number}</td>
-						<c:forEach items="${m.redTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<c:forEach items="${m.blueTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<td>${m.redScore}</td>
-						<td>${m.blueScore}</td>
-						<td>
-							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/${m.number}">
-								Info
-							</a>
-						</td>
+						<th>Number</th>
+						<th>Red 1</th>
+						<th>Red 2</th>
+						<th>Red 3</th>
+						<th>Blue 1</th>
+						<th>Blue 2</th>
+						<th>Blue 3</th>
+						<th>Red Score</th>
+						<th>Blue Score</th>
+						<th>Link</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</js:table>
+				</thead>
+				<tbody>
+					<c:forEach items="${data.qualificationMatches}" var="m">
+						<tr>
+							<td>${m.number}</td>
+							<c:forEach items="${m.redTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<c:forEach items="${m.blueTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<td>${m.redScore}</td>
+							<td>${m.blueScore}</td>
+							<td>
+								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/${m.number}">
+									Info
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</js:table>
+		</c:if>
 		
-		<h2 style="padding-top: 15px;">Quaterfinals Matches</h2>
-		<js:table id="event_quarterfinalsResults" width="90%" align="center">
-			<thead>
-				<tr>
-					<th>Number</th>
-					<th>Red 1</th>
-					<th>Red 2</th>
-					<th>Red 3</th>
-					<th>Blue 1</th>
-					<th>Blue 2</th>
-					<th>Blue 3</th>
-					<th>Red Score</th>
-					<th>Blue Score</th>
-					<th>Link</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${data.quarterfinalMatches}" var="m">
+		<c:if test="${not utils:isEmpty(data.quarterfinalMatches)}">
+			<h2 style="padding-top: 15px;">Quaterfinals Matches</h2>
+			<js:table id="event_quarterfinalsResults" width="90%" align="center">
+				<thead>
 					<tr>
-						<td>${m.number}</td>
-						<c:forEach items="${m.redTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<c:forEach items="${m.blueTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<td>${m.redScore}</td>
-						<td>${m.blueScore}</td>
-						<td>
-							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/q${m.number}">
-								Info
-							</a>
-						</td>
+						<th>Number</th>
+						<th>Red 1</th>
+						<th>Red 2</th>
+						<th>Red 3</th>
+						<th>Blue 1</th>
+						<th>Blue 2</th>
+						<th>Blue 3</th>
+						<th>Red Score</th>
+						<th>Blue Score</th>
+						<th>Link</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</js:table>
+				</thead>
+				<tbody>
+					<c:forEach items="${data.quarterfinalMatches}" var="m">
+						<tr>
+							<td>${m.number}</td>
+							<c:forEach items="${m.redTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<c:forEach items="${m.blueTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<td>${m.redScore}</td>
+							<td>${m.blueScore}</td>
+							<td>
+								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/q${m.number}">
+									Info
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</js:table>
+		</c:if>
 		
-		<h2 style="padding-top: 15px;">Semifinals Matches</h2>
-		<js:table id="event_semifinalsResults" width="90%" align="center">
-			<thead>
-				<tr>
-					<th>Number</th>
-					<th>Red 1</th>
-					<th>Red 2</th>
-					<th>Red 3</th>
-					<th>Blue 1</th>
-					<th>Blue 2</th>
-					<th>Blue 3</th>
-					<th>Red Score</th>
-					<th>Blue Score</th>
-					<th>Link</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${data.semifinalMatches}" var="m">
+		<c:if test="${not utils:isEmpty(data.semifinalMatches)}">
+			<h2 style="padding-top: 15px;">Semifinals Matches</h2>
+			<js:table id="event_semifinalsResults" width="90%" align="center">
+				<thead>
 					<tr>
-						<td>${m.number}</td>
-						<c:forEach items="${m.redTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<c:forEach items="${m.blueTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<td>${m.redScore}</td>
-						<td>${m.blueScore}</td>
-						<td>
-							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/s${m.number}">
-								Info
-							</a>
-						</td>
+						<th>Number</th>
+						<th>Red 1</th>
+						<th>Red 2</th>
+						<th>Red 3</th>
+						<th>Blue 1</th>
+						<th>Blue 2</th>
+						<th>Blue 3</th>
+						<th>Red Score</th>
+						<th>Blue Score</th>
+						<th>Link</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</js:table>
+				</thead>
+				<tbody>
+					<c:forEach items="${data.semifinalMatches}" var="m">
+						<tr>
+							<td>${m.number}</td>
+							<c:forEach items="${m.redTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<c:forEach items="${m.blueTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<td>${m.redScore}</td>
+							<td>${m.blueScore}</td>
+							<td>
+								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/s${m.number}">
+									Info
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</js:table>
+		</c:if>
 		
-		<h2 style="padding-top: 15px;">Finals Matches</h2>
-		<js:table id="event_finalsResults" width="90%" align="center">
-			<thead>
-				<tr>
-					<th>Number</th>
-					<th>Red 1</th>
-					<th>Red 2</th>
-					<th>Red 3</th>
-					<th>Blue 1</th>
-					<th>Blue 2</th>
-					<th>Blue 3</th>
-					<th>Red Score</th>
-					<th>Blue Score</th>
-					<th>Link</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${data.finalMatches}" var="m">
+		<c:if test="${not utils:isEmpty(data.finalMatches)}">
+			<h2 style="padding-top: 15px;">Finals Matches</h2>
+			<js:table id="event_finalsResults" width="90%" align="center">
+				<thead>
 					<tr>
-						<td>${m.number}</td>
-						<c:forEach items="${m.redTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<c:forEach items="${m.blueTeams}" var="t">
-							<td>${t.number}</td>
-						</c:forEach>
-						<td>${m.redScore}</td>
-						<td>${m.blueScore}</td>
-						<td>
-							<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/f${m.number}">
-								Info
-							</a>
-						</td>
+						<th>Number</th>
+						<th>Red 1</th>
+						<th>Red 2</th>
+						<th>Red 3</th>
+						<th>Blue 1</th>
+						<th>Blue 2</th>
+						<th>Blue 3</th>
+						<th>Red Score</th>
+						<th>Blue Score</th>
+						<th>Link</th>
 					</tr>
-				</c:forEach>
-			</tbody>
-		</js:table>
+				</thead>
+				<tbody>
+					<c:forEach items="${data.finalMatches}" var="m">
+						<tr>
+							<td>${m.number}</td>
+							<c:forEach items="${m.redTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<c:forEach items="${m.blueTeams}" var="t">
+								<td>${t.number}</td>
+							</c:forEach>
+							<td>${m.redScore}</td>
+							<td>${m.blueScore}</td>
+							<td>
+								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/f${m.number}">
+									Info
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</js:table>
+		</c:if>
 
 		<%-- todo: rewrite this
 		<c:if test="${admin}">
