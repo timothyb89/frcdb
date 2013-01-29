@@ -4,21 +4,21 @@
 	<short-name>js</short-name>
 	<uri>/WEB-INF/tlds/js</uri>
 	<!-- A validator verifies that the tags are used correctly at JSP
- 		 translation time. Validator entries look like this:
- 	  <validator>
- 		  <validator-class>com.mycompany.TagLibValidator</validator-class>
- 		  <init-param>
- 			 <param-name>parameter</param-name>
- 			 <param-value>value</param-value>
- 	  </init-param>
- 	  </validator>
+		 translation time. Validator entries look like this:
+	  <validator>
+		  <validator-class>com.mycompany.TagLibValidator</validator-class>
+		  <init-param>
+			 <param-name>parameter</param-name>
+			 <param-value>value</param-value>
+	  </init-param>
+	  </validator>
  -->
 	<!-- A tag library can register Servlet Context event listeners in
- 		case it needs to react to such events. Listener entries look
- 		like this:
- 	 <listener>
- 		 <listener-class>com.mycompany.TagLibListener</listener-class>
- 	 </listener>
+   		case it needs to react to such events. Listener entries look
+   		like this:
+	 <listener>
+		 <listener-class>com.mycompany.TagLibListener</listener-class>
+	 </listener>
  -->
 	<tag>
 		<name>input</name>
@@ -164,6 +164,28 @@
 			<name>selected</name>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+	</tag>
+	<tag>
+		<name>chart</name>
+		<tag-class>net.frcdb.tag.js.ChartTagHandler</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<name>chartId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 	</tag>
 	<tag-file>

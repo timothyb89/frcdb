@@ -174,7 +174,7 @@
 					url: "/json/admin/team/create",
 					success: function(response) {
 						console.log(response);
-						alert("Error: " + response.message);
+						alert(response.message);
 					}
 				});
 			});

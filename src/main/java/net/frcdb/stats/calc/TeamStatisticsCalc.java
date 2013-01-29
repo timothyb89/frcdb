@@ -10,7 +10,7 @@ import net.frcdb.db.Database;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
- *
+ * TODO: need a YearStatistic
  * @author tim
  */
 public class TeamStatisticsCalc implements GameStatistic {
@@ -36,27 +36,37 @@ public class TeamStatisticsCalc implements GameStatistic {
 					= Database.getInstance().getEntries(team, year);
 			
 			SummaryStatistics summary = new SummaryStatistics();
+			SummaryStatistics zSummary = new SummaryStatistics();
 			for (TeamEntry entry : entries) {
 				if (entry instanceof OPRProvider) {
 					OPRProvider opr = (OPRProvider) entry;
-					summary.addValue(opr.getOPRZ());
+					summary.addValue(opr.getOPR());
+					zSummary.addValue(opr.getOPRZ());
 				}
 			}
 			
-			stats.setOprZMin(summary.getMin());
-			stats.setOprZMax(summary.getMax());
-			stats.setOprZMean(summary.getMean());
-			stats.setOprZSum(summary.getSum());
-			stats.setOprZVariance(summary.getMean());
-			stats.setOprZStandardDeviation(summary.getStandardDeviation());
+			stats.setOprMin(summary.getMin());
+			stats.setOprMax(summary.getMax());
+			stats.setOprMean(summary.getMean());
+			stats.setOprSum(summary.getSum());
+			stats.setOprVariance(summary.getMean());
+			stats.setOprStandardDeviation(summary.getStandardDeviation());
 			
-			Database.save().entity(team);
+			stats.setOprZMin(zSummary.getMin());
+			stats.setOprZMax(zSummary.getMax());
+			stats.setOprZMean(zSummary.getMean());
+			stats.setOprZSum(zSummary.getSum());
+			stats.setOprZVariance(zSummary.getMean());
+			stats.setOprZStandardDeviation(zSummary.getStandardDeviation());
+			
+			Database.save().entity(team).now();
+			Database.ofy().clear();
 		}
 	}
 
 	@Override
 	public String getBackendName() {
-		return null;
+		return "stat-compute";
 	}
 	
 }

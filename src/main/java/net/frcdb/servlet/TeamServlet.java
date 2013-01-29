@@ -53,6 +53,7 @@ public class TeamServlet extends HttpServlet {
 
 		if (path == null || path.length() <= 1) {
 			error("No team provided!", request, response);
+			return;
 		}
 		
 		List<String> groups = ListUtil.extract("/([\\d&&[^/]]+)/?", path);

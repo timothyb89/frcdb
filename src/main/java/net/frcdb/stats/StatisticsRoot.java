@@ -4,7 +4,11 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.frcdb.db.Database;
+import net.frcdb.stats.chart.api.Chart;
 
 /**
  *
@@ -23,7 +27,13 @@ public class StatisticsRoot {
 	private String teamsKey;
 	private String eventsKey;
 	
+	/**
+	 * A list of general charts. These are displayed at /stats
+	 */
+	private List<Key<Chart>> charts;
+	
 	public StatisticsRoot() {
+		charts = new ArrayList<Key<Chart>>();
 	}
 
 	public String getSitemapKey() {
@@ -48,6 +58,18 @@ public class StatisticsRoot {
 
 	public void setEventsKey(String eventsKey) {
 		this.eventsKey = eventsKey;
+	}
+	
+	public Collection<Chart> getCharts() {
+		return Database.ofy().load().keys(charts).values();
+	}
+	
+	public List<Key<Chart>> getChartKeys() {
+		return charts;
+	}
+	
+	public void addChart(Chart c) {
+		charts.add(Key.create(c));
 	}
 	
 	/**

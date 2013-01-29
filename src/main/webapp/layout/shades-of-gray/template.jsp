@@ -58,6 +58,7 @@
 		<script type="text/javascript" src="/js/jquery/jquery.fileupload.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.uploader.js"></script>
 		<script type="text/javascript" src="/js/jquery/jquery.dialogform.js"></script>
+		<script type="text/javascript" src="/js/jquery/jquery.chart.js"></script>
 
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		

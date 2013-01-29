@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ws.rs.Consumes;
@@ -33,15 +35,19 @@ import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
 import net.frcdb.export.GamesImport;
 import net.frcdb.util.UserUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * A little hacky management service...
  * @author tim
  */
 @Path("/admin/game")
 public class GameManagementService {
+	
+	public static final Pattern CRAPPY_GAME_FORMAT = Pattern.compile(
+			"([\\w\\-]+)\\=(\\d+)");
 	
 	private Logger logger = LoggerFactory.getLogger(GameManagementService.class);
 	
@@ -56,7 +62,9 @@ public class GameManagementService {
 			@FormParam("endDate") String endDate,
 			@FormParam("resultsURL") String resultsURL,
 			@FormParam("standingsURL") String standingsURL,
-			@FormParam("awardsURL") String awardsURL) {
+			@FormParam("awardsURL") String awardsURL,
+			@FormParam("parent") String parentName,
+			@FormParam("children") String children) {
 		
 		if (!UserUtil.isUserAdmin()) {
 			return JsonResponse.error("You are not allowed to create events.");
@@ -71,6 +79,8 @@ public class GameManagementService {
 		if (g == null) {
 			return JsonResponse.error("No game for year " + gameYear);
 		}
+		
+		String messageExtra = "";
 		
 		if (crappyValidate(eid)) {
 			g.setEid(Integer.parseInt(eid));
@@ -96,13 +106,99 @@ public class GameManagementService {
 			g.setAwardsURL(awardsURL);
 		}
 		
-		Database.save().entity(g);
+		if (parentName != null) {
+			Game newParent;
+			
+			// allow an empty string to remove the parent
+			if (parentName.isEmpty()) {
+				newParent = null;
+			} else {
+				newParent = getGame(parentName);
+				if (newParent == null) {
+					return JsonResponse.error(
+							"Game not found or invalid format specified.");
+				}
+			}
+			
+			// remove the old parent if needed
+			Game oldParent = g.getParent();
+			if (oldParent != null) {
+				oldParent.removeChild(g);
+				Database.save().entity(oldParent);
+			}
+			
+			g.setParent(newParent);
+			
+			if (newParent != null) {
+				newParent.addChild(g);
+				Database.save().entity(newParent);
+			}
+		}
 		
-		return JsonResponse.success("Game updated.");
+		if (children != null) {
+			String[] gameStrings = StringUtils.split(children, ',');
+			
+			List<Game> finalGames = new ArrayList<Game>();
+			
+			for (String gameString : gameStrings) {
+				Game game = getGame(gameString);
+				
+				if (g.containsChild(game)) {
+					finalGames.add(game);
+					// skip
+				} else {
+					if (game.getParent() != null) {
+						// other game is already parented. warn and skip
+						messageExtra += gameString
+								+ " already has a parent, skipped. ";
+					} else {
+						game.setParent(g);
+						Database.save().entity(game);
+						
+						g.addChild(game);
+						finalGames.add(game);
+					}
+				}
+			}
+			
+			// diff the games to prune removed
+			List<Game> removedGames = new ArrayList<Game>();
+			removedGames.addAll(g.getChildren());
+			removedGames.removeAll(finalGames);
+			
+			// remove the diff
+			for (Game removed : removedGames) {
+				g.removeChild(removed);
+				
+				removed.setParent(null);
+				Database.save().entity(removed);
+			}
+		}
+		
+		Database.save().entity(g);
+		return JsonResponse.success("Game updated. " + messageExtra);
 	}
 	
 	private boolean crappyValidate(String s) {
 		return s != null && !s.isEmpty();
+	}
+	
+	private Game getGame(String crappyName) {
+		Matcher m = CRAPPY_GAME_FORMAT.matcher(crappyName);
+		
+		if (!m.matches()) {
+			return null;
+		}
+		
+		String name = m.group(1);
+		Event event = Database.getInstance().getEventByShortName(name);
+		if (event == null) {
+			return null;
+		}
+		
+		int year = Integer.parseInt(m.group(2));
+		
+		return event.getGame(year);
 	}
 	
 	@POST

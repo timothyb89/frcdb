@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
+import net.frcdb.stats.calc.ChartsInit;
 import net.frcdb.stats.calc.Counts;
 import net.frcdb.stats.calc.EventCacheGenerator;
 import net.frcdb.stats.calc.EventStatistic;
@@ -25,11 +26,14 @@ import net.frcdb.stats.calc.FixSources;
 import net.frcdb.stats.calc.GameStatistic;
 import net.frcdb.stats.calc.GameYearIndexes;
 import net.frcdb.stats.calc.GlobalStatistic;
+import net.frcdb.stats.calc.MatchResultsUpdater;
 import net.frcdb.stats.calc.OPRDPRCalc;
 import net.frcdb.stats.calc.ReferenceRepair;
 import net.frcdb.stats.calc.SitemapGenerator;
+import net.frcdb.stats.calc.StandingsUpdater;
 import net.frcdb.stats.calc.Statistic;
 import net.frcdb.stats.calc.TeamCacheGenerator;
+import net.frcdb.stats.calc.TeamEntryUpdater;
 import net.frcdb.stats.calc.TeamStatisticsCalc;
 import net.frcdb.stats.calc.TeamUpdater;
 import net.frcdb.util.UserUtil;
@@ -56,6 +60,9 @@ public class StatsManagementService {
 		register(new TeamStatisticsCalc());
 		register(new GameYearIndexes());
 		register(new FixSources());
+		register(new TeamEntryUpdater());
+		register(new MatchResultsUpdater());
+		register(new StandingsUpdater());
 		
 		register(new ReferenceRepair());
 		
@@ -64,6 +71,7 @@ public class StatsManagementService {
 		register(new TeamUpdater());
 		register(new TeamCacheGenerator());
 		register(new EventCacheGenerator());
+		register(new ChartsInit());
 	}
 	
 	public static Statistic getStatistic(String name) {

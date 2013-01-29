@@ -33,6 +33,14 @@ import net.frcdb.robot.Robot;
 import net.frcdb.robot.RobotComponent;
 import net.frcdb.robot.RobotProperty;
 import net.frcdb.stats.StatisticsRoot;
+import net.frcdb.stats.chart.api.Chart;
+import net.frcdb.stats.chart.ChartRoot;
+import net.frcdb.stats.chart.EventsPerTeamChart;
+import net.frcdb.stats.chart.api.GameChart;
+import net.frcdb.stats.chart.OPRComparisonChart;
+import net.frcdb.stats.chart.OPROverTimeChart;
+import net.frcdb.stats.chart.TeamAgeVsOPRChart;
+import net.frcdb.stats.chart.api.YearChart;
 import net.frcdb.util.ListUtil;
 import net.frcdb.util.StringUtil;
 import org.slf4j.Logger;
@@ -83,6 +91,16 @@ public class Database {
 		factory().register(TeamStatistics.class);
 		
 		factory().register(StatisticsRoot.class);
+		
+		// charts
+		factory().register(ChartRoot.class);
+		factory().register(Chart.class);
+		factory().register(GameChart.class);
+		factory().register(YearChart.class);
+		factory().register(OPRComparisonChart.class);
+		factory().register(OPROverTimeChart.class);
+		factory().register(TeamAgeVsOPRChart.class);
+		factory().register(EventsPerTeamChart.class);
 		
 		// robots
 		
@@ -566,6 +584,11 @@ public class Database {
 				.filter("name =", name)
 				.limit(1)
 				.first().get();
+	}
+	
+	public Chart getChart(String id) {
+		Key<Chart> key = Key.create(ChartRoot.key(), Chart.class, id);
+		return ofy().load().key(key).get();
 	}
 	
 	public void store(Object object) {
