@@ -285,7 +285,7 @@ public class TeamServlet extends HttpServlet {
 		
 		Team team = (Team) request.getAttribute("team");
 		
-		JSONUtil.exportTeam(response.getOutputStream(), team);
+		JSONUtil.exportTeam(response.getOutputStream(), team, true);
 		response.getOutputStream().close();
 	}
 	

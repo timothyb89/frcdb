@@ -7,7 +7,9 @@ import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileServiceFactory;
 import com.google.appengine.api.files.FileWriteChannel;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
@@ -26,6 +28,13 @@ public class TeamCacheGenerator implements GlobalStatistic {
 	
 	private JsonFactory factory = new JsonFactory();
 	
+	/**
+	 * The amount of memory to preallocate. This is needed to keep the time to
+	 * write to the blobstore under 30 seconds, as longer write times will time
+	 * out.
+	 */
+	public static final int BUFFER_SIZE = 10 * 1024 * 1024;
+	
 	@Override
 	public String[] getNames() {
 		return new String[] { "teamcachegenerator", "teamcache" };
@@ -38,6 +47,7 @@ public class TeamCacheGenerator implements GlobalStatistic {
 		// delete the old cache
 		String oldKey = StatisticsRoot.get().getTeamsKey();
 		if (oldKey != null) {
+			logger.info("Deleting old team cache");
 			AppEngineFile old = service.getBlobFile(new BlobKey(oldKey));
 			try {
 				service.delete(old);
@@ -47,22 +57,33 @@ public class TeamCacheGenerator implements GlobalStatistic {
 		}
 		
 		try {
-			AppEngineFile file = service.createNewBlobFile("application/json");
+			// output to memory initially
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream(BUFFER_SIZE);
+			JsonGenerator g = factory.createJsonGenerator(buffer);
 			
-			FileWriteChannel channel = service.openWriteChannel(file, true);
-			
-			JsonGenerator g = factory
-					.createJsonGenerator(Channels.newWriter(channel, "UTF8"));
+			logger.info("Generating team json in memory...");
 			
 			g.writeStartArray();
 			for (Team t : Database.getInstance().getTeams()) {
-				JSONUtil.exportTeam(g, t);
+				JSONUtil.exportTeam(g, t, false);
+				Database.ofy().clear();
 			}
 			g.writeEndArray();
 			
 			g.close();
+			
+			logger.info("Writing team json to the blobstore");
+			
+			AppEngineFile file = service.createNewBlobFile("application/json");
+			FileWriteChannel channel = service.openWriteChannel(file, true);
+			
+			// write to the  file
+			OutputStream out = Channels.newOutputStream(channel);
+			buffer.writeTo(out);
+			out.close();
 			channel.closeFinally();
 			
+			// save the file key
 			BlobKey key = service.getBlobKey(file);
 			StatisticsRoot r = StatisticsRoot.get();
 			r.setTeamsKey(key.getKeyString());

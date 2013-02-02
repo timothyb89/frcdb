@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
+import net.frcdb.api.game.event.GameType;
 import net.frcdb.api.game.event.element.GameOPRProvider;
 import net.frcdb.api.game.match.Match;
 import net.frcdb.api.game.standing.Standing;
@@ -25,18 +28,23 @@ import net.frcdb.db.Database;
  */
 public class JSONUtil {
 	
-	public static void exportTeam(OutputStream out, Team team) 
+	public static void exportTeam(OutputStream out, Team team, boolean entries)
 			throws IOException {
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = f.createJsonGenerator(out, JsonEncoding.UTF8);
 		g.setPrettyPrinter(new DefaultPrettyPrinter());
 		
-		exportTeam(g, team);
+		exportTeam(g, team, entries);
 		
 		g.close();
 	}
 	
-	public static void exportTeam(JsonGenerator g, Team team) 
+	public static void exportTeam(OutputStream out, Team team) 
+			throws IOException {
+		exportTeam(out, team, false);
+	}
+	
+	public static void exportTeam(JsonGenerator g, Team team, boolean entries) 
 			throws IOException {
 		g.writeStartObject();
 		g.writeNumberField("number", team.getNumber());
@@ -49,32 +57,39 @@ public class JSONUtil {
 		g.writeStringField("website", team.getWebsite());
 		g.writeStringField("motto", team.getMotto());
 		
-		// bad place for a db query, oh well
-		/*Database db = Database.getInstance();
-		
-		Map<GameType, List<Game>> games = db.getParticipatedGames(team);
-		g.writeArrayFieldStart("entries");
-		for (GameType type : games.keySet()) {
-			g.writeStartObject();
-			
-			g.writeStringField("gameName", type.getName());
-			g.writeNumberField("gameYear", type.getYear());
-			
+		// this is expensive, so avoid doing it whenever possible
+		if (entries) {
+			// bad place for a db query, oh well
+			Database db = Database.getInstance();
+
+			Map<GameType, List<Game>> games = db.getParticipatedGames(team);
 			g.writeArrayFieldStart("entries");
-			for (Game game : games.get(type)) {
+			for (GameType type : games.keySet()) {
 				g.writeStartObject();
-				g.writeStringField("eventName", game.getEvent().getShortName());
-				g.writeStringField("eventFullName", game.getEvent().getName());
+
+				g.writeStringField("gameName", type.getName());
+				g.writeNumberField("gameYear", type.getYear());
+
+				g.writeArrayFieldStart("entries");
+				for (Game game : games.get(type)) {
+					g.writeStartObject();
+					g.writeStringField("eventName", game.getEvent().getShortName());
+					g.writeStringField("eventFullName", game.getEvent().getName());
+					g.writeEndObject();
+				}
+				g.writeEndArray();
+
 				g.writeEndObject();
 			}
 			g.writeEndArray();
-			
-			g.writeEndObject();
 		}
-		g.writeEndArray();
-		*/
 		
 		g.writeEndObject();
+	}
+	
+	public static void exportTeam(JsonGenerator g, Team team) 
+			throws IOException {
+		exportTeam(g, team, false);
 	}
 	
 	public static void exportEvent(OutputStream out, Event event) 
