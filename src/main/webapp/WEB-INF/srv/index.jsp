@@ -111,7 +111,6 @@
 					<c:forEach items="${data.latestGames}" var="game">
 						<li>
 							<a href="/event/${game.event.shortName}/${game.gameYear}">
-								<%-- possibly slow --%>
 								${game.event.name} (${utils:date(game.startDate, "MMMM dd")})
 							</a>
 						</li>
@@ -145,7 +144,7 @@
 			<h2>Event Timeline</h2>
 			<div class="stats-timeline">
 				<js:chart chartId="${data.timeline.id}"
-						  style="width: 90%; height: 300px; margin: 0 auto;"/>
+						  style="width: 90%; height: 450px; margin: 0 auto;"/>
 			</div>
 		</c:if>
 		
@@ -156,9 +155,9 @@
 			data is linked together to allow for easy browsing data.
 			Clicking on table headers with arrows should sort the data
 			in the given column to help identify teams and events that
-			stick out. Although <b>registration is not required</b>, 
-			it has many benefits, including:
-		</p>
+			stick out.<%-- Although <b>registration is not required</b>, 
+			it has many benefits, including:--%>
+		</p><%--
 		<ul>
 			<li>
 				<b>Easy Editing</b> - Post and edit information without any
@@ -167,7 +166,7 @@
 			<li>
 				<b>Media Uploads</b> - Post robot photos and match videos!
 			</li>
-		</ul>
+		</ul>--%>
 
 		<h2>Other Odds and Ends</h2>
 		<%--<p>
@@ -190,6 +189,11 @@
 
 		<h1>News</h1>
 		<ul>
+			<li>
+				<b>March 2nd, 2013:</b> 2013 data is now up and running.
+				The usual game-day data updates should now be regular, and more
+				is coming soon.
+			</li>
 			<li>
 				<b>January 8th, 2012:</b> We've back! The host switch is
 				wrapping up and we're live again. Existing data will be imported

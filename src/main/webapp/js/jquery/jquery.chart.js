@@ -60,15 +60,22 @@
 			var chart = new chartClass(
 					document.getElementById(options.containerId));
 			
-			// timeline display hack
-			if (data.chartType === "Timeline") {
-				chart.setVisibleChartRangeNow();
-			}
-			
 			if (data.options) {
 				chart.draw(table, data.options);
 			} else {
 				chart.draw(table, data);
+			}
+			
+			// timeline range hack
+			if (data.chartType === "Timeline") {
+				//chart.setVisibleChartRangeNow();
+				var now = new Date().getTime();
+				var week = 7 * 24 * 60 * 60 * 1000;
+				
+				var lastWeek = new Date(now - week);
+				var nextWeek = new Date(now + week);
+				
+				chart.setVisibleChartRange(lastWeek, nextWeek);
 			}
 		});
 	};

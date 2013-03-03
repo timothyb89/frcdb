@@ -93,7 +93,8 @@ div.timeline-event-line {
 div.timeline-event-content {
     margin: 5px;
     white-space: nowrap;
-    overflow: hidden;
+    font-size: 10px;
+	overflow: hidden;
 }
 
 div.timeline-groups-axis {

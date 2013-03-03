@@ -66,8 +66,9 @@ public class EventTimeline extends YearChart {
 	@Override
 	public void writeOptions(JsonGenerator g) throws IOException {
 		g.writeBooleanField("showNavigation", true);
-		g.writeStringField("height", "300px");
+		g.writeStringField("height", "450px");
 		g.writeNumberField("eventMargin", 5);
+		g.writeNumberField("eventMarginAxis", 5);
 	}
 	
 }
