@@ -1,4 +1,4 @@
-package net.frcdb.stats.mining.y2012;
+package net.frcdb.stats.mining.y2013;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.frcdb.api.game.event.Game;
-import net.frcdb.api.game.standing.ReboundStanding;
+import net.frcdb.api.game.standing.AscentStanding;
 import net.frcdb.api.game.standing.Standing;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
@@ -22,17 +22,17 @@ import org.slf4j.LoggerFactory;
  *
  * @author tim
  */
-public class ReboundStandings {
-
+public class AscentStandings {
+	
 	public static final String TEST_URL =
-			"http://www2.usfirst.org/2012comp/events/SDC/rankings.html";
-
+			"http://www2.usfirst.org/2013comp/events/NHMA/rankings.html";
+	
 	private Game game;
 	private String url;
 
-	private Logger logger = LoggerFactory.getLogger(ReboundStanding.class);
+	private Logger logger = LoggerFactory.getLogger(AscentStanding.class);
 	
-	public ReboundStandings(Game game) {
+	public AscentStandings(Game game) {
 		this.game = game;
 		
 		url = game.getStandingsURL();
@@ -60,7 +60,7 @@ public class ReboundStandings {
 		Element table = tableIter.next();
 		
 		for (Element row : table.select("tr:gt(1)")) { // skip first 2 headers
-			ReboundStanding s = (ReboundStanding) game.createStanding();
+			AscentStanding s = (AscentStanding) game.createStanding();
 			
 			// 0: rank
 			// 1: team #

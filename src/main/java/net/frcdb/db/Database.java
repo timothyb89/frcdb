@@ -13,10 +13,12 @@ import net.frcdb.api.game.event.*;
 import net.frcdb.api.game.event.element.OPRStatistics;
 import net.frcdb.api.game.match.Match;
 import net.frcdb.api.game.match.MatchType;
+import net.frcdb.api.game.standing.AscentStanding;
 import net.frcdb.api.game.standing.BreakawayStanding;
 import net.frcdb.api.game.standing.LogomotionStanding;
 import net.frcdb.api.game.standing.ReboundStanding;
 import net.frcdb.api.game.standing.Standing;
+import net.frcdb.api.game.team.AscentTeamEntry;
 import net.frcdb.api.game.team.BreakawayTeamEntry;
 import net.frcdb.api.game.team.LogomotionTeamEntry;
 import net.frcdb.api.game.team.LunacyTeamEntry;
@@ -66,6 +68,7 @@ public class Database {
 		factory().register(Breakaway2010.class);
 		factory().register(Logomotion2011.class);
 		factory().register(Rebound2012.class);
+		factory().register(Ascent2013.class);
 		
 		factory().register(OPRStatistics.class);
 		
@@ -78,6 +81,7 @@ public class Database {
 		factory().register(BreakawayStanding.class);
 		factory().register(LogomotionStanding.class);
 		factory().register(ReboundStanding.class);
+		factory().register(AscentStanding.class);
 		
 		// teamentries
 		factory().register(TeamEntry.class);
@@ -85,6 +89,7 @@ public class Database {
 		factory().register(BreakawayTeamEntry.class);
 		factory().register(LogomotionTeamEntry.class);
 		factory().register(ReboundTeamEntry.class);
+		factory().register(AscentTeamEntry.class);
 		
 		factory().register(TeamRoot.class);
 		factory().register(Team.class);

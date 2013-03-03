@@ -11,18 +11,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Config {
 	
-	public static final String VERSION = "2.1beta";
+	public static final String VERSION = "2.3";
 	
 	private static Logger logger = LoggerFactory.getLogger(Config.class);
-	
-	private static final String CONFIG_FILE;
-	static {
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			CONFIG_FILE = "C:\\frcdb\\frcdb-config.properties";
-		} else {
-			CONFIG_FILE = "/opt/frcdb/frcdb-config.properties";
-		}
-	}
 	
 	private static Config instance;
 	

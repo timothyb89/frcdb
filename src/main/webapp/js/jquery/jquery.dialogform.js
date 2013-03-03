@@ -110,7 +110,7 @@
 				
 				// fix upload for multipart data
 				if (contentTypeWrapper === "multipart/form-data") {
-					console.log("Using HTML5 FormData")
+					console.log("Using HTML5 FormData");
 					processDataWrapper = false;
 					
 					// content type must be false to prevent jquery from

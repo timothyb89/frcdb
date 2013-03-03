@@ -8,6 +8,20 @@ import net.frcdb.api.event.Event;
  */
 public enum GameType {
 
+	ASCENT(2013, "Ultimate Ascent") {
+
+		@Override
+		public Game create(Event event) {
+			return new Ascent2013(event);
+		}
+
+		@Override
+		public Class getGameClass() {
+			return Ascent2013.class;
+		}
+		
+	},
+	
 	REBOUND(2012, "Rebound Rumble") {
 
 		@Override

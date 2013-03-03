@@ -1,6 +1,5 @@
 package net.frcdb.stats.mining.y2012;
 
-import com.googlecode.objectify.Ref;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,11 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.standing.ReboundStanding;
-import net.frcdb.api.game.standing.Standing;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
 import net.frcdb.db.Database;
-import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

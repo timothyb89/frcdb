@@ -64,11 +64,18 @@ public class GamesImport {
 		String eventName = gameNode.get("eventShortName").asText();
 		
 		Event event = db.getEventByShortName(eventName);
+		
+		logger.info("Creating game for " + event + " (" + eventName + ")");
+		
 		Game g = GameType.getGame(year).create(event);
 		
 		// parse general info
 		g.setStartDate(new Date(gameNode.get("startDate").asLong()));
 		g.setEndDate(new Date(gameNode.get("endDate").asLong()));
+		
+		if (gameNode.has("eid")) {
+			g.setEid(gameNode.get("eid").asInt());
+		}
 		
 		Database.save().entity(g).now();
 		

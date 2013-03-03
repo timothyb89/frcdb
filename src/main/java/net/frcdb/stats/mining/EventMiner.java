@@ -191,7 +191,7 @@ public class EventMiner {
 						g.setStandingsURL(Sources.getStandingsURL(g));
 						g.setAwardsURL(Sources.getAwardsURL(g));
 						
-						System.out.println("[Info ] Updated teamlist for "
+						logger.info("Updated teamlist for "
 								+ e.getShortName() + " " + g.getGameYear() 
 								+ ". " + g.getTeams().size() + " teams "
 								+ "attending.");
@@ -205,7 +205,7 @@ public class EventMiner {
 				// store the updated event
 				db.store(e);
 			} catch (Exception ex) {
-				logger.error("Could not process event from: " + input);
+				logger.error("Could not process event from: " + input, ex);
 			}
 		}
 	}

@@ -24,7 +24,7 @@ public class Event {
 	/**
 	 * The year to show default data from.
 	 */
-	public static final int CURRENT_YEAR = 2012;
+	public static final int CURRENT_YEAR = 2013;
 	
 	@Parent
 	private Key<EventRoot> parent;

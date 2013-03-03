@@ -1,0 +1,5 @@
+Sitemap: http://www.frcdb.net/sitemap.xml
+
+# Slow them down, their hits are putting us over quota
+User-Agent: AhrefsBot 
+Crawl-Delay: 10

@@ -44,7 +44,15 @@ public class EventsImport {
 	
 	private void parse(JsonNode eventNode) {
 		String shortName = eventNode.get("shortName").asText();
-		Event event = new Event(shortName);
+		
+		// don't overwrite if we can avoid it
+		Event event = db.getEventByShortName(shortName);
+		if (event == null) {
+			event = new Event(shortName);
+			logger.info("Importing new event: " + event);
+		} else {
+			logger.info("Merging event: " + event);
+		}
 		
 		String name       = eventNode.get("name").asText();
 		String venue      = eventNode.get("venue").asText();
@@ -62,8 +70,6 @@ public class EventsImport {
 		event.setIdentifier(identifier);
 		
 		db.store(event);
-		
-		logger.info("Imported: " + event);
 	}
 	
 	public static void main(String[] args) throws IOException {
