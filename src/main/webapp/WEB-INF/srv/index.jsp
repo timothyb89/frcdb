@@ -8,9 +8,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="http://frcdb.net/taglibs/utils" prefix="utils" %>
+<%@ taglib uri="/WEB-INF/tlds/js" prefix="js" %>
 
 <tiles:insertDefinition name="layout-default">
 	<tiles:putAttribute name="title" value="Home"/>
+	<tiles:putAttribute name="head-extra">
+		<script type="text/javascript" src="/js/timeline-min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/js/timeline.css">
+		
+		<script type="text/javascript">
+			google.load("visualization", "1", { packages: ["corechart"] });
+		</script>
+	</tiles:putAttribute>
 	<tiles:putAttribute name="body">
 		<h1>Homepage</h1>
 		
@@ -21,8 +30,8 @@
 
 		<h2>Beta warning!</h2>
 		<p>
-			We're just wrapping up a port to a new host and there's still bound
-			to be a large number of issues. Please bear with us while we get
+			We've just wrapped up a port to a new host and there's still bound
+			to be some occasional issues. Please bear with us while we get
 			things sorted, and sorry for the inconvenience!
 		</p>
 		<p>
@@ -30,15 +39,7 @@
 		</p>
 		<ul>
 			<li>Media uploads</li>
-			<li>Searching, except by exact team number / event shortname</li>
-			<li>Standings pages (full event view is fine, however)</li>
-			<li>Lots of other things</li>
 		</ul>
-		<p>
-			A lot of data may be missing or otherwise unavailable at the moment
-			as we can only import a small amount of data at a time. As such,
-			it may take several days for everything to get back to normal.
-		</p>
 		
 		<h2>Statistics</h2>
 		<p>
@@ -79,10 +80,10 @@
 							</a>
 						</li>
 					</c:forEach>
-				</ul>
+				</ul><%--
 				<div class="stats-footer">
 					<a href="/search?q=&amp;type=events">View All</a>
-				</div>
+				</div>--%>
 			</div>
 
 			<div class="stats-item">
@@ -97,11 +98,7 @@
 							</a>
 						</li>
 					</c:forEach>
-					
 				</ul>
-				<div class="stats-footer">
-					<a href="/search?q=&amp;type=teams">View All</a>
-				</div>
 			</div>
 			
 			<br class="clear">
@@ -143,6 +140,14 @@
 		</div>
 		
 		<br class="clear">
+		
+		<c:if test="${not empty data.timeline}">
+			<h2>Event Timeline</h2>
+			<div class="stats-timeline">
+				<js:chart chartId="${data.timeline.id}"
+						  style="width: 90%; height: 300px; margin: 0 auto;"/>
+			</div>
+		</c:if>
 		
 		<h2>Other Info</h2>
 		<p>

@@ -258,14 +258,6 @@ public class EventServlet extends HttpServlet {
 			throw new IllegalArgumentException("Event not found!");
 		} else {
 			request.setAttribute("event", evt);
-			
-			// register a hit
-			// TODO: fix this later when the db supports it
-			//db.store(new HitEntry("event", evt.getShortName()));
-			
-			// use some simple hit counting for now
-			evt.setHits(evt.getHits() + 1);
-			db.store(evt);
 		}
 	}
 
@@ -288,14 +280,18 @@ public class EventServlet extends HttpServlet {
 			}
 		}
 		
-		
-		
 		if (game == null) {
 			throw new IllegalArgumentException("Event " + event.getShortName()
 					+ " has no game for year " + year);
 		}
 		
 		data.setGame(game);
+		
+		// use some simple hit counting for now
+		event.setHits(event.getHits() + 1);
+		Database.save().entity(event);
+		
+		// todo: warnings aren't displayed for in-progress events
 		
 		data.setTeams(game.getTeams());
 		data.setQualificationMatches(game.getQualificationMatches());

@@ -37,6 +37,7 @@ import net.frcdb.robot.RobotProperty;
 import net.frcdb.stats.StatisticsRoot;
 import net.frcdb.stats.chart.api.Chart;
 import net.frcdb.stats.chart.ChartRoot;
+import net.frcdb.stats.chart.EventTimeline;
 import net.frcdb.stats.chart.EventsPerTeamChart;
 import net.frcdb.stats.chart.api.GameChart;
 import net.frcdb.stats.chart.OPRComparisonChart;
@@ -106,6 +107,7 @@ public class Database {
 		factory().register(OPROverTimeChart.class);
 		factory().register(TeamAgeVsOPRChart.class);
 		factory().register(EventsPerTeamChart.class);
+		factory().register(EventTimeline.class);
 		
 		// robots
 		

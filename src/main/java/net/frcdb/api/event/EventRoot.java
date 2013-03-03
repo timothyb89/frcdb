@@ -4,8 +4,10 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import net.frcdb.api.team.TeamRoot;
+import java.util.HashMap;
+import java.util.Map;
 import net.frcdb.db.Database;
+import net.frcdb.stats.chart.EventTimeline;
 
 /**
  * A meta-object for some basic overall stats (counts) and to give event IDs
@@ -23,12 +25,18 @@ public class EventRoot {
 	private int eventCount;
 	private int gameCount;
 
+	// objectify requires strings
+	private Map<String, Key<EventTimeline>> timelines;
+	
 	public EventRoot() {
+		timelines = new HashMap<String, Key<EventTimeline>>();
 	}
 
 	public EventRoot(int eventCount, int gameCount) {
 		this.eventCount = eventCount;
 		this.gameCount = gameCount;
+		
+		timelines = new HashMap<String, Key<EventTimeline>>();
 	}
 
 	public int getEventCount() {
@@ -45,6 +53,27 @@ public class EventRoot {
 
 	public void setGameCount(int gameCount) {
 		this.gameCount = gameCount;
+	}
+	
+	public void putTimeline(int year, EventTimeline timeline) {
+		timelines.put(String.valueOf(year), Key.create(timeline));
+	}
+	
+	public Key<EventTimeline> getTimelineKey(int year) {
+		return timelines.get(String.valueOf(year));
+	}
+
+	public EventTimeline getTimeline(int year) {
+		Key<EventTimeline> key = getTimelineKey(year);
+		if (key == null) {
+			return null;
+		}
+		
+		return Database.ofy().load().key(key).get();
+	}
+	
+	public Map<String, Key<EventTimeline>> getTimelines() {
+		return timelines;
 	}
 	
 	/**

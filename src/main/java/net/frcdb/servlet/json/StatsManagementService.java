@@ -22,6 +22,7 @@ import net.frcdb.stats.calc.ChartsInit;
 import net.frcdb.stats.calc.Counts;
 import net.frcdb.stats.calc.EventCacheGenerator;
 import net.frcdb.stats.calc.EventStatistic;
+import net.frcdb.stats.calc.EventTimelines;
 import net.frcdb.stats.calc.FixSources;
 import net.frcdb.stats.calc.GameStatistic;
 import net.frcdb.stats.calc.GameYearIndexes;
@@ -72,6 +73,7 @@ public class StatsManagementService {
 		register(new TeamCacheGenerator());
 		register(new EventCacheGenerator());
 		register(new ChartsInit());
+		register(new EventTimelines());
 	}
 	
 	public static Statistic getStatistic(String name) {

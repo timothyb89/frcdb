@@ -35,11 +35,6 @@ public class StatisticsServlet extends HttpServlet {
 		
 		data.setCharts(StatisticsRoot.get().getCharts());
 		
-		System.out.println("charts:");
-		for (Chart c : data.getCharts()) {
-			System.out.println("\t" + c.getDisplayName() + ": " + c.getId());
-		}
-		
 		request.setAttribute("data", data);
 		
 		forward("/stats.jsp", request, response);

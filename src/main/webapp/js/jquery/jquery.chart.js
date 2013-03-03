@@ -29,7 +29,7 @@
 			for (var i = 0; i < data.columns.length; i++) {
 				var column = data.columns[i];
 				
-				if (column.type == "date") {
+				if (column.type === "date") {
 					dateCols.push(i);
 				}
 				
@@ -47,11 +47,23 @@
 			// add rows
 			table.addRows(data.rows);
 			
+			// determine the chart class - plugins first
+			var className;
+			if (data.chartType === "Timeline") {
+				className = "links.Timeline";
+			} else {
+				className = "google.visualization." + data.chartType;
+			}
+			
 			// instantiate chart class
-			var className = "google.visualization." + data.chartType;
 			var chartClass = stringToFunction(className);
 			var chart = new chartClass(
 					document.getElementById(options.containerId));
+			
+			// timeline display hack
+			if (data.chartType === "Timeline") {
+				chart.setVisibleChartRangeNow();
+			}
 			
 			if (data.options) {
 				chart.draw(table, data.options);
@@ -59,5 +71,5 @@
 				chart.draw(table, data);
 			}
 		});
-	}
+	};
 })(jQuery);

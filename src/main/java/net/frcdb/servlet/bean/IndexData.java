@@ -4,6 +4,7 @@ import java.util.Collection;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.team.Team;
+import net.frcdb.stats.chart.EventTimeline;
 
 /**
  *
@@ -21,6 +22,8 @@ public class IndexData {
 	private Collection<Game> latestGames;
 	private Collection<Game> upcomingGames;
 	private Collection<Game> currentGames;
+	
+	private EventTimeline timeline;
 
 	public IndexData() {
 	}
@@ -87,6 +90,14 @@ public class IndexData {
 
 	public void setCurrentGames(Collection<Game> currentGames) {
 		this.currentGames = currentGames;
+	}
+
+	public EventTimeline getTimeline() {
+		return timeline;
+	}
+
+	public void setTimeline(EventTimeline timeline) {
+		this.timeline = timeline;
 	}
 	
 }

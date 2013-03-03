@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.frcdb.api.event.Event;
 import net.frcdb.api.event.EventRoot;
 import net.frcdb.api.team.TeamRoot;
 import net.frcdb.db.Database;
@@ -47,6 +48,8 @@ public class IndexServlet extends HttpServlet {
 		data.setLatestGames(db.getLatestGames(5));
 		data.setUpcomingGames(db.getUpcomingGames(5));
 		data.setCurrentGames(db.getOngoingGames());
+		
+		data.setTimeline(eventRoot.getTimeline(Event.CURRENT_YEAR));
 		
 		request.setAttribute("data", data);
 		

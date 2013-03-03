@@ -188,31 +188,6 @@
 
 		</div>
 
-		<!--
-					<div id="bg2">
-						<div id="header2">
-							<div id="search">
-								<form method="get" action="/search">
-		<js:input name="q" value="search..." clazz="text"/><br>
-		<div id="search_radios">
-			<input type="radio"
-				   name="type"
-				   value="teams"
-				   checked="checked"
-				   id="teamsBox"><label for="teamsBox">Teams</label>
-			<input type="radio"
-				   name="type"
-				   value="events" 
-				   id="eventsBox"><label for="eventsBox">Events</label>
-			<input type="submit"
-				   value="Search"
-				   class="button">
-		</div>
-	</form>
-</div>
-</div>
-</div>
-		-->
 		<script type="text/javascript">
 
 			var _gaq = _gaq || [];
