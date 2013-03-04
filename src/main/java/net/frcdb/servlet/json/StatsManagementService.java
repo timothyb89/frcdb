@@ -18,25 +18,7 @@ import javax.ws.rs.core.Response;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
-import net.frcdb.stats.calc.ChartsInit;
-import net.frcdb.stats.calc.Counts;
-import net.frcdb.stats.calc.EventCacheGenerator;
-import net.frcdb.stats.calc.EventStatistic;
-import net.frcdb.stats.calc.EventTimelines;
-import net.frcdb.stats.calc.FixSources;
-import net.frcdb.stats.calc.GameStatistic;
-import net.frcdb.stats.calc.GameYearIndexes;
-import net.frcdb.stats.calc.GlobalStatistic;
-import net.frcdb.stats.calc.MatchResultsUpdater;
-import net.frcdb.stats.calc.OPRDPRCalc;
-import net.frcdb.stats.calc.ReferenceRepair;
-import net.frcdb.stats.calc.SitemapGenerator;
-import net.frcdb.stats.calc.StandingsUpdater;
-import net.frcdb.stats.calc.Statistic;
-import net.frcdb.stats.calc.TeamCacheGenerator;
-import net.frcdb.stats.calc.TeamEntryUpdater;
-import net.frcdb.stats.calc.TeamStatisticsCalc;
-import net.frcdb.stats.calc.TeamUpdater;
+import net.frcdb.stats.calc.*;
 import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +46,7 @@ public class StatsManagementService {
 		register(new TeamEntryUpdater());
 		register(new MatchResultsUpdater());
 		register(new StandingsUpdater());
+		register(new FinalMatchLevel());
 		
 		register(new ReferenceRepair());
 		
@@ -176,7 +159,6 @@ public class StatsManagementService {
 					
 					games = new ArrayList<Game>();
 					// wtf generics? this is stupid
-					// so much for generics actually helping anything
 					((List) games).add(game);
 				}
 				

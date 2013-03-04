@@ -289,8 +289,8 @@ ${data.gameJson}
 							<c:forEach items="${m.blueTeams}" var="t">
 								<td>${t.number}</td>
 							</c:forEach>
-							<td>${m.redScore}</td>
-							<td>${m.blueScore}</td>
+							<td>${m.redScoreString}</td>
+							<td>${m.blueScoreString}</td>
 							<td>
 								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/${m.number}">
 									Info
@@ -329,8 +329,8 @@ ${data.gameJson}
 							<c:forEach items="${m.blueTeams}" var="t">
 								<td>${t.number}</td>
 							</c:forEach>
-							<td>${m.redScore}</td>
-							<td>${m.blueScore}</td>
+							<td>${m.redScoreString}</td>
+							<td>${m.blueScoreString}</td>
 							<td>
 								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/q${m.number}">
 									Info
@@ -369,8 +369,8 @@ ${data.gameJson}
 							<c:forEach items="${m.blueTeams}" var="t">
 								<td>${t.number}</td>
 							</c:forEach>
-							<td>${m.redScore}</td>
-							<td>${m.blueScore}</td>
+							<td>${m.redScoreString}</td>
+							<td>${m.blueScoreString}</td>
 							<td>
 								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/s${m.number}">
 									Info
@@ -409,8 +409,8 @@ ${data.gameJson}
 							<c:forEach items="${m.blueTeams}" var="t">
 								<td>${t.number}</td>
 							</c:forEach>
-							<td>${m.redScore}</td>
-							<td>${m.blueScore}</td>
+							<td>${m.redScoreString}</td>
+							<td>${m.blueScoreString}</td>
 							<td>
 								<a href="/event/${data.event.shortName}/${data.game.gameYear}/match/f${m.number}">
 									Info

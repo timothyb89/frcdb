@@ -170,6 +170,24 @@ public class Match implements ContentProvider {
 	public void setRedScore(int redScore) {
 		this.redScore = redScore;
 	}
+	
+	public String getScoreString(int score) {
+		if (score == SCORE_DISQUALIFIED) {
+			return "DQ";
+		} else if (score == SCORE_UNKNOWN) {
+			return "-";
+		} else {
+			return String.valueOf(score);
+		}
+	}
+	
+	public String getRedScoreString() {
+		return getScoreString(redScore);
+	}
+	
+	public String getBlueScoreString() {
+		return getScoreString(blueScore);
+	}
 
 	public String getIdentifier() {
 		return type.getPrefix().toLowerCase() + number;

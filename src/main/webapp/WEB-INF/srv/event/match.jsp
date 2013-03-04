@@ -24,11 +24,11 @@
 			<tbody>
 				<tr>
 					<td>Red Score</td>
-					<td>${data.match.redScore}</td>
+					<td>${data.match.redScoreString}</td>
 				</tr>
 				<tr>
 					<td>Blue Score</td>
-					<td>${data.match.blueScore}</td>
+					<td>${data.match.blueScoreString}</td>
 				</tr>
 				
 				<c:if test="${utils:hasProperty(data.game, 'highestOPR')}">
