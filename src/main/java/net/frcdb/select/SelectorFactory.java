@@ -1,6 +1,10 @@
 package net.frcdb.select;
 
-import java.util.Date;
+import net.frcdb.select.filter.DatabaseFilterFunction;
+import net.frcdb.select.filter.EqualsFilter;
+import net.frcdb.select.filter.GreaterThanFilter;
+import net.frcdb.select.filter.LessThanFilter;
+import net.frcdb.select.filter.StartsWithFilter;
 import org.mozilla.javascript.ClassShutter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -29,16 +33,23 @@ public class SelectorFactory {
 		Selector ret = null;
 		try {
 			ScriptableObject global = cx.initStandardObjects();
-			global.defineProperty("select", new SelectFunction(), ScriptableObject.DONTENUM);
-			global.defineProperty("lt", Filters.lt, ScriptableObject.DONTENUM);
-			global.defineProperty("now", Filters.now, ScriptableObject.DONTENUM);
+			global.defineProperty("select", new SelectFunction(), 0);
+			global.defineProperty("db", new DatabaseFilterFunction(), 0);
+			global.defineProperty("lt", new LessThanFilter(), 0);
+			global.defineProperty("gt", new GreaterThanFilter(), 0);
+			global.defineProperty("eq", new EqualsFilter(), 0);
+			global.defineProperty("startsWith", new StartsWithFilter(), 0);
+			global.defineProperty("now", DateFunctions.now, 0);
+			global.defineProperty("offset", DateFunctions.offset, 0);
+			global.defineProperty("date", DateFunctions.date, 0);
 			
 			ret = (Selector) cx.evaluateString(global, text, "Selector", 0, null);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
+			
 			Context.exit();
 			return ret;
+		} catch (Exception ex) {
+			Context.exit();
+			throw new IllegalArgumentException("Error in selector", ex);
 		}
 	}
 	
@@ -89,11 +100,6 @@ public class SelectorFactory {
 			return cx;
 		}
 		
-	}
-	
-	public static void main(String[] args) {
-		Selector s = SelectorFactory.createSelector("select('DateTest', { date: lt(now()) });");
-		System.out.println("pass? " + s.passes(new Date(113, 2, 10)));
 	}
 	
 }

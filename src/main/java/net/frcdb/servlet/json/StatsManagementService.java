@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.db.Database;
+import net.frcdb.select.Selector;
+import net.frcdb.select.SelectorFactory;
 import net.frcdb.stats.calc.*;
 import net.frcdb.util.UserUtil;
 import org.slf4j.Logger;
@@ -116,6 +118,60 @@ public class StatsManagementService {
 	}
 	
 	@POST
+	@Path("/execute-selector")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonResponse executeSelect(
+			@FormParam("name") String name,
+			@FormParam("selector") String selector) {
+		if (!UserUtil.isUserAdmin()) {
+			return JsonResponse.error("You are not allowed to execute stats.");
+		}
+		
+		// do some basic parameter checking
+		
+		Statistic s = getStatistic(name);
+		if (s == null) {
+			return JsonResponse.error("Statistic not found: " + name);
+		}
+		
+		if (s instanceof GlobalStatistic) {
+			return JsonResponse.error("Global statistics cannot be used with "
+					+ "selectors - use the normal executor instead.");
+		}
+		
+		// validate the selector by parsing it
+		try {
+			Selector sel = SelectorFactory.createSelector(selector);
+		} catch (Exception ex) {
+			logger.error("Selector error", ex);
+			return JsonResponse.error("Selector error: " + ex.getMessage());
+		}
+		
+		// TODO: check event and year?
+		
+		Queue queue = QueueFactory.getQueue("statistics");
+		
+		// execute on a backend if needed
+		if (s.getBackendName() != null) {
+			String host = BackendServiceFactory.getBackendService()
+					.getBackendAddress(s.getBackendName());
+			queue.add(withUrl("/json/admin/stats/execute-selector-task")
+					.method(TaskOptions.Method.POST)
+					.param("name", name)
+					.param("selector", selector)
+					.header("Host", host));
+		} else {
+			// queue the task normally
+			queue.add(withUrl("/json/admin/stats/execute-selector-task")
+					.method(TaskOptions.Method.POST)
+					.param("name", name)
+					.param("selector", selector));
+		}
+		
+		return JsonResponse.success("Statistic has been queued for calculation.");
+	}
+	
+	@POST
 	@Path("/execute-task")
 	public Response executeTask(
 			@FormParam("name") String name,
@@ -200,6 +256,63 @@ public class StatsManagementService {
 			
 			logger.info("Stats completed. stat=" + s.getClass().getName()
 					+ ", event=" + eventName + ", year=" + year);
+			return Response.ok("Processing finished without errors.").build();
+		} catch (Exception ex) {
+			logger.error("Error encountered while processing statistic.", ex);
+			return Response.serverError()
+					.entity("Error: " + ex.getMessage())
+					.build();
+		}
+	}
+	
+	@POST
+	@Path("/execute-selector-task")
+	public Response executeSelectorTask(
+			@FormParam("name") String name,
+			@FormParam("selector") String selector) {
+		Statistic s = getStatistic(name);
+		if (s == null) {
+			logger.warn("Statistic not found: " + name);
+			return Response.serverError()
+					.entity("Statistic not found: " + name)
+					.build();
+		}
+		
+		Selector sel = SelectorFactory.createSelector(selector);
+		
+		try {
+			if (s instanceof GameStatistic) {
+				GameStatistic gs = (GameStatistic) s;
+				
+				if (sel.getType() != Game.class) {
+					throw new IllegalArgumentException("Invalid selector "
+							+ "provided for statistic " + name);
+				}
+				
+				for (Object o : sel.fetchMatching()) {
+					Game g = (Game) o;
+					logger.info("Executing game statistic "
+							+ s.getClass().getName() + " on game " + g);
+					gs.calculate(g);
+				}
+			} else if (s instanceof EventStatistic) {
+				EventStatistic es = (EventStatistic) s;
+				
+				if (sel.getType() != Event.class) {
+					throw new IllegalArgumentException("Invalid selector "
+							+ "provided for statistic " + name);
+					
+				}
+				
+				for (Object o : sel.fetchMatching()) {
+					Event e = (Event) o;
+					logger.info("Executing event statistic "
+							+ s.getClass().getName() + " on event " + e);
+					es.calculate(e);
+				}
+			}
+			
+			logger.info("Stats completed. stat=" + s.getClass().getName());
 			return Response.ok("Processing finished without errors.").build();
 		} catch (Exception ex) {
 			logger.error("Error encountered while processing statistic.", ex);

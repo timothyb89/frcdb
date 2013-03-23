@@ -33,6 +33,10 @@
  * This will merge the field definitions into the new `values` object, which
  * can then be passed to the dialogform function.
  * 
+ * Note on special form types: the "textarea" type is a special case. Using
+ * "textarea" as the field type will cause a <textarea> tag to be used instead
+ * of an <input> tag.
+ * 
  * Note that setting the contentType attribute to `multipart/form-data` will
  * automatically wrap the form in a FormData object rather than using jQuery's
  * form.serialize().
@@ -86,7 +90,14 @@
 
 			form.append(label);
 
-			var input = $("<input>");
+			// create a proper input element
+			var input;
+			if (options.type === "textarea") {
+				input = $("<textarea>");
+			} else {
+				input = $("<input>");
+			}
+			
 			input.addClass("ui-corner-all");
 			input.addClass("ui-widget-content");
 			input.css("width", "95%");

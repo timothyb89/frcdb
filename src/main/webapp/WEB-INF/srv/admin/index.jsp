@@ -39,13 +39,17 @@
 			Zip files can be uploaded here, and will be extracted to the
 			blobstore and queued for import. Import takes a fairly long time
 			and progress can be viewed from the appengine's task queue admin
-			panel. Note that this is extremely expensive: the 2010-2012 data
+			panel. Note that this is fairly expensive: the 2010-2012 data
 			import cost roughly $0.52 on top of the free quota for all 188
 			events.
 		</p>
 		
 		<h3>Statistics</h3>
 		<button id="executeStatistic">Execute statistic</button>
+		<button id="executeStatisticSelector">Execute w/ selector</button>
+		
+		<h3>Other</h3>
+		<button id="selectTest">Selector Test</button>
 		
 		<h4>Types</h4>
 		<ul>
@@ -167,6 +171,11 @@
 				"Year":       { name: "year", type: "number" }
 			};
 			
+			var executeStatisticSelectorTemplate = {
+				"Name":       { name: "name", "type": "text" },
+				"Selector":   { name: "selector", type: "textarea", rows: "10" }
+			};
+			
 			$("#teamCreate").button().click(function() {
 				$.dialogform({
 					title: "Create Team",
@@ -244,6 +253,30 @@
 					title: "Execute Statistic",
 					fields: executeStatisticTemplate,
 					url: "/json/admin/stats/execute",
+					success: function(response) {
+						console.log(response);
+						alert(response.message);
+					}
+				});
+			});
+			
+			$("#executeStatisticSelector").button().click(function() {
+				$.dialogform({
+					title: "Execute Statistic (Selector)",
+					fields: executeStatisticSelectorTemplate,
+					url: "/json/admin/stats/execute-selector",
+					success: function(response) {
+						console.log(response);
+						alert(response.message);
+					}
+				});
+			});
+			
+			$("#selectTest").button().click(function() {
+				$.dialogform({
+					title: "Test Selector",
+					fields: selectTestTemplate,
+					url: "/json/admin/stats/select-test",
 					success: function(response) {
 						console.log(response);
 						alert(response.message);
