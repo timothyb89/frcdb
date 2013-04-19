@@ -20,6 +20,7 @@ import net.frcdb.api.game.standing.Standing;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.game.team.element.*;
 import net.frcdb.api.team.Team;
+import net.frcdb.api.team.TeamStatistics;
 import net.frcdb.db.Database;
 
 /**
@@ -83,6 +84,30 @@ public class JSONUtil {
 			}
 			g.writeEndArray();
 		}
+		
+		g.writeArrayFieldStart("statistics");
+		for (TeamStatistics s : team.getStatistics()) {
+			g.writeStartObject();
+			
+			g.writeNumberField("year", s.getYear());
+			
+			g.writeNumberField("oprMax", s.getOprMax());
+			g.writeNumberField("oprMean", s.getOprMean());
+			g.writeNumberField("oprMin", s.getOprMin());
+			g.writeNumberField("oprSum", s.getOprSum());
+			g.writeNumberField("oprVariance", s.getOprVariance());
+			g.writeNumberField("oprStandardDeviation", s.getOprStandardDeviation());
+			
+			g.writeNumberField("oprZMax", s.getOprMax());
+			g.writeNumberField("oprZMean", s.getOprMean());
+			g.writeNumberField("oprZMin", s.getOprMin());
+			g.writeNumberField("oprZSum", s.getOprSum());
+			g.writeNumberField("oprZVariance", s.getOprVariance());
+			g.writeNumberField("oprZStandardDeviation", s.getOprStandardDeviation());
+			
+			g.writeEndObject();
+		}
+		g.writeEndArray();
 		
 		g.writeEndObject();
 	}

@@ -65,13 +65,12 @@ public class AscentStandings {
 			// 0: rank
 			// 1: team #
 			// 2: qualification score
-			// 3: hybrid points
-			// 4: bridge points
+			// 3: AP (?)
+			// 4: coopertition points
 			// 5: teleop points
-			// 6: coopertition points
-			// 7: record (wins-losses-ties)
-			// 8: disqualifications
-			// 9: matches played
+			// 6: record (wins-losses-ties)
+			// 7 disqualifications
+			// 8: matches played
 
 			s.setRank(Integer.parseInt(row.child(0).text()));
 			
@@ -83,19 +82,20 @@ public class AscentStandings {
 			s.setTeam(game.getEntry(team));
 
 			s.setQualificationScore(Float.parseFloat(row.child(2).text()));
-			s.setHybridPoints(Float.parseFloat(row.child(3).text()));
-			s.setBridgePoints(Float.parseFloat(row.child(4).text()));
+			// todo: old/invalid!
+			// s.setHybridPoints(Float.parseFloat(row.child(3).text()));
+			// s.setBridgePoints(Float.parseFloat(row.child(4).text()));
 			s.setTeleopPoints(Float.parseFloat(row.child(5).text()));
 
-			s.setCoopertitionPoints(Integer.parseInt(row.child(6).text()));
+			s.setCoopertitionPoints((int) Float.parseFloat(row.child(4).text()));
 
-			String[] wlt = StringUtils.split(row.child(7).text(), '-');
+			String[] wlt = StringUtils.split(row.child(6).text(), '-');
 			s.setWins(Integer.parseInt(wlt[0]));
 			s.setLosses(Integer.parseInt(wlt[1]));
 			s.setTies(Integer.parseInt(wlt[2]));
 
-			s.setDisqualifications(Integer.parseInt(row.child(8).text()));
-			s.setMatchesPlayed(Integer.parseInt(row.child(9).text()));
+			s.setDisqualifications(Integer.parseInt(row.child(7).text()));
+			s.setMatchesPlayed(Integer.parseInt(row.child(8).text()));
 
 			ret.add(s);
 		}
