@@ -310,6 +310,8 @@ public class StatsManagementService {
 							+ s.getClass().getName() + " on event " + e);
 					es.calculate(e);
 				}
+			} else {
+				logger.warn("Unknown statistic type: " + s.getClass().getName());
 			}
 			
 			logger.info("Stats completed. stat=" + s.getClass().getName());
