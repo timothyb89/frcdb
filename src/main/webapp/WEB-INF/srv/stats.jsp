@@ -13,7 +13,7 @@
 	<tiles:putAttribute name="title" value="Statistics"/>
 	<tiles:putAttribute name="head-extra">
 		<script type="text/javascript">
-			google.load("visualization", "1", { packages: ["corechart"] });
+			google.load("visualization", "1", { packages: ["corechart", "geochart"] });
 		</script>
 	</tiles:putAttribute>
 	<tiles:putAttribute name="body">

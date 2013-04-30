@@ -51,6 +51,7 @@ public class StatsManagementService {
 		register(new FinalMatchLevel());
 		
 		register(new ReferenceRepair());
+		register(new GeocodeUpdater());
 		
 		register(new Counts());
 		register(new SitemapGenerator());
@@ -281,6 +282,11 @@ public class StatsManagementService {
 		Selector sel = SelectorFactory.createSelector(selector);
 		
 		try {
+			List<Object> matches = sel.fetchMatching();
+			if (matches.isEmpty()) {
+				throw new IllegalArgumentException("Selector had no results");
+			}
+			
 			if (s instanceof GameStatistic) {
 				GameStatistic gs = (GameStatistic) s;
 				
@@ -289,7 +295,7 @@ public class StatsManagementService {
 							+ "provided for statistic " + name);
 				}
 				
-				for (Object o : sel.fetchMatching()) {
+				for (Object o : matches) {
 					Game g = (Game) o;
 					logger.info("Executing game statistic "
 							+ s.getClass().getName() + " on game " + g);
@@ -301,10 +307,9 @@ public class StatsManagementService {
 				if (sel.getType() != Event.class) {
 					throw new IllegalArgumentException("Invalid selector "
 							+ "provided for statistic " + name);
-					
 				}
 				
-				for (Object o : sel.fetchMatching()) {
+				for (Object o : matches) {
 					Event e = (Event) o;
 					logger.info("Executing event statistic "
 							+ s.getClass().getName() + " on event " + e);

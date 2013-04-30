@@ -1,11 +1,15 @@
 package net.frcdb.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
@@ -35,32 +39,32 @@ public class Geocoder {
 		this.location = location;
 	}
 	
-	public void fetch() throws URISyntaxException, IOException {
+	public void fetch() throws URISyntaxException, IOException, GeocodingException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("output", "csv"));
-		params.add(new BasicNameValuePair("q", location));
+		String str = "http://maps.google.com/maps/api/geocode/json?"
+				+ "address=" + URLEncoder.encode(location, "UTF-8")
+				+ "&sensor=false";
 		
-		URI uri = URIUtils.createURI(
-				"http", "maps.google.com", 80, "/maps/geo",
-				URLEncodedUtils.format(params, "UTF-8"), null);
+		URL url = new URL(str);
 		
-		HttpGet get = new HttpGet(uri);
-		HttpResponse response = client.execute(get);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root = mapper.readTree(url.openStream());
 		
-		InputStream is = response.getEntity().getContent();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		
-		String text = br.readLine();
-		String[] split = StringUtils.split(text, ",");
-		
-		String latString = split[2];
-		latitude = Double.parseDouble(latString);
-		
-		String longString = split[3];
-		longitude = Double.parseDouble(longString);
+		JsonNode results = root.get("results");
+		if (results.has(0)) {
+			JsonNode result = results.get(0);
+			JsonNode loc = result.path("geometry").path("location");
+			
+			if (loc.isMissingNode()) {
+				throw new GeocodingException("Invalid geocoding result");
+			}
+			
+			latitude = loc.get("lat").asDouble();
+			longitude = loc.get("lng").asDouble();
+		} else {
+			throw new GeocodingException("No results for query: " + location);
+		}
 	}
 
 	public double getLatitude() {
@@ -78,5 +82,7 @@ public class Geocoder {
 		System.out.println("Latitude:  " + geo.getLatitude());
 		System.out.println("Longitude: " + geo.getLongitude());
 	}
+
+	
 	
 }

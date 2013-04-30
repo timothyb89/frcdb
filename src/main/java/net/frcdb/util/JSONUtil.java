@@ -138,6 +138,8 @@ public class JSONUtil {
 		g.writeStringField("state", event.getState());
 		g.writeStringField("country", event.getCountry());
 		g.writeStringField("identifier", event.getIdentifier());
+		g.writeNumberField("latitude", event.getLatitude());
+		g.writeNumberField("longitude", event.getLongitude());
 		
 		if (event.getAliases() != null) {
 			g.writeArrayFieldStart("aliases");

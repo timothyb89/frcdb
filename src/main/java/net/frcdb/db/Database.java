@@ -43,6 +43,7 @@ import net.frcdb.stats.chart.api.GameChart;
 import net.frcdb.stats.chart.OPRComparisonChart;
 import net.frcdb.stats.chart.OPROverTimeChart;
 import net.frcdb.stats.chart.TeamAgeVsOPRChart;
+import net.frcdb.stats.chart.TravelChart;
 import net.frcdb.stats.chart.api.YearChart;
 import net.frcdb.util.ListUtil;
 import net.frcdb.util.StringUtil;
@@ -108,6 +109,7 @@ public class Database {
 		factory().register(TeamAgeVsOPRChart.class);
 		factory().register(EventsPerTeamChart.class);
 		factory().register(EventTimeline.class);
+		factory().register(TravelChart.class);
 		
 		// robots
 		
