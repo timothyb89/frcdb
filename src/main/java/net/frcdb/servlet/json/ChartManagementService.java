@@ -1,5 +1,6 @@
 package net.frcdb.servlet.json;
 
+import com.google.appengine.api.backends.BackendServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -39,11 +40,16 @@ public class ChartManagementService {
 			return JsonResponse.error("Chart not found: " + id);
 		}
 		
+		String backend = BackendServiceFactory
+				.getBackendService()
+				.getBackendAddress("stat-compute");
+		
 		// queue
 		Queue queue = QueueFactory.getQueue("statistics");
 		queue.add(withUrl("/json/admin/chart/generate-task")
 				.method(TaskOptions.Method.POST)
-				.param("id", id));
+				.param("id", id)
+				.header("Host", backend));
 		
 		return JsonResponse.success("Chart has been queued for generation.");
 	}

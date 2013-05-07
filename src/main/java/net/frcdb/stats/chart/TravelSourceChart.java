@@ -12,35 +12,34 @@ import net.frcdb.api.event.Event;
 import net.frcdb.api.game.event.Game;
 import net.frcdb.api.game.team.TeamEntry;
 import net.frcdb.api.team.Team;
-import net.frcdb.db.Database;
 import net.frcdb.stats.chart.api.Chart;
 import net.frcdb.stats.chart.api.ColumnDefinition;
 import net.frcdb.stats.chart.api.Row;
 import net.frcdb.stats.chart.api.YearChart;
 
 /**
- * A chart to display the most common destinations for teams traveling out of
+ * A chart to display the most common sources of teams that travel out of
  * state.
  * @author tim
  */
 @EntitySubclass
-public class TravelChart extends YearChart {
+public class TravelSourceChart extends YearChart {
 
-	public TravelChart() {
+	public TravelSourceChart() {
 	}
 
-	public TravelChart(int year) {
+	public TravelSourceChart(int year) {
 		super(year);
 	}
 	
 	@Override
 	public String getName() {
-		return "team-travel-chart";
+		return "team-travel-source-chart";
 	}
 
 	@Override
 	public String getDisplayName() {
-		return "Team Travel Destinations";
+		return "Team Travel Sources";
 	}
 
 	@Override
@@ -51,29 +50,28 @@ public class TravelChart extends YearChart {
 	@Override
 	public ColumnDefinition[] getColumns() {
 		return new ColumnDefinition[] {
-			column().label("Latitude").type("number").get(),
-			column().label("Longitude").type("number").get(),
+			column().label("State").type("string").get(),
 			column().label("Size").type("number").get(),
-			column().label("Event").type("string").role("tooltip").get()
+			column().label("Description").type("string").role("tooltip").get()
 		};
 	}
 
 	@Override
 	public List<Row> getRows() {
-		Map<Event, Integer> counts = new HashMap<Event, Integer>();
+		Map<String, Integer> counts = new HashMap<String, Integer>();
 		
 		// iterate over all team entries
 		for (Game g : getGames()) {
 			Event e = g.getEvent();
 			
 			for (TeamEntry entry : g.getTeams()) {
-				Team t = entry.getTeam();
+				String s = entry.getTeam().getState();
 				// count if the event is out of state
-				if (!t.getState().equals(e.getState())) {
-					if (counts.containsKey(e)) {
-						counts.put(e, counts.get(e) + 1);
+				if (!s.equals(e.getState())) {
+					if (counts.containsKey(s)) {
+						counts.put(s, counts.get(s) + 1);
 					} else {
-						counts.put(e, 1);
+						counts.put(s, 1);
 					}
 				}
 			}
@@ -81,15 +79,14 @@ public class TravelChart extends YearChart {
 		
 		List<Row> ret = new ArrayList<Row>();
 		
-		for (Entry<Event, Integer> entry : counts.entrySet()) {
-			Event e = entry.getKey();
+		for (Entry<String, Integer> entry : counts.entrySet()) {
+			String s = entry.getKey();
 			int c = entry.getValue();
 			
 			ret.add(row(
-					e.getLatitude(),
-					e.getLongitude(),
+					s,
 					c,
-					e.getName() + ": " + c + " team" + (c != 1 ? "s" : "")));
+					s + ": " + c + " team" + (c != 1 ? "s" : "")));
 		}
 		
 		return ret;
@@ -97,7 +94,7 @@ public class TravelChart extends YearChart {
 
 	@Override
 	public void writeOptions(JsonGenerator g) throws IOException {
-		g.writeStringField("title", "Team Travel Destinations");
+		g.writeStringField("title", "Team Travel Sources");
 		g.writeStringField("displayMode", "markers");
 		g.writeStringField("region", "US");
 		

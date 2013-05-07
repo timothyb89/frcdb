@@ -1,14 +1,13 @@
 package net.frcdb.stats.calc;
 
-import java.util.Collection;
 import net.frcdb.db.Database;
 import net.frcdb.stats.StatisticsRoot;
 import net.frcdb.stats.chart.EventsPerTeamChart;
 import net.frcdb.stats.chart.api.Chart;
-import net.frcdb.stats.chart.OPRComparisonChart;
 import net.frcdb.stats.chart.OPROverTimeChart;
 import net.frcdb.stats.chart.TeamAgeVsOPRChart;
 import net.frcdb.stats.chart.TravelChart;
+import net.frcdb.stats.chart.TravelSourceChart;
 
 /**
  * Initializes the global charts at /stats. They can be updated later with
@@ -45,6 +44,10 @@ public class ChartsInit implements GlobalStatistic {
 		//s.addChart(c);
 		
 		Chart c = new TravelChart(2013);
+		Database.save().entities(c).now();
+		s.addChart(c);
+		
+		c = new TravelSourceChart(2013);
 		Database.save().entities(c).now();
 		s.addChart(c);
 		
